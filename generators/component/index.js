@@ -61,7 +61,12 @@ module.exports = class extends Generator {
         isRegister: this.inputProps.isRegister || answers.isRegister,
       };
       this.props.componentPath = this.destinationPath(
-        `packages/${this.props.packageName}/lib/components/${this.props.moduleName}/${this.props.componentName}.jsx`
+        'packages',
+        this.props.packageName,
+        'lib',
+        'components',
+        this.props.moduleName,
+        `${this.props.componentName}.jsx`
       );
       this.props.templatePath = this.props.componentType === 'pure' ?
         this.templatePath('pureFunctionComponent.js') :

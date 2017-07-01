@@ -1,21 +1,20 @@
 const Generator = require('yeoman-generator');
-const beautify = require('gulp-beautify');
+const path = require('path');
 
 module.exports = class extends Generator {
   constructor(args, options) {
     super(args, options);
-    this.registerTransformStream(beautify({indent_size: 2 }));
   }
 
   prompting() {
     return this.prompt([{
       type: 'input',
       name: 'packageName',
-      message: 'Your package name',
+      message: 'Package name',
     }, {
       type: 'checkbox',
       name: 'dependencies',
-      message: 'Which of the following vulcan packages should your package depend on?',
+      message: 'Vulcan dependencies',
       choices: [
         { name: 'vulcan:core', checked: true },
         'vulcan:posts',
@@ -36,30 +35,32 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    const packageSubPath = path.join('packages', this.props.packageName);
+    const libSubPath = path.join(packageSubPath, 'lib');
     this.fs.copyTpl(
       this.templatePath('package.js'),
-      this.destinationPath(`packages/${this.props.packageName}/package.js`),
+      this.destinationPath(packageSubPath, 'package.js'),
       this.props
     );
     this.fs.copyTpl(
       this.templatePath('client.js'),
-      this.destinationPath(`packages/${this.props.packageName}/lib/client/main.js`),
+      this.destinationPath(libSubPath, 'client', 'main.js')
     );
     this.fs.copyTpl(
       this.templatePath('server.js'),
-      this.destinationPath(`packages/${this.props.packageName}/lib/server/main.js`),
+      this.destinationPath(libSubPath, 'server', 'main.js')
     );
     this.fs.copyTpl(
       this.templatePath('seed.js'),
-      this.destinationPath(`packages/${this.props.packageName}/lib/server/seed.js`),
+      this.destinationPath(libSubPath, 'server', 'seed.js')
     );
     this.fs.copyTpl(
       this.templatePath('module.js'),
-      this.destinationPath(`packages/${this.props.packageName}/lib/modules/index.js`),
+      this.destinationPath(libSubPath, 'modules', 'index.js')
     );
     this.fs.copyTpl(
       this.templatePath('routes.js'),
-      this.destinationPath(`packages/${this.props.packageName}/lib/modules/routes.js`),
+      this.destinationPath(libSubPath, 'modules', 'routes.js')
     );
   }
 };
