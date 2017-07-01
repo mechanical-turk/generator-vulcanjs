@@ -11,11 +11,12 @@ module.exports = class extends Generator {
   }
 
   prompting() {
-    this.inputProps = {
-      packageName: 'keremPackage',
-      moduleName: 'keremModule',
-      defaultResolvers: [ 'list', 'single', 'total' ],
-    };
+    // this.inputProps = {
+    //   packageName: 'keremPackage',
+    //   moduleName: 'keremModule',
+    //   defaultResolvers: [ 'list', 'single', 'total' ],
+    // };
+    this.inputProps = {};
     const questions = [];
     if (!this.inputProps.packageName) {
       questions.push({

@@ -7,30 +7,47 @@ module.exports = class extends Generator {
   }
 
   prompting() {
-    return this.prompt([{
-      type: 'input',
-      name: 'packageName',
-      message: 'Package name',
-    }, {
-      type: 'checkbox',
-      name: 'dependencies',
-      message: 'Vulcan dependencies',
-      choices: [
-        { name: 'vulcan:core', checked: true },
-        'vulcan:posts',
-        'vulcan:comments',
-        'vulcan:newsletter',
-        'vulcan:notifications',
-        'vulcan:getting-started',
-        'vulcan:categories',
-        'vulcan:voting',
-        'vulcan:embedly',
-        'vulcan:api',
-        'vulcan:rss',
-        'vulcan:subscribe',
-      ],
-    }]).then((answers) => {
-      this.props = answers;
+    this.inputProps = {
+      packageName: 'keremPackage',
+      moduleName: 'keremModule',
+    };
+    const questions = [];
+    if (!this.inputProps.packageName) {
+      questions.add({
+        type: 'input',
+        name: 'packageName',
+        message: 'Package name',
+      });
+    }
+    if (!this.inputProps.vulcanDependencies) {
+      questions.add({
+        type: 'checkbox',
+        name: 'vulcanDependencies',
+        message: 'Vulcan dependencies',
+        choices: [
+          { name: 'vulcan:core', checked: true },
+          'vulcan:posts',
+          'vulcan:comments',
+          'vulcan:newsletter',
+          'vulcan:notifications',
+          'vulcan:getting-started',
+          'vulcan:categories',
+          'vulcan:voting',
+          'vulcan:embedly',
+          'vulcan:api',
+          'vulcan:rss',
+          'vulcan:subscribe',
+        ],
+      });
+    }
+    return this.prompt(questions).then((answers) => {
+      this.props = {
+        packageName: this.inputProps.packageName || answers.packageName,
+        vulcanDependencies: (
+          this.inputProps.vulcanDependencies ||
+          answers.vulcanDependencies
+        ),
+      };
     });
   }
 
