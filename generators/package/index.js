@@ -30,18 +30,8 @@ module.exports = class extends Generator {
         'vulcan:rss',
         'vulcan:subscribe',
       ],
-    }, {
-      type: 'input',
-      name: 'serverEntryPoint',
-      message: 'Server entry point',
-      default: 'lib/server/main.js',
-    }, {
-      type: 'input',
-      name: 'clientEntryPoint',
-      message: 'Client entry point',
-      default: 'lib/client/main.js',
-    }]).then((props) => {
-      this.props = props;
+    }]).then((answers) => {
+      this.props = answers;
     });
   }
 
@@ -50,6 +40,26 @@ module.exports = class extends Generator {
       this.templatePath('package.js'),
       this.destinationPath(`packages/${this.props.packageName}/package.js`),
       this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath('client.js'),
+      this.destinationPath(`packages/${this.props.packageName}/lib/client/main.js`),
+    );
+    this.fs.copyTpl(
+      this.templatePath('server.js'),
+      this.destinationPath(`packages/${this.props.packageName}/lib/server/main.js`),
+    );
+    this.fs.copyTpl(
+      this.templatePath('seed.js'),
+      this.destinationPath(`packages/${this.props.packageName}/lib/server/seed.js`),
+    );
+    this.fs.copyTpl(
+      this.templatePath('module.js'),
+      this.destinationPath(`packages/${this.props.packageName}/lib/modules/index.js`),
+    );
+    this.fs.copyTpl(
+      this.templatePath('routes.js'),
+      this.destinationPath(`packages/${this.props.packageName}/lib/modules/routes.js`),
     );
   }
 };

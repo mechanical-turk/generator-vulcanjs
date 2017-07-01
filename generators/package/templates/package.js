@@ -7,6 +7,6 @@ Package.onUse((api) => {
     <%= dependencies.join(", \n    "); %>
   ]);
 
-  api.mainModule('<%= serverEntryPoint %>', 'server');
-  api.mainModule('<%= clientEntryPoint %>', 'client');
+  api.mainModule('lib/server/main.js', 'server');
+  api.mainModule('lib/client/main.js', 'client');
 });
