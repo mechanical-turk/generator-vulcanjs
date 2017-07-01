@@ -1,0 +1,11 @@
+{
+  "name": "generator-vulcanjs",
+  "version": "1.0.0",
+  "description": "The cli scaffolding tool for Vulcan.js",
+  "files": ["generators"],
+  "keywords": ["yeoman-generator"],
+  "main": "index.js",
+  "repository": "git@github.com:mechanical-turk/generator-vulcanjs.git",
+  "author": "Kerem Kazan",
+  "license": "MIT"
+}
