@@ -1,6 +1,5 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
-const dashify = require('dashify');
 const common = require('../../libs/common');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 
@@ -58,7 +57,7 @@ module.exports = class extends VulcanGenerator {
           answers.reactExtension
         ),
         appName: appName,
-        appSubPath: dashify(appName),
+        appSubPath: this._filterPackageName(appName),
         packageManager: this.inputProps.packageManager || answers.packageManager,
       };
     });

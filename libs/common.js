@@ -1,4 +1,5 @@
 const beautify = require('gulp-beautify');
+const dashify = require('dashify');
 
 module.exports = {
   beautify: function() {
@@ -6,4 +7,7 @@ module.exports = {
       beautify({indent_size: 2 })
     );
   },
+  filterPackageName: function(packageName) {
+    return dashify(packageName);
+  }
 };

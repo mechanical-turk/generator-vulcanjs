@@ -10,6 +10,7 @@ module.exports = class extends VulcanGenerator {
     this.configProps = {
       packageName: this.config.get('packageName'),
     };
+    this.inputProps = {};
   }
 
   _getSetFromArr(arr) {
@@ -22,12 +23,6 @@ module.exports = class extends VulcanGenerator {
 
   prompting() {
     if (!this._canPrompt()) { return; }
-    // this.inputProps = {
-    //   packageName: 'myPackage',
-    //   moduleName: 'myModule',
-    //   defaultResolvers: { list: true, single: true, total: true },
-    // };
-    this.inputProps = {};
     const questions = [
       {
         type: 'input',
@@ -75,8 +70,9 @@ module.exports = class extends VulcanGenerator {
       },
     ];
 
-    return this.prompt(questions).then((answers) => {
-      const packageName = this.inputProps.packageName || answers.packageName;
+    return this.prompt(questions)
+    .then((answers) => {
+      const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
       const moduleName = this.inputProps.moduleName || answers.moduleName;
       const camelModuleName = camelCase(moduleName);
       const pascalModuleName = pascalCase(moduleName);
@@ -105,7 +101,24 @@ module.exports = class extends VulcanGenerator {
         this.props.hasSingleResolver = defaultResolvers['single'];
         this.props.hasTotalResolver = defaultResolvers['total'];
       }
-    });
+      if (this._packageExists(this.props.packageName)) {
+        return Promise.reject('packageExists');
+      }
+      return this.prompt([
+        {
+          name: 'isCreatePackage',
+          message: `The package: '${this.props.packageName}' does not exist. Would you like to create it?`,
+          type: 'confirm',
+        }
+      ]);
+    })
+    .then((answers) => {
+      if (!answers.isCreatePackage) { return; }
+      this.composeWith(
+        require.resolve('../package'),
+        this.props
+      );
+    }, () => {});
   }
 
   _getModulePath() {

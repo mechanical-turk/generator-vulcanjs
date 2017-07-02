@@ -1,6 +1,7 @@
 const Generator = require('yeoman-generator');
 const common = require('./common.js');
 const chalk = require('chalk');
+const dashify = require('dashify');
 
 module.exports = class VulcanGenerator extends Generator {
   constructor(args, options) {
@@ -35,10 +36,11 @@ module.exports = class VulcanGenerator extends Generator {
   }
 
   _registerNewModule (packageName, moduleName) {
-    if (
-      this._packageExists(packageName) &&
-      !this._moduleExists(packageName, moduleName)
-    ) {
+    if (!this._packageExists(packageName)) {
+      this._registerNewPackage(packageName);
+    }
+
+    if (!this._moduleExists(packageName, moduleName)) {
       const thePackage = this._getPackage(packageName);
       thePackage.modules[moduleName] = {};
       this._savePackage(packageName, thePackage);
@@ -112,6 +114,14 @@ module.exports = class VulcanGenerator extends Generator {
       const message = `${errorNo} \n\n` + chalk.red(error.message);
       this.env.error(message);
     });
+  }
+
+  _filterPackageName(packageName) {
+    return dashify(packageName);
+  }
+
+  _filterAppName(appName) {
+    return dashify(appName);
   }
 
   _end() {
