@@ -1,13 +1,15 @@
 const Generator = require('yeoman-generator');
-const beautify = require('gulp-beautify');
 const pascalCase = require('pascal-case');
 const path = require('path');
 const camelCase = require('camelcase');
+const common = require('../../common');
 
 module.exports = class extends Generator {
-  constructor(args, options) {
-    super(args, options);
-    this.registerTransformStream(beautify({indent_size: 2 }));
+  initializing() {
+    common.beautify.bind(this)();
+    this.configProps = {
+      packageName: this.config.get('packageName'),
+    };
   }
 
   prompting() {
@@ -23,6 +25,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
+        default: this.configProps.packageName,
       });
     }
 
@@ -84,54 +87,88 @@ module.exports = class extends Generator {
     });
   }
 
-  writing() {
-    const moduleSubPath = path.join(
+  _getModulePath() {
+    return path.join(
       'packages',
       this.props.packageName,
       'lib',
       'modules',
-      this.props.moduleName,
+      this.props.moduleName
     );
+  }
 
+  configuring() {
+    this.originalRoot = this.destinationRoot();
+    this.destinationRoot(
+      this.destinationPath(
+        this._getModulePath()
+      )
+    );
+    this.config.set('moduleName', this.props.moduleName);
+    this.destinationRoot(this.originalRoot);
+  }
+
+  writing() {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
-      this.destinationPath(moduleSubPath, 'collection.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'collection.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('resolvers.js'),
-      this.destinationPath(moduleSubPath, 'resolvers.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'resolvers.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('fragments.js'),
-      this.destinationPath(moduleSubPath, 'fragments.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'fragments.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('mutations.js'),
-      this.destinationPath(moduleSubPath, 'mutations.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'mutations.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
-      this.destinationPath(moduleSubPath, 'parameters.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'parameters.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('permissions.js'),
-      this.destinationPath(moduleSubPath, 'permissions.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'permissions.js'
+      ),
       this.props
     );
 
     this.fs.copyTpl(
       this.templatePath('schema.js'),
-      this.destinationPath(moduleSubPath, 'schema.js'),
+      this.destinationPath(
+        this._getModulePath(),
+        'schema.js'
+      ),
       this.props
     );
   }

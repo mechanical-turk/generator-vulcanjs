@@ -1,22 +1,19 @@
 const Generator = require('yeoman-generator');
-const beautify = require('gulp-beautify');
 const chalk = require('chalk');
 const dashify = require('dashify');
+const common = require('../../libs/common');
 
 module.exports = class extends Generator {
   initializing() {
-    this.registerTransformStream(beautify({indent_size: 2 }));
-    // this.composeWith(require.resolve('../package'));
-    // this.composeWith(require.resolve('../component'));
-    // this.composeWith(require.resolve('../module'));
+    common.beautify.bind(this)();
   }
 
   prompting() {
-    this.inputProps = {
-      appName: 'kerem',
-      reactExtension: 'jsx',
-    }
-    // this.inputProps = {};
+    // this.inputProps = {
+    //   appName: 'kerem',
+    //   reactExtension: 'jsx',
+    // }
+    this.inputProps = {};
     const questions = [];
     if (!this.inputProps.appName) {
       questions.push({
@@ -25,6 +22,7 @@ module.exports = class extends Generator {
         message: 'App name',
       });
     }
+
     if (!this.inputProps.reactExtension) {
       questions.push({
         type: 'list',
@@ -36,6 +34,19 @@ module.exports = class extends Generator {
         ],
       });
     }
+
+    if (!this.inputProps.packageManager) {
+      questions.push({
+        type: 'list',
+        name: 'packageManager',
+        message: 'Preferred package manager',
+        choices: [
+          'npm',
+          'yarn',
+        ],
+      });
+    }
+
     return this.prompt(questions).then((answers) => {
       const appName = this.inputProps.appName || answers.appName;
       this.props = {
@@ -45,6 +56,7 @@ module.exports = class extends Generator {
         ),
         appName: appName,
         appSubPath: dashify(appName),
+        packageManager: this.inputProps.packageManager || answers.packageManager,
       };
     });
   }
@@ -55,10 +67,12 @@ module.exports = class extends Generator {
     );
     this.config.set('appName', this.props.appName);
     this.config.set('reactExtension', this.props.reactExtension);
+    this.config.set('isVulcan', true);
+    this.config.set('packageManager', this.props.packageManager);
   }
 
   install() {
-    this.log(chalk.blue('Pulling the most up to date git repository... \n'));
+    this.log(chalk.green('\nPulling the most up to date git repository... \n'));
     this.spawnCommandSync('git', [
       'init',
     ]);
@@ -78,14 +92,18 @@ module.exports = class extends Generator {
       'rm',
       'origin',
     ]);
+    this.installDependencies({
+      npm: this.props.packageManager === 'npm',
+      bower: false,
+      yarn: this.props.packageManager === 'yarn',
+    });
   }
 
   end() {
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));
-    this.log('To run your new app:')
-    this.log(chalk.blue(`  cd ${this.props.appSubPath}`));
-    this.log(chalk.blue('  meteor'));
-
+    this.log(chalk.green('To run your new app: \n'));
+    this.log(chalk.green(`  cd ${this.props.appSubPath}`));
+    this.log(chalk.green('  npm start \n'));
   }
 };

@@ -1,11 +1,15 @@
 const Generator = require('yeoman-generator');
-const beautify = require('gulp-beautify');
 const pascalCase = require('pascal-case');
+const common = require('../../common');
 
 module.exports = class extends Generator {
-  constructor(args, options) {
-    super(args, options);
-    this.registerTransformStream(beautify({indent_size: 2 }));
+  initializing() {
+    common.beautify.bind(this)();
+    this.configProps = {
+      packageName: this.config.get('packageName'),
+      reactExtension: this.config.get('reactExtension'),
+      moduleName: this.config.get('moduleName'),
+    };
   }
 
   prompting() {
@@ -16,22 +20,28 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
+        default: this.configProps.packageName,
       });
     }
+
     if (!this.inputProps.moduleName) {
       questions.push({
         type: 'input',
         name: 'moduleName',
         message: 'Module name',
+        default: this.configProps.moduleName,
       });
     }
+
     if (!this.inputProps.componentName) {
       questions.push({
         type: 'input',
         name: 'componentName',
         message: 'Component name',
+        default: this.configProps.moduleName,
       });
     }
+
     if (!this.inputProps.componentType) {
       questions.push({
         type: 'list',
@@ -43,6 +53,7 @@ module.exports = class extends Generator {
         ],
       });
     }
+
     if (!this.inputProps.isRegister) {
       questions.push({
         type: 'confirm',
@@ -50,7 +61,6 @@ module.exports = class extends Generator {
         message: 'Should the component be registered?',
       });
     }
-
 
     return this.prompt(questions).then((answers) => {
       this.props = {
@@ -60,14 +70,13 @@ module.exports = class extends Generator {
         componentType: this.inputProps.componentType || answers.componentType,
         isRegister: this.inputProps.isRegister || answers.isRegister,
       };
-      const reactExtension = this.config.get('reactExtension');
       this.props.componentPath = this.destinationPath(
         'packages',
         this.props.packageName,
         'lib',
         'components',
         this.props.moduleName,
-        `${this.props.componentName}.${reactExtension}`
+        `${this.props.componentName}.${this.configProps.reactExtension}`
       );
       this.props.templatePath = this.props.componentType === 'pure' ?
         this.templatePath('pureFunctionComponent.js') :
