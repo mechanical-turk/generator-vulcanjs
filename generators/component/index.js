@@ -14,36 +14,29 @@ module.exports = class extends VulcanGenerator {
   prompting() {
     if (!this._canPrompt()) { return; }
     this.inputProps = {};
-    const questions = [];
-    if (!this.inputProps.packageName) {
-      questions.push({
+    const questions = [
+      {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
         default: this.configProps.packageName,
-      });
-    }
-
-    if (!this.inputProps.moduleName) {
-      questions.push({
+        when: () => (!this.inputProps.packageName),
+      },
+      {
         type: 'input',
         name: 'moduleName',
         message: 'Module name',
         default: this.configProps.moduleName,
-      });
-    }
-
-    if (!this.inputProps.componentName) {
-      questions.push({
+        when: () => (!this.inputProps.moduleName),
+      },
+      {
         type: 'input',
         name: 'componentName',
         message: 'Component name',
         default: this.configProps.moduleName,
-      });
-    }
-
-    if (!this.inputProps.componentType) {
-      questions.push({
+        when: () => (!this.inputProps.componentName),
+      },
+      {
         type: 'list',
         name: 'componentType',
         message: 'Component type',
@@ -51,16 +44,15 @@ module.exports = class extends VulcanGenerator {
           { name: 'Pure Function', value: 'pure' },
           { name: 'Class Component', value: 'class' },
         ],
-      });
-    }
-
-    if (!this.inputProps.isRegister) {
-      questions.push({
+        when: () => (!this.inputProps.componentType),
+      },
+      {
         type: 'confirm',
         name: 'isRegister',
         message: 'Should the component be registered?',
-      });
-    }
+        when: () => (!this.inputProps.isRegister),
+      }
+    ];
 
     return this.prompt(questions).then((answers) => {
       this.props = {

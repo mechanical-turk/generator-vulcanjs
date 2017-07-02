@@ -22,9 +22,9 @@ module.exports = class extends VulcanGenerator {
   prompting() {
     if (!this._canPrompt()) { return; }
     // this.inputProps = {
-    //   packageName: 'keremPackage',
-    //   moduleName: 'keremModule',
-    //   defaultResolvers: [ 'list', 'single', 'total' ],
+    //   packageName: 'myPackage',
+    //   moduleName: 'myModule',
+    //   defaultResolvers: { list: true, single: true, total: true },
     // };
     this.inputProps = {};
     const questions = [

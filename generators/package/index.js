@@ -1,23 +1,21 @@
 const Generator = require('yeoman-generator');
 const path = require('path');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
+const dashify = require('dashify');
 
 module.exports = class extends VulcanGenerator {
 
   prompting() {
     if (!this._canPrompt()) { return; }
     this.inputProps = {};
-    const questions = [];
-    if (!this.inputProps.packageName) {
-      questions.push({
+    const questions = [
+      {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
-      });
-    }
-
-    if (!this.inputProps.vulcanDependencies) {
-      questions.push({
+        when: () => (!this.inputProps.packageName),
+      },
+      {
         type: 'checkbox',
         name: 'vulcanDependencies',
         message: 'Vulcan dependencies',
@@ -35,12 +33,13 @@ module.exports = class extends VulcanGenerator {
           'vulcan:rss',
           'vulcan:subscribe',
         ],
-      });
-    }
+        when: () => (!this.inputProps.vulcanDependencies),
+      }
+    ];
 
     return this.prompt(questions).then((answers) => {
       this.props = {
-        packageName: this.inputProps.packageName || answers.packageName,
+        packageName: dashify(this.inputProps.packageName || answers.packageName),
         vulcanDependencies: (
           this.inputProps.vulcanDependencies ||
           answers.vulcanDependencies
