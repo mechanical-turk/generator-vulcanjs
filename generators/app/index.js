@@ -2,13 +2,16 @@ const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const dashify = require('dashify');
 const common = require('../../libs/common');
+const VulcanGenerator = require('../../libs/VulcanGenerator');
 
-module.exports = class extends Generator {
+module.exports = class extends VulcanGenerator {
   initializing() {
-    common.beautify.bind(this)();
+    this._checkNotVulcan();
+    // console.log(this.errors);
   }
 
   prompting() {
+    if (!this._canPrompt()) { return; }
     // this.inputProps = {
     //   appName: 'kerem',
     //   reactExtension: 'jsx',
@@ -62,6 +65,7 @@ module.exports = class extends Generator {
   }
 
   configuring() {
+    if (!this._canConfigure()) { return; }
     this.destinationRoot(
       this.destinationPath(this.props.appSubPath)
     );
@@ -72,6 +76,7 @@ module.exports = class extends Generator {
   }
 
   install() {
+    if (!this._canInstall()) { return; }
     this.log(chalk.green('\nPulling the most up to date git repository... \n'));
     this.spawnCommandSync('git', [
       'init',
@@ -100,6 +105,7 @@ module.exports = class extends Generator {
   }
 
   end() {
+    if (!this._hasNoErrors()) { return this._end(); }
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));
     this.log(chalk.green('To run your new app: \n'));

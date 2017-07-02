@@ -4,6 +4,7 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
+    this._checkVulcan();
     this.configProps = {
       packageName: this.config.get('packageName'),
       reactExtension: this.config.get('reactExtension'),

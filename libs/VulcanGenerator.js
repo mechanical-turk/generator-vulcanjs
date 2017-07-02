@@ -5,22 +5,31 @@ const chalk = require('chalk');
 module.exports = class VulcanGenerator extends Generator {
   constructor(args, options) {
     super(args, options);
-    this.errors = [];
-    this._checkVulcan();
+    this.errors = {};
     common.beautify.bind(this)();
   }
 
   _checkVulcan () {
     if (!this.config.get('isVulcan')) {
-      this.errors.push({
+      this.errors.notVulcan = {
+        name: 'notVulcan',
+        message: 'This is not a Vulcan.js project directory. \nYou cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
+      };
+    }
+  }
+
+  _checkNotVulcan () {
+    if (this.config.get('isVulcan')) {
+      this.errors.isVulcan = {
         name: 'isVulcan',
-        message: 'This is not a Vulcan.js project directory. You cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
-      });
+        message: 'You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.'
+      };
     }
   }
 
   _hasNoErrors() {
-    return this.errors.length === 0;
+    const errorKeys = Object.keys(this.errors);
+    return errorKeys.length === 0;
   }
 
   _canPrompt() {
@@ -35,8 +44,14 @@ module.exports = class VulcanGenerator extends Generator {
     return this._hasNoErrors();
   }
 
+  _canInstall() {
+    return this._hasNoErrors();
+  }
+
   _logAllErrors() {
-    this.errors.forEach((error) => {
+    const errorKeys = Object.keys(this.errors);
+    const errors = errorKeys.map((errorKey) => this.errors[errorKey]);
+    errors.forEach((error) => {
       this.env.error(chalk.red(error.message));
     });
   }

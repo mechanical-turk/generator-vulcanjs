@@ -5,6 +5,10 @@ const dashify = require('dashify');
 
 module.exports = class extends VulcanGenerator {
 
+  initializing() {
+    this._checkVulcan();
+  }
+
   prompting() {
     if (!this._canPrompt()) { return; }
     this.inputProps = {};
