@@ -73,6 +73,7 @@ module.exports = class extends VulcanGenerator {
     this.config.set('reactExtension', this.props.reactExtension);
     this.config.set('isVulcan', true);
     this.config.set('packageManager', this.props.packageManager);
+    this.config.set('packages', {});
   }
 
   install() {

@@ -58,14 +58,7 @@ module.exports = class extends VulcanGenerator {
 
   configuring() {
     if (!this._canConfigure()) { return; }
-    this.originalRoot = this.destinationRoot();
-    this.destinationRoot(
-      this.destinationPath(
-        this._getPackagePath()
-      )
-    );
-    this.config.set('packageName', this.props.packageName);
-    this.destinationRoot(this.originalRoot);
+    this._registerNewPackage(this.props.packageName);
   }
 
   writing() {

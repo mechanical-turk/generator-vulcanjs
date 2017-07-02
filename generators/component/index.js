@@ -5,11 +5,6 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 module.exports = class extends VulcanGenerator {
   initializing() {
     this._checkVulcan();
-    this.configProps = {
-      packageName: this.config.get('packageName'),
-      reactExtension: this.config.get('reactExtension'),
-      moduleName: this.config.get('moduleName'),
-    };
   }
 
   prompting() {
@@ -20,21 +15,18 @@ module.exports = class extends VulcanGenerator {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
-        default: this.configProps.packageName,
         when: () => (!this.inputProps.packageName),
       },
       {
         type: 'input',
         name: 'moduleName',
         message: 'Module name',
-        default: this.configProps.moduleName,
         when: () => (!this.inputProps.moduleName),
       },
       {
         type: 'input',
         name: 'componentName',
         message: 'Component name',
-        default: this.configProps.moduleName,
         when: () => (!this.inputProps.componentName),
       },
       {
@@ -69,12 +61,16 @@ module.exports = class extends VulcanGenerator {
         'lib',
         'components',
         this.props.moduleName,
-        `${this.props.componentName}.${this.configProps.reactExtension}`
+        `${this.props.componentName}.${this._getConfigProp('reactExtension')}`
       );
       this.props.templatePath = this.props.componentType === 'pure' ?
         this.templatePath('pureFunctionComponent.js') :
         this.templatePath('classComponent.js');
     });
+  }
+
+  configuring() {
+    if (!this._canConfigure()) { return; }
   }
 
   writing() {
