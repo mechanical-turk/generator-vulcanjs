@@ -2,67 +2,83 @@ const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
 const path = require('path');
 const camelCase = require('camelcase');
-const common = require('../../common');
+const VulcanGenerator = require('../../libs/VulcanGenerator');
 
-module.exports = class extends Generator {
+module.exports = class extends VulcanGenerator {
   initializing() {
-    common.beautify.bind(this)();
     this.configProps = {
       packageName: this.config.get('packageName'),
     };
   }
 
+  _getSetFromArr(arr) {
+    const set = {};
+    arr.forEach((elem) => {
+      set[elem] = true;
+    });
+    return set;
+  }
+
   prompting() {
+    if (!this._canPrompt()) { return; }
     // this.inputProps = {
     //   packageName: 'keremPackage',
     //   moduleName: 'keremModule',
     //   defaultResolvers: [ 'list', 'single', 'total' ],
     // };
     this.inputProps = {};
-    const questions = [];
-    if (!this.inputProps.packageName) {
-      questions.push({
+    const questions = [
+      {
         type: 'input',
         name: 'packageName',
         message: 'Package name',
         default: this.configProps.packageName,
-      });
-    }
-
-    if (!this.inputProps.moduleName) {
-      questions.push({
+        when: () => (!this.inputProps.packageName),
+      },
+      {
         type: 'input',
         name: 'moduleName',
         message: 'Module name',
-      });
-    }
-
-    if (!this.inputProps.defaultResolvers) {
-      questions.push({
+        when: () => (!this.inputProps.moduleName),
+      },
+      {
+        type: 'checkbox',
+        name: 'moduleParts',
+        message: 'Create with',
+        choices: [
+          { name: 'Collection', value: 'collection', checked:true, disabled: true },
+          { name: 'Fragments', value: 'fragments', checked:true },
+          { name: 'Mutations', value: 'mutations', checked:true },
+          { name: 'Parameters', value: 'parameters', checked:true },
+          { name: 'Permissions', value: 'permissions', checked:true },
+          { name: 'Resolvers', value: 'resolvers', checked:true },
+          { name: 'Schema', value: 'schema', checked:true },
+        ],
+        when: () => (!this.inputProps.moduleParts),
+        filter: this._getSetFromArr,
+      },
+      {
         type: 'checkbox',
         name: 'defaultResolvers',
-        message: 'Default resolvers',
+        message: 'Default Resolvers',
         choices: [
-          { name: 'List', value: 'list' },
-          { name: 'Single', value: 'single' },
-          { name: 'Total', value: 'total' },
+          { name: 'List', value: 'list', checked: true },
+          { name: 'Single', value: 'single', checked: true },
+          { name: 'Total', value: 'total', checked: true },
         ],
-      });
-    }
+        when: (answers) => (
+          !this.inputProps.defaultResolvers &&
+          answers.moduleParts.resolvers
+        ),
+        filter: this._getSetFromArr,
+      },
+    ];
 
     return this.prompt(questions).then((answers) => {
       const packageName = this.inputProps.packageName || answers.packageName;
       const moduleName = this.inputProps.moduleName || answers.moduleName;
       const camelModuleName = camelCase(moduleName);
       const pascalModuleName = pascalCase(moduleName);
-      const defaultResolversArr =
-        this.inputProps.defaultResolvers ||
-        answers.defaultResolvers;
-      const defaultResolvers = {};
-      defaultResolversArr.forEach((resolver) => {
-        defaultResolvers[resolver] = true;
-      });
-
       this.props = {
         packageName: packageName,
         moduleName: moduleName,
@@ -80,10 +96,14 @@ module.exports = class extends Generator {
         listResolverName: `${camelModuleName}List`,
         singleResolverName: `${camelModuleName}Single`,
         totalResolverName: `${camelModuleName}Total`,
-        hasListResolver: defaultResolvers['list'],
-        hasSingleResolver: defaultResolvers['single'],
-        hasTotalResolver: defaultResolvers['total'],
+        moduleParts: this.inputProps.packageName || answers.moduleParts,
       };
+      if (this.props.moduleParts.resolvers) {
+        const defaultResolvers = this.inputProps.defaultResolvers || answers.defaultResolvers;
+        this.props.hasListResolver = defaultResolvers['list'];
+        this.props.hasSingleResolver = defaultResolvers['single'];
+        this.props.hasTotalResolver = defaultResolvers['total'];
+      }
     });
   }
 
@@ -98,6 +118,7 @@ module.exports = class extends Generator {
   }
 
   configuring() {
+    if (!this._canConfigure()) { return; }
     this.originalRoot = this.destinationRoot();
     this.destinationRoot(
       this.destinationPath(
@@ -108,7 +129,7 @@ module.exports = class extends Generator {
     this.destinationRoot(this.originalRoot);
   }
 
-  writing() {
+  _writeCollection() {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
       this.destinationPath(
@@ -117,7 +138,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writeResolvers() {
+    if (!this.props.moduleParts.resolvers) { return; }
     this.fs.copyTpl(
       this.templatePath('resolvers.js'),
       this.destinationPath(
@@ -126,7 +150,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writeFragments() {
+    if (!this.props.moduleParts.fragments) { return; }
     this.fs.copyTpl(
       this.templatePath('fragments.js'),
       this.destinationPath(
@@ -135,7 +162,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writeMutations() {
+    if (!this.props.moduleParts.mutations) { return; }
     this.fs.copyTpl(
       this.templatePath('mutations.js'),
       this.destinationPath(
@@ -144,7 +174,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writeParameters() {
+    if (!this.props.moduleParts.parameters) { return; }
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
       this.destinationPath(
@@ -153,7 +186,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writePermissions() {
+    if (!this.props.moduleParts.permissions) { return; }
     this.fs.copyTpl(
       this.templatePath('permissions.js'),
       this.destinationPath(
@@ -162,7 +198,10 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
 
+  _writeSchema() {
+    if (!this.props.moduleParts.schema) { return; }
     this.fs.copyTpl(
       this.templatePath('schema.js'),
       this.destinationPath(
@@ -171,5 +210,20 @@ module.exports = class extends Generator {
       ),
       this.props
     );
+  }
+
+  writing() {
+    if (!this._canWrite()) { return; }
+    this._writeCollection();
+    this._writeResolvers();
+    this._writeFragments();
+    this._writeMutations();
+    this._writeParameters();
+    this._writePermissions();
+    this._writeSchema();
+  }
+
+  end() {
+    this._end();
   }
 };

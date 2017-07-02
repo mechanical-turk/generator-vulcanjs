@@ -1,10 +1,9 @@
 const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
-const common = require('../../common');
+const VulcanGenerator = require('../../libs/VulcanGenerator');
 
-module.exports = class extends Generator {
+module.exports = class extends VulcanGenerator {
   initializing() {
-    common.beautify.bind(this)();
     this.configProps = {
       packageName: this.config.get('packageName'),
       reactExtension: this.config.get('reactExtension'),
@@ -13,6 +12,7 @@ module.exports = class extends Generator {
   }
 
   prompting() {
+    if (!this._canPrompt()) { return; }
     this.inputProps = {};
     const questions = [];
     if (!this.inputProps.packageName) {
@@ -85,10 +85,15 @@ module.exports = class extends Generator {
   }
 
   writing() {
+    if (!this._canWrite()) { return; }
     this.fs.copyTpl(
       this.props.templatePath,
       this.props.componentPath,
       this.props
     );
+  }
+
+  end() {
+    this._end();
   }
 };

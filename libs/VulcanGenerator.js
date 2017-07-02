@@ -14,7 +14,7 @@ module.exports = class VulcanGenerator extends Generator {
     if (!this.config.get('isVulcan')) {
       this.errors.push({
         name: 'isVulcan',
-        message: 'This is not a Vulcan.js project directory. You cannot run Vulcan.js generators outside of Vulcan.js project directories.',
+        message: 'This is not a Vulcan.js project directory. You cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
       });
     }
   }
@@ -39,5 +39,9 @@ module.exports = class VulcanGenerator extends Generator {
     this.errors.forEach((error) => {
       this.env.error(chalk.red(error.message));
     });
+  }
+
+  _end() {
+    this._logAllErrors();
   }
 }

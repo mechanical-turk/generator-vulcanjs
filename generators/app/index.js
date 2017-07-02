@@ -41,8 +41,8 @@ module.exports = class extends Generator {
         name: 'packageManager',
         message: 'Preferred package manager',
         choices: [
-          'npm',
           'yarn',
+          'npm',
         ],
       });
     }
@@ -104,6 +104,6 @@ module.exports = class extends Generator {
     this.log(chalk.green('Successfully generated vulcan code base. \n'));
     this.log(chalk.green('To run your new app: \n'));
     this.log(chalk.green(`  cd ${this.props.appSubPath}`));
-    this.log(chalk.green('  npm start \n'));
+    this.log(chalk.green(`  ${this.props.packageManager} start \n`));
   }
 };

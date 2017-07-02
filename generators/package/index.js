@@ -3,8 +3,6 @@ const path = require('path');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
-  initializing() {
-  }
 
   prompting() {
     if (!this._canPrompt()) { return; }
@@ -130,6 +128,6 @@ module.exports = class extends VulcanGenerator {
   }
 
   end() {
-    this._logAllErrors();
+    this._end();
   }
 };
