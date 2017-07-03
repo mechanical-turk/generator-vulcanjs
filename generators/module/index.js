@@ -6,7 +6,7 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
-    this._checkVulcan();
+    this._assertIsVulcan();
     this.configProps = {
       packageName: this.config.get('packageName'),
     };
@@ -73,7 +73,7 @@ module.exports = class extends VulcanGenerator {
     return this.prompt(questions)
     .then((answers) => {
       const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
-      const moduleName = this.inputProps.moduleName || answers.moduleName;
+      const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
       const camelModuleName = camelCase(moduleName);
       const pascalModuleName = pascalCase(moduleName);
       this.props = {
@@ -101,7 +101,7 @@ module.exports = class extends VulcanGenerator {
         this.props.hasSingleResolver = defaultResolvers['single'];
         this.props.hasTotalResolver = defaultResolvers['total'];
       }
-      if (this._packageExists(this.props.packageName)) {
+      if (this._isPackageExists(this.props.packageName)) {
         return Promise.reject('packageExists');
       }
       return this.prompt([
@@ -133,7 +133,12 @@ module.exports = class extends VulcanGenerator {
 
   configuring() {
     if (!this._canConfigure()) { return; }
-    this._registerNewModule(this.props.packageName, this.props.moduleName);
+    this._dispatch({
+      type: 'ADD_MODULE',
+      packageName: this.props.packageName,
+      moduleName: this.props.moduleName,
+    })
+    this._commitStore();
   }
 
   _writeCollection() {

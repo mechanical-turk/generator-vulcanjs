@@ -1,44 +1,64 @@
 const Redux = require('redux');
 
-const modules = (state = {}, action) => {
+const moduleReducer = (state = {}, action) => {
+  switch (action.type) {
+    default: return state;
+  };
+}
+
+const modulesReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_MODULE': {
       const partialNext = {};
-      partialNext[action.moduleName] = {};
+      partialNext[action.moduleName] = moduleReducer(undefined, {});
       return Object.assign(
         {},
-        partialNext,
         state,
+        partialNext
       );
+      return nextState;
     }
     default: return state;
   }
 }
 
-function getEmptyPackage() {
-  return {
-    modules: {},
-  };
+const packageReducer = (state = { modules: {} }, action) => {
+  switch (action.type) {
+    case 'ADD_MODULE': {
+      const prevModules = state.modules;
+      const nextModules = modulesReducer(prevModules, action);
+      return Object.assign(
+        {},
+        state,
+        { modules: nextModules }
+      );
+    }
+    default: {
+      console.log('DEFAULT!');
+      return state;
+    };
+  }
 }
 
-const packages = (state = {}, action) => {
+const packagesReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_PACKAGE': {
       const partialNext = {};
-      partialNext[action.packageName] = getEmptyPackage();
+      partialNext[action.packageName] = packageReducer(undefined, {});
       return Object.assign(
-        partialNext,
+        {},
         state,
+        partialNext
       );
     }
 
     case 'ADD_MODULE': {
-      const thePackage = state[action.packageName] ?
-        state[action.packageName] :
-        getEmptyPackage();
-      const packageWithModule = modules(thePackage, action);
+      const prevPackage = state[action.packageName];
       const partialNext = {};
-      partialNext[action.packageName] = packageWithModule;
+      partialNext[action.packageName] = packageReducer(
+        prevPackage,
+        action
+      );
       return Object.assign(
         {},
         state,
@@ -51,18 +71,28 @@ const packages = (state = {}, action) => {
 
 const appName = (state = '', action) => {
   switch (action.type) {
+    case 'SET_APP_NAME': return action.appName;
     default: return state;
   }
 }
 
 const isVulcan = (state = false, action) => {
   switch (action.type) {
+    case 'SET_IS_VULCAN': return true;
     default: return state;
   }
 }
 
 const packageManager = (state = 'yarn', action) => {
   switch (action.type) {
+    case 'SET_PACKAGE_MANAGER': return action.packageManager;
+    default: return state;
+  }
+}
+
+const reactExtension = (state = 'js', action) => {
+  switch (action.type) {
+    case 'SET_REACT_EXTENSION': return action.reactExtension;
     default: return state;
   }
 }
@@ -71,7 +101,8 @@ const reducers = Redux.combineReducers({
   appName: appName,
   isVulcan: isVulcan,
   packageManager: packageManager,
-  packages: packages,
+  packages: packagesReducer,
+  reactExtension: reactExtension,
 });
 
 module.exports = reducers;

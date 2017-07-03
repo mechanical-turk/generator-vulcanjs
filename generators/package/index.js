@@ -13,7 +13,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   initializing() {
-    this._checkVulcan();
+    this._assertIsVulcan();
   }
 
   prompting() {
@@ -48,7 +48,6 @@ module.exports = class extends VulcanGenerator {
     ];
 
     return this.prompt(questions).then((answers) => {
-      console.log(this.inputProps);
       this.props = {
         packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
         vulcanDependencies: (
@@ -65,7 +64,11 @@ module.exports = class extends VulcanGenerator {
 
   configuring() {
     if (!this._canConfigure()) { return; }
-    this._registerNewPackage(this.props.packageName);
+    this._dispatch({
+      type: 'ADD_PACKAGE',
+      packageName: this.props.packageName,
+    });
+    this._commitStore();
   }
 
   writing() {

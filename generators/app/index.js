@@ -5,8 +5,7 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
-    this._checkNotVulcan();
-    // console.log(this.errors);
+    this._assertIsNotVulcan();
   }
 
   prompting() {
@@ -68,11 +67,22 @@ module.exports = class extends VulcanGenerator {
     this.destinationRoot(
       this.destinationPath(this.props.appSubPath)
     );
-    this.config.set('appName', this.props.appName);
-    this.config.set('reactExtension', this.props.reactExtension);
-    this.config.set('isVulcan', true);
-    this.config.set('packageManager', this.props.packageManager);
-    this.config.set('packages', {});
+    this._dispatch({
+      type: 'SET_IS_VULCAN',
+    });
+    this._dispatch({
+      type: 'SET_APP_NAME',
+      appName: this.props.appName,
+    });
+    this._dispatch({
+      type: 'SET_REACT_EXTENSION',
+      reactExtension: this.props.reactExtension,
+    });
+    this._dispatch({
+      type: 'SET_PACKAGE_MANAGER',
+      packageManager: this.props.packageManager,
+    });
+    this._commitStore();
   }
 
   install() {

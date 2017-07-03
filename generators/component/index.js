@@ -4,7 +4,7 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
-    this._checkVulcan();
+    this._assertIsVulcan();
   }
 
   prompting() {
@@ -71,6 +71,7 @@ module.exports = class extends VulcanGenerator {
 
   configuring() {
     if (!this._canConfigure()) { return; }
+    this._commitStore();
   }
 
   writing() {

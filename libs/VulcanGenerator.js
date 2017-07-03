@@ -4,95 +4,85 @@ const chalk = require('chalk');
 const dashify = require('dashify');
 const Redux = require('redux');
 const reducers = require('./reducers');
-const store = Redux.createStore(reducers);
-console.log(store.getState());
+const logger = require('redux-node-logger');
+let store;
+const errors = {};
+const camelCase = require('camelcase');
 
 module.exports = class VulcanGenerator extends Generator {
   constructor(args, options) {
     super(args, options);
-    this.errors = {};
+    if (!store) {
+      const allConfig = this.config.getAll();
+      store = Redux.createStore(
+        reducers,
+        allConfig,
+        Redux.applyMiddleware(logger())
+      );
+    }
     common.beautify.bind(this)();
   }
 
-  _getPackage(packageName) {
-    return this._getConfigProps('packages')[packageName];
+  /*
+    State management
+  */
+
+  _commitStore () {
+    const storeKeys = Object.keys(store.getState());
+    storeKeys.forEach((key) => {
+      this.config.set(key, store.getState()[key]);
+    });
   }
 
-  _getModules(packageName) {
-    if (!this._packageExists(packageName)) { return []; }
-    const thePackage = this._getPackage(packageName);
-    const moduleNameKeys = Object.keys(thePackage.modules);
-    return moduleNameKeys.map((key) => (thePackage.modules[key]));
+  _dispatch (action) {
+    return store.dispatch(action);
   }
 
-  _getModule(packageName, moduleName) {
-    if (!this._packageExists(packageName)) return undefined;
-    const thePackage = this._getPackage(packageName);
-    return thePackage.modules[moduleName];
+
+  /*
+    State access helpers
+  */
+
+  _isPackageExists (packageName) {
+    const filteredPackageName = this._filterPackageName(packageName);
+
+    return !!store.getState().packages[filteredPackageName];
   }
 
-  _moduleExists (packageName, moduleName) {
-    return !!this._getModule(packageName, moduleName);
+  _isModuleExists (packageName, moduleName) {
+    const filteredModuleName = this._filterModuleName(moduleName);
+    return (this._isPackageExists()) &&
+    !!store.getState().packages[packageName].modules[moduleName];
   }
 
-  _packageExists (packageName) {
-    return !!this._getPackage(packageName);
-  }
+  // _addPackage (packageName) {
+  //   const filteredPackageName = this._filterPackageName(packageName);
+  //   return store.dispatch({
+  //     type: 'ADD_PACKAGE',
+  //     packageName: filteredPackageName,
+  //   });
+  // }
+  //
+  // _addModule (packageName, moduleName) {
+  //   const filteredPackageName = this._filterPackageName(packageName);
+  //   const filteredModuleName = this._filterModuleName(moduleName);
+  //   return store.dispatch({
+  //     type: 'ADD_MODULE',
+  //     packageName: filteredPackageName,
+  //     moduleName: filteredModuleName,
+  //   });
+  // }
+  //
+  // _setReactExtension (extension) {
+  //   return store.dispatch({
+  //     type: ''
+  //   })
+  // }
 
-  _registerNewModule (packageName, moduleName) {
-    if (!this._packageExists(packageName)) {
-      this._registerNewPackage(packageName);
-    }
 
-    if (!this._moduleExists(packageName, moduleName)) {
-      const thePackage = this._getPackage(packageName);
-      thePackage.modules[moduleName] = {};
-      this._savePackage(packageName, thePackage);
-    }
-  }
-
-  _registerNewPackage (packageName) {
-    if (!this._packageExists(packageName)) {
-      this._savePackage(packageName, {
-        modules: {},
-      });
-    }
-  }
-
-  _savePackage(packageName, packageObj) {
-    const packages = this._getConfigProps('packages');
-    packages[packageName] = packageObj;
-    this.config.set('packages', packages);
-  }
-
-  _getConfigProps (key) {
-    const configProps = {
-      reactExtension: this.config.get('reactExtension'),
-      packages: this.config.get('packages'),
-    };
-    return configProps[key];
-  }
-
-  _checkVulcan () {
-    if (!this.config.get('isVulcan')) {
-      this.errors.notVulcan = {
-        message: 'This is not a Vulcan.js project directory. \nYou cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
-      };
-    }
-  }
-
-  _checkNotVulcan () {
-    if (this.config.get('isVulcan')) {
-      this.errors.isVulcan = {
-        message: 'You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.'
-      };
-    }
-  }
-
-  _hasNoErrors() {
-    const errorKeys = Object.keys(this.errors);
-    return errorKeys.length === 0;
-  }
+  /*
+    Helpers that determine whether a task can be performed
+  */
 
   _canPrompt() {
     return this._hasNoErrors();
@@ -110,15 +100,50 @@ module.exports = class VulcanGenerator extends Generator {
     return this._hasNoErrors();
   }
 
+
+
+  /*
+    Error management
+  */
+
+  _hasNoErrors() {
+    const errorKeys = Object.keys(errors);
+    return errorKeys.length === 0;
+  }
+
   _logAllErrors() {
-    const errorKeys = Object.keys(this.errors);
-    const errors = errorKeys.map((errorKey) => this.errors[errorKey]);
-    errors.forEach((error, index) => {
+    const errorKeys = Object.keys(errors);
+    const errorsArr = errorKeys.map((errorKey) => errors[errorKey]);
+    errorsArr.forEach((error, index) => {
+      if (error.isLogged) { return; }
       const errorNo = chalk.white(`Error (${index}):`);
       const message = `${errorNo} \n\n` + chalk.red(error.message);
       this.env.error(message);
+      error.isLogged = true;
     });
   }
+
+  _assertIsVulcan () {
+    if (!store.getState().isVulcan) {
+      errors.notVulcan = {
+        message: 'This is not a Vulcan.js project directory. \nYou cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
+      };
+    }
+  }
+
+  _assertIsNotVulcan () {
+    if (store.getState().isVulcan) {
+      errors.isVulcan = {
+        message: 'You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.'
+      };
+    }
+  }
+
+
+
+  /*
+    Common string filters
+  */
 
   _filterPackageName(packageName) {
     return dashify(packageName);
@@ -126,6 +151,10 @@ module.exports = class VulcanGenerator extends Generator {
 
   _filterAppName(appName) {
     return dashify(appName);
+  }
+
+  _filterModuleName(moduleName) {
+    return camelCase(moduleName);
   }
 
   _end() {
