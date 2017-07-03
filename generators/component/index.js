@@ -9,16 +9,13 @@ module.exports = class extends VulcanGenerator {
     this.inputProps = {};
   }
 
+  _registerArguments() {
+  }
+
   prompting() {
     if (!this._canPrompt()) { return; }
     const firstQuestions = [
-      {
-        type: 'list',
-        name: 'packageName',
-        message: 'Package name',
-        when: () => (!this.inputProps.packageName),
-        choices: this._getPackageNames(),
-      },
+      this._getPackageNameListQuestion(),
     ];
 
     return this.prompt(firstQuestions)
@@ -28,15 +25,7 @@ module.exports = class extends VulcanGenerator {
       };
       this._assertPackageHasNonZeroModules(this.props.packageName);
       const secondQuestions = [
-        {
-          type: 'list',
-          name: 'moduleName',
-          message: 'Module name',
-          when: () => (!this.inputProps.moduleName),
-          choices: (answers) => {
-            return this._getModuleNames(this.props.packageName);
-          }
-        },
+        this._getModuleNameListQuestion(),
         {
           type: 'input',
           name: 'componentName',

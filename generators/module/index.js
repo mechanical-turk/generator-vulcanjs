@@ -3,11 +3,16 @@ const pascalCase = require('pascal-case');
 const path = require('path');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
+const common = require('../../libs/common');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
     this._assertIsVulcan();
     this.inputProps = {};
+  }
+
+  _registerArguments() {
+
   }
 
   _getSetFromArr(arr) {
@@ -21,19 +26,8 @@ module.exports = class extends VulcanGenerator {
   prompting() {
     if (!this._canPrompt()) { return; }
     const questions = [
-      {
-        type: 'list',
-        name: 'packageName',
-        message: 'Package name',
-        when: () => (!this.inputProps.packageName),
-        choices: this._getPackageNames(),
-      },
-      {
-        type: 'input',
-        name: 'moduleName',
-        message: 'Module name',
-        when: () => (!this.inputProps.moduleName),
-      },
+      this._getPackageNameListQuestion(),
+      this._getModuleNameInputQuestion(),
       {
         type: 'checkbox',
         name: 'moduleParts',

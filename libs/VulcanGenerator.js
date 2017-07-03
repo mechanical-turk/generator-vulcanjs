@@ -20,7 +20,30 @@ module.exports = class VulcanGenerator extends Generator {
         Redux.applyMiddleware(logger())
       );
     }
+    this._registerCommonArguments();
+    this._registerArguments();
     common.beautify.bind(this)();
+  }
+
+  _registerCommonArguments () {
+    this.option(
+      'packagename',
+      {
+        type: String,
+        required: false,
+        alias: 'p',
+        desc: common.descriptions.packageName,
+      },
+    );
+    this.option(
+      'modulename',
+      {
+        type: String,
+        required: false,
+        alias: 'm',
+        desc: common.descriptions.moduleName,
+      },
+    );
   }
 
   /*
@@ -179,7 +202,7 @@ module.exports = class VulcanGenerator extends Generator {
     const packages = store.getState().packages;
     if (Object.keys(packages).length < 1) {
       errors.isZeroPackages = {
-        message: `The command you just ran requires at least 1 package. \nTo create a package, run ${chalk.green('vulcanjs:package')}`,
+        message: `The command you just ran requires at least 1 custom package to be present in your app. \nTo create a package, run ${chalk.green('vulcanjs:package')}`,
       };
     }
   }
@@ -188,7 +211,7 @@ module.exports = class VulcanGenerator extends Generator {
     this._assertIsPackageExists(packageName);
     if (!this._packageHasNonZeroModules(packageName)) {
       errors.isZeroModules = {
-        message: `The command you just ran requires at least 1 module in the package: '${packageName}'. \nTo create a module in ${packageName}, run ${chalk.green(`vulcanjs:module --p ${packageName}`)}`
+        message: `The command you just ran requires at least 1 module to be present in the package: '${packageName}'. \nTo create a module in ${packageName}, run ${chalk.green(`vulcanjs:module --p ${packageName}`)}`
       };
     }
   }
@@ -211,5 +234,57 @@ module.exports = class VulcanGenerator extends Generator {
 
   _end() {
     this._logAllErrors();
+  }
+
+  /*
+    Common Questions
+  */
+
+  _getPackageNameInputQuestion () {
+    return {
+      type: 'input',
+      name: 'packageName',
+      message: common.messages.packageName,
+      when: () => (!this.inputProps.packageName),
+      default: this.options.packagename,
+    }
+  }
+
+  _getPackageNameListQuestion () {
+    return {
+      type: 'list',
+      name: 'packageName',
+      message: common.messages.packageName,
+      when: () => (!this.inputProps.packageName),
+      choices: this._getPackageNames(),
+      default: common.getDefaultChoiceIndex(
+        this._getPackageNames(),
+        this.options.packagename
+      ),
+    };
+  }
+
+  _getModuleNameInputQuestion () {
+    return {
+      type: 'input',
+      name: 'moduleName',
+      message: common.messages.moduleName,
+      when: () => (!this.inputProps.moduleName),
+      default: this.options.moduleName,
+    };
+  }
+
+  _getModuleNameListQuestion () {
+    return {
+      type: 'list',
+      name: 'moduleName',
+      message: common.messages.moduleName,
+      when: () => (!this.inputProps.packageName),
+      choices: this._getModuleNames(this.props.packageName),
+      default: common.getDefaultChoiceIndex(
+        this._getModuleNames(this.props.packageName),
+        this.options.moduleName
+      ),
+    };
   }
 }

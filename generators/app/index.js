@@ -4,8 +4,39 @@ const common = require('../../libs/common');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
+  _registerArguments() {
+    this.option(
+      'appname',
+      {
+        type: String,
+        required: false,
+        alias: 'n',
+        desc: common.descriptions.appName,
+      },
+    );
+    this.option(
+      'reactextension',
+      {
+        type: String,
+        required: false,
+        alias: 'rx',
+        desc: common.descriptions.reactExtension,
+      },
+    );
+    this.option(
+      'packagemanager',
+      {
+        type: String,
+        required: false,
+        alias: 'pm',
+        desc: common.descriptions.packageManager,
+      },
+    );
+  }
+
   initializing() {
     this._assertIsNotVulcan();
+    this.inputProps = {};
   }
 
   prompting() {
@@ -14,39 +45,37 @@ module.exports = class extends VulcanGenerator {
     //   appName: 'kerem',
     //   reactExtension: 'jsx',
     // }
-    this.inputProps = {};
-    const questions = [];
-    if (!this.inputProps.appName) {
-      questions.push({
+    const questions = [
+      {
         type: 'input',
         name: 'appName',
-        message: 'App name',
-      });
-    }
-
-    if (!this.inputProps.reactExtension) {
-      questions.push({
+        message: common.messages.appName,
+        when: () => (!this.inputProps.appName),
+        default: this.options.appname,
+      },
+      {
         type: 'list',
         name: 'reactExtension',
-        message: 'Default react component extension',
-        choices: [
-          'jsx',
-          'js',
-        ],
-      });
-    }
-
-    if (!this.inputProps.packageManager) {
-      questions.push({
+        message: common.messages.reactExtension,
+        choices: common.reactExtensions,
+        when: () => (!this.inputProps.reactExtension),
+        default: common.getDefaultChoiceIndex(
+          common.reactExtensions,
+          this.options.reactextension
+        ),
+      },
+      {
         type: 'list',
         name: 'packageManager',
-        message: 'Preferred package manager',
-        choices: [
-          'yarn',
-          'npm',
-        ],
-      });
-    }
+        message: common.messages.packageManager,
+        choices: common.packageManagers,
+        when: () => (!this.inputProps.packageManager),
+        default: common.getDefaultChoiceIndex(
+          common.packageManagers,
+          this.options.packagemanager
+        ),
+      }
+    ];
 
     return this.prompt(questions).then((answers) => {
       const appName = this.inputProps.appName || answers.appName;

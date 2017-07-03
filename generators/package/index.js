@@ -1,34 +1,27 @@
 const Generator = require('yeoman-generator');
 const path = require('path');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
+const common = require('../../libs/common');
 
 module.exports = class extends VulcanGenerator {
 
-  constructor(args, options) {
-    super(args, options);
-    this.option('packageName', { type: String });
-    this.inputProps = {
-      packageName: this.options.packageName,
-    };
+  _registerArguments() {
+
   }
 
   initializing() {
     this._assertIsVulcan();
+    this.inputProps = {};
   }
 
   prompting() {
     if (!this._canPrompt()) { return; }
     const questions = [
-      {
-        type: 'input',
-        name: 'packageName',
-        message: 'Package name',
-        when: () => (!this.inputProps.packageName),
-      },
+      this._getPackageNameInputQuestion(),
       {
         type: 'checkbox',
         name: 'vulcanDependencies',
-        message: 'Vulcan dependencies',
+        message: common.messages.vulcanDependencies,
         choices: [
           { name: 'vulcan:core', checked: true },
           'vulcan:posts',
