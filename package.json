@@ -6,6 +6,11 @@
     "generators"
   ],
   "keywords": [
+    "vulcan",
+    "generator",
+    "scaffolding",
+    "scaffolder",
+    "scaffold",
     "yeoman-generator"
   ],
   "main": "index.js",
