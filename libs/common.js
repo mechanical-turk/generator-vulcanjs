@@ -7,7 +7,16 @@ module.exports = {
       beautify({indent_size: 2 })
     );
   },
-  filterPackageName: function(packageName) {
+
+  filterPackageName: (packageName) => {
     return dashify(packageName);
-  }
+  },
+
+  alphabeticalSort: (a, b) => {
+    const aLower = a.toLowerCase();
+    const bLower = b.toLowerCase();
+    if (aLower < bLower) return -1;
+    if (aLower > bLower) return 1;
+    return 0;
+  },
 };

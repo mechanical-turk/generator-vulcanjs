@@ -54,6 +54,35 @@ module.exports = class VulcanGenerator extends Generator {
     !!store.getState().packages[packageName].modules[moduleName];
   }
 
+  _packageHasNonZeroModules (packageName) {
+    if (!this._isPackageExists(packageName)) return false;
+    const thePackage = this._getPackage(packageName);
+    const moduleNames = Object.keys(thePackage.modules);
+    return moduleNames.length > 0;
+  }
+
+  _getReactExtension () {
+    return store.getState().reactExtension;
+  }
+
+  _getPackageNames () {
+    const packages = store.getState().packages;
+    const packageNames = Object.keys(packages);
+    return packageNames.sort(common.alphabeticalSort);
+  }
+
+  _getModuleNames (packageName) {
+    const thePackage = this._getPackage(packageName);
+    const modules = this._isPackageExists(packageName) ?
+      thePackage.modules :
+      {};
+    const moduleNames = Object.keys(modules);
+    return moduleNames.sort(common.alphabeticalSort);
+  }
+
+  _getPackage (packageName) {
+    return store.getState().packages[packageName];
+  }
 
   /*
     Helpers that determine whether a task can be performed
@@ -125,20 +154,44 @@ module.exports = class VulcanGenerator extends Generator {
   _assertNotPackageExists (packageName) {
     if (this._isPackageExists(packageName)) {
       errors.isPackageExists = {
-        message: `A package with the name: '${packageName}' already exists. \nIf you'd like to overwrite this package, you should run ${chalk.green(`vulcanjs:remove package --p ${packageName}`)} first.`,
+        message: `A package with the name: '${packageName}' already exists. \nIf you'd like to overwrite this package, you should first run ${chalk.green(`vulcanjs:remove package --p ${packageName}`)}.`,
       };
+    }
+  }
+
+  _assertModuleIsExists (packageName, moduleName) {
+    if (!this._isModuleExists(packageName, moduleName)) {
+      errors.notModuleExists = {
+        message: `A module with the name: '${moduleName}' under the package '${packageName}' does not exists. \nIf you'd like to work on this module, you should first run ${chalk.green(`vulcanjs:module --p ${packageName} --m ${moduleName}`)}.`,
+      }
     }
   }
 
   _assertModuleNotExists (packageName, moduleName) {
     if (this._isModuleExists(packageName, moduleName)) {
       errors.isModuleExists = {
-        message: `A module with the name: '${moduleName}' under the package '${packageName}' already exists. \nIf you'd like to overwrite this module, you should run ${chalk.green(`vulcanjs:remove module --p ${packageName} --m ${moduleName}`)} first.`,
+        message: `A module with the name: '${moduleName}' under the package '${packageName}' already exists. \nIf you'd like to overwrite this module, you should first run ${chalk.green(`vulcanjs:remove module --p ${packageName} --m ${moduleName}`)}.`,
       };
     }
   }
 
+  _assertHasNonZeroPackages () {
+    const packages = store.getState().packages;
+    if (Object.keys(packages).length < 1) {
+      errors.isZeroPackages = {
+        message: `The command you just ran requires at least 1 package. \nTo create a package, run ${chalk.green('vulcanjs:package')}`,
+      };
+    }
+  }
 
+  _assertPackageHasNonZeroModules (packageName) {
+    this._assertIsPackageExists(packageName);
+    if (!this._packageHasNonZeroModules(packageName)) {
+      errors.isZeroModules = {
+        message: `The command you just ran requires at least 1 module in the package: '${packageName}'. \nTo create a module in ${packageName}, run ${chalk.green(`vulcanjs:module --p ${packageName}`)}`
+      };
+    }
+  }
 
   /*
     Common string filters

@@ -34,7 +34,6 @@ const packageReducer = (state = { modules: {} }, action) => {
       );
     }
     default: {
-      console.log('DEFAULT!');
       return state;
     };
   }

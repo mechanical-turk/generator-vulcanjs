@@ -7,9 +7,6 @@ const VulcanGenerator = require('../../libs/VulcanGenerator');
 module.exports = class extends VulcanGenerator {
   initializing() {
     this._assertIsVulcan();
-    this.configProps = {
-      packageName: this.config.get('packageName'),
-    };
     this.inputProps = {};
   }
 
@@ -25,11 +22,11 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return; }
     const questions = [
       {
-        type: 'input',
+        type: 'list',
         name: 'packageName',
         message: 'Package name',
-        default: this.configProps.packageName,
         when: () => (!this.inputProps.packageName),
+        choices: this._getPackageNames(),
       },
       {
         type: 'input',
