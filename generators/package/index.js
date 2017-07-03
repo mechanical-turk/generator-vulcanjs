@@ -55,6 +55,7 @@ module.exports = class extends VulcanGenerator {
           answers.vulcanDependencies
         ),
       };
+      this._assertPackageNotExists(this.props.packageName);
     });
   }
 

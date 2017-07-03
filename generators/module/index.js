@@ -101,6 +101,7 @@ module.exports = class extends VulcanGenerator {
         this.props.hasSingleResolver = defaultResolvers['single'];
         this.props.hasTotalResolver = defaultResolvers['total'];
       }
+      this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
       if (this._isPackageExists(this.props.packageName)) {
         return Promise.reject('packageExists');
       }
@@ -137,7 +138,7 @@ module.exports = class extends VulcanGenerator {
       type: 'ADD_MODULE',
       packageName: this.props.packageName,
       moduleName: this.props.moduleName,
-    })
+    });
     this._commitStore();
   }
 

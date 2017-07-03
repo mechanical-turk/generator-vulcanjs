@@ -116,8 +116,8 @@ module.exports = class VulcanGenerator extends Generator {
     const errorsArr = errorKeys.map((errorKey) => errors[errorKey]);
     errorsArr.forEach((error, index) => {
       if (error.isLogged) { return; }
-      const errorNo = chalk.white(`Error (${index}):`);
-      const message = `${errorNo} \n\n` + chalk.red(error.message);
+      const errorNo = `Error (${index}):`;
+      const message = `${errorNo} \n\n` + error.message;
       this.env.error(message);
       error.isLogged = true;
     });
@@ -134,7 +134,28 @@ module.exports = class VulcanGenerator extends Generator {
   _assertIsNotVulcan () {
     if (store.getState().isVulcan) {
       errors.isVulcan = {
-        message: 'You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.'
+        message: `You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.`
+      };
+    }
+  }
+
+  _assertPackageNotExists (packageName) {
+    const filteredPackageName = this._filterPackageName(packageName);
+    if (!!store.getState().packages[filteredPackageName]) {
+      errors.isPackageExists = {
+        message: `A package with the name: '${filteredPackageName}' already exists. \nIf you'd like to overwrite this package, you should run ${chalk.green(`vulcanjs:remove package --p ${filteredPackageName}`)} first.`,
+      };
+    }
+  }
+
+  _assertModuleNotExists (packageName, moduleName) {
+    const filteredPackageName = this._filterPackageName(packageName);
+    const filteredModuleName = this._filterModuleName(moduleName);
+    const thePackage = store.getState().packages[packageName];
+    if (!thePackage) return true;
+    if (!!thePackage.modules[filteredModuleName]) {
+      errors.isModuleExists = {
+        message: `A module with the name: '${filteredModuleName}' under the package '${filteredPackageName}' already exists. \nIf you'd like to overwrite this module, you should run ${chalk.green(`vulcanjs:remove module --p ${filteredPackageName} --m ${filteredModuleName}`)} first.`,
       };
     }
   }

@@ -90,7 +90,7 @@ const packageManager = (state = 'yarn', action) => {
   }
 }
 
-const reactExtension = (state = 'js', action) => {
+const reactExtension = (state = 'jsx', action) => {
   switch (action.type) {
     case 'SET_REACT_EXTENSION': return action.reactExtension;
     default: return state;
