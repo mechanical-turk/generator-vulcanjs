@@ -18,6 +18,7 @@
     "dashify": "^0.2.2",
     "gulp-beautify": "^2.0.1",
     "pascal-case": "^2.0.1",
+    "redux": "^3.7.1",
     "yeoman-generator": "^1.1.1",
     "yosay": "^2.0.0"
   }

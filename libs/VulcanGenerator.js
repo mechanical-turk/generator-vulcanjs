@@ -2,6 +2,10 @@ const Generator = require('yeoman-generator');
 const common = require('./common.js');
 const chalk = require('chalk');
 const dashify = require('dashify');
+const Redux = require('redux');
+const reducers = require('./reducers');
+const store = Redux.createStore(reducers);
+console.log(store.getState());
 
 module.exports = class VulcanGenerator extends Generator {
   constructor(args, options) {
