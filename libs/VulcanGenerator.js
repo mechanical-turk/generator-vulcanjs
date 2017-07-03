@@ -45,39 +45,14 @@ module.exports = class VulcanGenerator extends Generator {
 
   _isPackageExists (packageName) {
     const filteredPackageName = this._filterPackageName(packageName);
-
     return !!store.getState().packages[filteredPackageName];
   }
 
   _isModuleExists (packageName, moduleName) {
     const filteredModuleName = this._filterModuleName(moduleName);
-    return (this._isPackageExists()) &&
+    return (this._isPackageExists(packageName)) &&
     !!store.getState().packages[packageName].modules[moduleName];
   }
-
-  // _addPackage (packageName) {
-  //   const filteredPackageName = this._filterPackageName(packageName);
-  //   return store.dispatch({
-  //     type: 'ADD_PACKAGE',
-  //     packageName: filteredPackageName,
-  //   });
-  // }
-  //
-  // _addModule (packageName, moduleName) {
-  //   const filteredPackageName = this._filterPackageName(packageName);
-  //   const filteredModuleName = this._filterModuleName(moduleName);
-  //   return store.dispatch({
-  //     type: 'ADD_MODULE',
-  //     packageName: filteredPackageName,
-  //     moduleName: filteredModuleName,
-  //   });
-  // }
-  //
-  // _setReactExtension (extension) {
-  //   return store.dispatch({
-  //     type: ''
-  //   })
-  // }
 
 
   /*
@@ -139,23 +114,26 @@ module.exports = class VulcanGenerator extends Generator {
     }
   }
 
-  _assertPackageNotExists (packageName) {
-    const filteredPackageName = this._filterPackageName(packageName);
-    if (!!store.getState().packages[filteredPackageName]) {
+  _assertIsPackageExists (packageName) {
+    if (!this._isPackageExists(packageName)) {
+      errors.notPackageExists = {
+        message: `The package ${packageName} does not exist. \nIf you'd like to work on this package, you should create it first by running: ${chalk.green(`vulcanjs:package ${packageName}`)}`,
+      };
+    }
+  }
+
+  _assertNotPackageExists (packageName) {
+    if (this._isPackageExists(packageName)) {
       errors.isPackageExists = {
-        message: `A package with the name: '${filteredPackageName}' already exists. \nIf you'd like to overwrite this package, you should run ${chalk.green(`vulcanjs:remove package --p ${filteredPackageName}`)} first.`,
+        message: `A package with the name: '${packageName}' already exists. \nIf you'd like to overwrite this package, you should run ${chalk.green(`vulcanjs:remove package --p ${packageName}`)} first.`,
       };
     }
   }
 
   _assertModuleNotExists (packageName, moduleName) {
-    const filteredPackageName = this._filterPackageName(packageName);
-    const filteredModuleName = this._filterModuleName(moduleName);
-    const thePackage = store.getState().packages[packageName];
-    if (!thePackage) return true;
-    if (!!thePackage.modules[filteredModuleName]) {
+    if (this._isModuleExists(packageName, moduleName)) {
       errors.isModuleExists = {
-        message: `A module with the name: '${filteredModuleName}' under the package '${filteredPackageName}' already exists. \nIf you'd like to overwrite this module, you should run ${chalk.green(`vulcanjs:remove module --p ${filteredPackageName} --m ${filteredModuleName}`)} first.`,
+        message: `A module with the name: '${moduleName}' under the package '${packageName}' already exists. \nIf you'd like to overwrite this module, you should run ${chalk.green(`vulcanjs:remove module --p ${packageName} --m ${moduleName}`)} first.`,
       };
     }
   }

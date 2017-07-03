@@ -101,25 +101,9 @@ module.exports = class extends VulcanGenerator {
         this.props.hasSingleResolver = defaultResolvers['single'];
         this.props.hasTotalResolver = defaultResolvers['total'];
       }
+      this._assertIsPackageExists(this.props.packageName);
       this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
-      if (this._isPackageExists(this.props.packageName)) {
-        return Promise.reject('packageExists');
-      }
-      return this.prompt([
-        {
-          name: 'isCreatePackage',
-          message: `The package: '${this.props.packageName}' does not exist. Would you like to create it?`,
-          type: 'confirm',
-        }
-      ]);
-    })
-    .then((answers) => {
-      if (!answers.isCreatePackage) { return; }
-      this.composeWith(
-        require.resolve('../package'),
-        this.props
-      );
-    }, () => {});
+    });
   }
 
   _getModulePath() {
