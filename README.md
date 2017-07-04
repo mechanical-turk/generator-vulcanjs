@@ -3,7 +3,7 @@
 ## Installation
 
 - Install yo: `npm install -g yo`
-- Install generator-vulcanjs: `npm install generator-vulcanjs`
+- Install generator-vulcanjs: `npm install -g generator-vulcanjs`
 
 ## Usage
 
@@ -15,3 +15,4 @@
 ## Issues
 
 - React components don't get generated properly.
+- `vulcanjs:remove` is not implemented yet.

@@ -26,6 +26,7 @@ const descriptions = {
   packageName: 'The name of the package',
   moduleName: 'The name of your module',
   vulcanDependencies: 'The vulcan packages that your application depends on',
+  isPackageAutoAdd: 'Set to true if you want your package to be added to .meteor/packages',
 };
 
 const messages = {
@@ -35,6 +36,7 @@ const messages = {
   packageName: 'Package name',
   moduleName: 'Module name',
   vulcanDependencies: 'Vulcan dependencies',
+  isPackageAutoAdd: 'Add to .meteor/packages'
 };
 
 const reactExtensions = ['jsx', 'js'];

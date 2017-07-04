@@ -2,6 +2,7 @@ const Generator = require('yeoman-generator');
 const path = require('path');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 const common = require('../../libs/common');
+const chalk = require('chalk');
 
 module.exports = class extends VulcanGenerator {
 
@@ -37,7 +38,8 @@ module.exports = class extends VulcanGenerator {
           'vulcan:subscribe',
         ],
         when: () => (!this.inputProps.vulcanDependencies),
-      }
+      },
+      // this._getIsPackageAutoAddQuestion(),
     ];
 
     return this.prompt(questions).then((answers) => {
@@ -47,6 +49,7 @@ module.exports = class extends VulcanGenerator {
           this.inputProps.vulcanDependencies ||
           answers.vulcanDependencies
         ),
+        isPackageAutoAdd: this.inputProps.isPackageAutoAdd || answers.isPackageAutoAdd,
       };
       this._assertNotPackageExists(this.props.packageName);
     });
@@ -63,6 +66,10 @@ module.exports = class extends VulcanGenerator {
       packageName: this.props.packageName,
     });
     this._commitStore();
+  }
+
+  installing() {
+    if (!this._canInstall()) { return; }
   }
 
   writing() {
@@ -125,9 +132,17 @@ module.exports = class extends VulcanGenerator {
       ),
       this.props
     );
+    // if (this.props.isPackageAutoAdd) {
+    //   console.log(this.props.packageName);
+    //   this.spawnCommandSync('meteor', [
+    //     'add',
+    //     this.props.packageName,
+    //   ]);
+    // }
   }
 
   end() {
+    this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)} to activate your package.`);
     this._end();
   }
 };

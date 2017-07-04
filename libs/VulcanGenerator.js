@@ -14,11 +14,19 @@ module.exports = class VulcanGenerator extends Generator {
     super(args, options);
     if (!store) {
       const allConfig = this.config.getAll();
-      store = Redux.createStore(
-        reducers,
-        allConfig,
-        Redux.applyMiddleware(logger())
-      );
+      const middlewares = [];
+      if (process.env.NODE_ENV === 'development') {
+        store = Redux.createStore(
+          reducers,
+          allConfig,
+          Redux.applyMiddleware(logger())
+        );
+      } else {
+        store = Redux.createStore(
+          reducers,
+          allConfig,
+        );
+      }
     }
     this._registerCommonArguments();
     this._registerArguments();
@@ -285,6 +293,15 @@ module.exports = class VulcanGenerator extends Generator {
         this._getModuleNames(this.props.packageName),
         this.options.moduleName
       ),
+    };
+  }
+
+  _getIsPackageAutoAddQuestion () {
+    return {
+      type: 'confirm',
+      name: 'isPackageAutoAdd',
+      message: common.messages.isPackageAutoAdd,
+      when: () => (!this.inputProps.packageName),
     };
   }
 }
