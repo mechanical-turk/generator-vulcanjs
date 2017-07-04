@@ -27,22 +27,22 @@ module.exports = (grunt) => {
         }],
       },
     },
-    // watch: {
-    //   src: {
-    //     files: [{
-    //       expand: true,
-    //       cwd: './src/',
-    //       src: ['**/templates/**'],
-    //       dest: './',
-    //     }],
-    //     tasks: ['babel', 'copy'],
-    //   },
-    // },
+    watch: {
+      src: {
+        files: [{
+          expand: true,
+          cwd: './src/',
+          src: ['**/*.js'],
+          dest: './',
+        }],
+        tasks: ['babel', 'copy'],
+      },
+    },
   });
 
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  // grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask(
     'default',

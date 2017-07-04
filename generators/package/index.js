@@ -45,27 +45,31 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writePackageJs() {
-    this.fs.copyTpl(this.templatePath('package.js'), path.join(this._getPackagePath(), 'package.js'), this.props);
+    this.fs.copyTpl(this.templatePath('package.js'), this._getPackagePath('package.js'), this.props);
   }
 
   _writeClientMain() {
-    this.fs.copyTpl(this.templatePath('client.js'), path.join(this._getPackagePath(), 'lib', 'client', 'main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('client.js'), this._getClientPath('main.js'), this.props);
   }
 
   _writeServerMain() {
-    this.fs.copyTpl(this.templatePath('server.js'), path.join(this._getPackagePath(), 'lib', 'server', 'main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('server.js'), this._getServerPath('main.js'), this.props);
   }
 
   _writeServerSeed() {
-    this.fs.copyTpl(this.templatePath('seed.js'), path.join(this._getPackagePath(), 'lib', 'server', 'seed.js'), this.props);
+    this.fs.copyTpl(this.templatePath('seed.js'), this._getServerPath('seed.js'), this.props);
   }
 
   _writeModulesIndex() {
-    this.fs.copyTpl(this.templatePath('module.js'), this._getModulesIndexPath(), this.props);
+    this.fs.copyTpl(this.templatePath('module.js'), this._getModulesPath('index.js'), this.props);
   }
 
   _writeRoutes() {
-    this.fs.copyTpl(this.templatePath('routes.js'), path.join(this._getPackagePath(), 'lib', 'modules', 'routes.js'), this.props);
+    this.fs.copyTpl(this.templatePath('routes.js'), this._getModulesPath('routes.js'), this.props);
+  }
+
+  _writeStoriesJs() {
+    this.fs.copyTpl(this.templatePath('stories.js'), this._getComponentsPath('stories.js'), this.props);
   }
 
   writing() {
@@ -78,13 +82,7 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    // if (this.props.isPackageAutoAdd) {
-    //   console.log(this.props.packageName);
-    //   this.spawnCommandSync('meteor', [
-    //     'add',
-    //     this.props.packageName,
-    //   ]);
-    // }
+    // this._writeStoriesJs();
   }
 
   end() {

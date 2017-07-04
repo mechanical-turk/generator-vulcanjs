@@ -61,11 +61,7 @@ module.exports = class extends VulcanGenerator {
           isRegister: this.inputProps.isRegister || answers.isRegister,
         }
       );
-      this.props.componentPath = this.destinationPath(
-        'packages',
-        this.props.packageName,
-        'lib',
-        'components',
+      this.props.componentPath = this._getComponentsPath(
         this.props.moduleName,
         `${this.props.componentName}.${this._getReactExtension()}`
       );
