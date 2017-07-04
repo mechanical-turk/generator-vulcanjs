@@ -39,7 +39,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   prompting () {
-    if (!this._canPrompt()) { return; }
+    if (!this._canPrompt()) { return false; }
     const questions = [
       {
         type: 'input',
@@ -75,11 +75,11 @@ module.exports = class extends VulcanGenerator {
     return this.prompt(questions).then((answers) => {
       const appName = this.inputProps.appName || answers.appName;
       this.props = {
+        appName,
         reactExtension: (
           this.inputProps.reactExtension ||
           answers.reactExtension
         ),
-        appName: appName,
         appSubPath: this._filterPackageName(appName),
         packageManager: this.inputProps.packageManager || answers.packageManager,
       };
@@ -139,7 +139,8 @@ module.exports = class extends VulcanGenerator {
   }
 
   end () {
-    if (!this._hasNoErrors()) { return this._end(); }
+    this._end();
+    if (!this._hasNoErrors()) { return; }
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));
     this.log(chalk.green('To run your new app: \n'));

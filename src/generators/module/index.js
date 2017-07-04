@@ -3,6 +3,14 @@ const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 
+function getSetFromArr (arr) {
+  const set = {};
+  arr.forEach((elem) => {
+    set[elem] = true;
+  });
+  return set;
+}
+
 module.exports = class extends VulcanGenerator {
   initializing () {
     this._assertIsVulcan();
@@ -10,16 +18,8 @@ module.exports = class extends VulcanGenerator {
     this.inputProps = {};
   }
 
-  _getSetFromArr (arr) {
-    const set = {};
-    arr.forEach((elem) => {
-      set[elem] = true;
-    });
-    return set;
-  }
-
   prompting () {
-    if (!this._canPrompt()) { return; }
+    if (!this._canPrompt()) { return false; }
     const questions = [
       this._getPackageNameListQuestion(),
       this._getModuleNameInputQuestion(),
@@ -37,7 +37,7 @@ module.exports = class extends VulcanGenerator {
           { name: 'Schema', value: 'schema', checked: true },
         ],
         when: () => (!this.inputProps.moduleParts),
-        filter: this._getSetFromArr,
+        filter: getSetFromArr,
       },
       {
         type: 'checkbox',
@@ -52,19 +52,22 @@ module.exports = class extends VulcanGenerator {
           !this.inputProps.defaultResolvers &&
           answers.moduleParts.resolvers
         ),
-        filter: this._getSetFromArr,
+        filter: getSetFromArr,
       },
     ];
 
     return this.prompt(questions)
     .then((answers) => {
-      const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
+      const packageName = this._filterPackageName(
+        this.inputProps.packageName ||
+        answers.packageName
+      );
       const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
       const camelModuleName = camelCase(moduleName);
       const pascalModuleName = pascalCase(moduleName);
       this.props = {
-        packageName: packageName,
-        moduleName: moduleName,
+        packageName,
+        moduleName,
         collectionName: pascalModuleName,
         typeName: pascalModuleName,
         newMutationName: `${camelModuleName}New`,
@@ -79,8 +82,9 @@ module.exports = class extends VulcanGenerator {
         listResolverName: `${camelModuleName}List`,
         singleResolverName: `${camelModuleName}Single`,
         totalResolverName: `${camelModuleName}Total`,
-        moduleParts: this.inputProps.packageName || answers.moduleParts,
+        moduleParts: this.inputProps.moduleParts || answers.moduleParts,
       };
+
       if (this.props.moduleParts.resolvers) {
         const defaultResolvers = this.inputProps.defaultResolvers || answers.defaultResolvers;
         this.props.hasListResolver = defaultResolvers.list;
@@ -103,6 +107,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeCollection () {
+    // console.log(path.join(
+    //   this._getModulePath(),
+    //   'collection.js'
+    // ));
+    // console.log(this._getModulePath('collection.js'));
     this.fs.copyTpl(
       this.templatePath('collection.js'),
       path.join(
@@ -114,13 +123,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeResolvers () {
+    console.log(this.props);
     if (!this.props.moduleParts.resolvers) { return; }
     this.fs.copyTpl(
       this.templatePath('resolvers.js'),
-      path.join(
-        this._getModulePath(),
-        'resolvers.js'
-      ),
+      this._getModulePath('resolvers.js'),
       this.props
     );
   }
@@ -129,10 +136,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.fragments) { return; }
     this.fs.copyTpl(
       this.templatePath('fragments.js'),
-      path.join(
-        this._getModulePath(),
-        'fragments.js'
-      ),
+      this._getModulePath('fragments.js'),
       this.props
     );
   }
@@ -141,10 +145,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.mutations) { return; }
     this.fs.copyTpl(
       this.templatePath('mutations.js'),
-      path.join(
-        this._getModulePath(),
-        'mutations.js'
-      ),
+      this._getModulePath('mutations.js'),
       this.props
     );
   }
@@ -153,10 +154,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.parameters) { return; }
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
-      path.join(
-        this._getModulePath(),
-        'parameters.js'
-      ),
+      this._getModulePath('parameters.js'),
       this.props
     );
   }
@@ -165,10 +163,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.permissions) { return; }
     this.fs.copyTpl(
       this.templatePath('permissions.js'),
-      path.join(
-        this._getModulePath(),
-        'permissions.js'
-      ),
+      this._getModulePath('permissions.js'),
       this.props
     );
   }
@@ -177,10 +172,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.schema) { return; }
     this.fs.copyTpl(
       this.templatePath('schema.js'),
-      path.join(
-        this._getModulePath(),
-        'schema.js'
-      ),
+      this._getModulePath('schema.js'),
       this.props
     );
   }

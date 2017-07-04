@@ -9,7 +9,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   prompting () {
-    if (!this._canPrompt()) { return; }
+    if (!this._canPrompt()) { return false; }
     const firstQuestions = [
       this._getPackageNameListQuestion(),
     ];

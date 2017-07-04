@@ -249,32 +249,34 @@ module.exports = class VulcanGenerator extends Generator {
     Destination paths
   */
 
-  _getPackagePath () {
+  _getPackagePath (filepath = '') {
     return this.destinationPath(
       'packages',
-      this.props.packageName
+      this.props.packageName,
+      filepath
     );
   }
 
-  _getModulesIndexPath () {
+  _getModulesIndexPath (filepath = '') {
     return path.join(
       this._getPackagePath(),
       'lib',
       'modules',
-      'index.js'
+      'index.js',
+      filepath
     );
   }
 
-  _getModulePath () {
+  _getModulePath (filepath = '') {
     return this.destinationPath(
       'packages',
       this.props.packageName,
       'lib',
       'modules',
-      this.props.moduleName
+      this.props.moduleName,
+      filepath
     );
   }
-
 
   /*
     Common Questions

@@ -12,7 +12,7 @@ module.exports = class extends VulcanGenerator {
 
   prompting() {
     if (!this._canPrompt()) {
-      return;
+      return false;
     }
     const questions = [this._getPackageNameInputQuestion(), {
       type: 'checkbox',
@@ -88,8 +88,9 @@ module.exports = class extends VulcanGenerator {
   }
 
   end() {
+    this._end();
     if (!this._hasNoErrors()) {
-      return this._end();
+      return;
     }
     this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)}`);
   }

@@ -31,7 +31,7 @@ module.exports = class extends VulcanGenerator {
 
   prompting() {
     if (!this._canPrompt()) {
-      return;
+      return false;
     }
     const questions = [{
       type: 'input',
@@ -58,8 +58,8 @@ module.exports = class extends VulcanGenerator {
     return this.prompt(questions).then(answers => {
       const appName = this.inputProps.appName || answers.appName;
       this.props = {
-        reactExtension: this.inputProps.reactExtension || answers.reactExtension,
         appName: appName,
+        reactExtension: this.inputProps.reactExtension || answers.reactExtension,
         appSubPath: this._filterPackageName(appName),
         packageManager: this.inputProps.packageManager || answers.packageManager
       };
@@ -106,8 +106,9 @@ module.exports = class extends VulcanGenerator {
   }
 
   end() {
+    this._end();
     if (!this._hasNoErrors()) {
-      return this._end();
+      return;
     }
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));

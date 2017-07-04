@@ -11,7 +11,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   prompting () {
-    if (!this._canPrompt()) { return; }
+    if (!this._canPrompt()) { return false; }
     const questions = [
       this._getPackageNameInputQuestion(),
       {
@@ -148,7 +148,8 @@ module.exports = class extends VulcanGenerator {
   }
 
   end () {
-    if (!this._hasNoErrors()) { return this._end(); }
+    this._end();
+    if (!this._hasNoErrors()) { return; }
     this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)}`);
   }
 };
