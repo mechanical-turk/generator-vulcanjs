@@ -87,14 +87,14 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeCollection() {
-    this.fs.copyTpl(this.templatePath('collection.js'), path.join(this._getModulePath(), 'collection.js'), this.props);
+    this.fs.copyTpl(this.templatePath('collection.js'), this._getModulePath({ isAbsolute: true }, 'collection.js'), this.props);
   }
 
   _writeResolvers() {
     if (!this.props.moduleParts.resolvers) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('resolvers.js'), this._getModulePath('resolvers.js'), this.props);
+    this.fs.copyTpl(this.templatePath('resolvers.js'), this._getModulePath({ isAbsolute: true }, 'resolvers.js'), this.props);
   }
 
   _writeFragments() {
