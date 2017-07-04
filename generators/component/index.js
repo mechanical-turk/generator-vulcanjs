@@ -1,6 +1,6 @@
 const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
-const VulcanGenerator = require('../../utils/VulcanGenerator');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {

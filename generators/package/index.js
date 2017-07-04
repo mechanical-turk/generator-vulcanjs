@@ -1,7 +1,7 @@
 const Generator = require('yeoman-generator');
 const path = require('path');
-const VulcanGenerator = require('../../utils/VulcanGenerator');
-const common = require('../../utils/common');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
+const common = require('../../lib/common');
 const chalk = require('chalk');
 const path = require('path');
 
