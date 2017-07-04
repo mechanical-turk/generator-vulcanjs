@@ -1,0 +1,23 @@
+module.exports = (grunt) => {
+  grunt.initConfig({
+    babel: {
+      options: {
+        plugins: [
+          'transform-object-rest-spread',
+          'transform-es2015-modules-commonjs',
+        ],
+      },
+      dist: {
+        files: [{
+          expand: true,
+          cwd: 'src/',
+          src: ['**/*.js', '!**/templates/**'],
+          dest: 'build/',
+          ext: '.js',
+        }],
+      },
+    },
+  });
+  grunt.loadNpmTasks('grunt-babel');
+  grunt.registerTask('default', ['babel']);
+};
