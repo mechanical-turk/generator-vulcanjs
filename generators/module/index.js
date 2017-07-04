@@ -1,9 +1,9 @@
 const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
-const path = require('path');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 const common = require('../../libs/common');
+const path = require('path');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -97,16 +97,6 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  _getModulePath() {
-    return path.join(
-      'packages',
-      this.props.packageName,
-      'lib',
-      'modules',
-      this.props.moduleName
-    );
-  }
-
   configuring() {
     if (!this._canConfigure()) { return; }
     this._dispatch({
@@ -120,7 +110,7 @@ module.exports = class extends VulcanGenerator {
   _writeCollection() {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'collection.js'
       ),
@@ -132,7 +122,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.resolvers) { return; }
     this.fs.copyTpl(
       this.templatePath('resolvers.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'resolvers.js'
       ),
@@ -144,7 +134,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.fragments) { return; }
     this.fs.copyTpl(
       this.templatePath('fragments.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'fragments.js'
       ),
@@ -156,7 +146,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.mutations) { return; }
     this.fs.copyTpl(
       this.templatePath('mutations.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'mutations.js'
       ),
@@ -168,7 +158,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.parameters) { return; }
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'parameters.js'
       ),
@@ -180,7 +170,7 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.permissions) { return; }
     this.fs.copyTpl(
       this.templatePath('permissions.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'permissions.js'
       ),
@@ -192,12 +182,19 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.schema) { return; }
     this.fs.copyTpl(
       this.templatePath('schema.js'),
-      this.destinationPath(
+      path.join(
         this._getModulePath(),
         'schema.js'
       ),
       this.props
     );
+  }
+
+  _updateModulesIndex() {
+    const modulePath = this._getModulesIndexPath();
+    // const file = this.fs.read(modulePath);
+    // const tree = program(file);
+    // console.log(tree);
   }
 
   writing() {
@@ -209,6 +206,7 @@ module.exports = class extends VulcanGenerator {
     this._writeParameters();
     this._writePermissions();
     this._writeSchema();
+    this._updateModulesIndex();
   }
 
   end() {

@@ -3,19 +3,20 @@ const path = require('path');
 const VulcanGenerator = require('../../libs/VulcanGenerator');
 const common = require('../../libs/common');
 const chalk = require('chalk');
+const path = require('path');
 
 module.exports = class extends VulcanGenerator {
 
-  _registerArguments() {
+  _registerArguments () {
 
   }
 
-  initializing() {
+  initializing () {
     this._assertIsVulcan();
     this.inputProps = {};
   }
 
-  prompting() {
+  prompting () {
     if (!this._canPrompt()) { return; }
     const questions = [
       this._getPackageNameInputQuestion(),
@@ -55,11 +56,7 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  _getPackagePath() {
-    return path.join('packages', this.props.packageName);
-  }
-
-  configuring() {
+  configuring () {
     if (!this._canConfigure()) { return; }
     this._dispatch({
       type: 'ADD_PACKAGE',
@@ -68,23 +65,25 @@ module.exports = class extends VulcanGenerator {
     this._commitStore();
   }
 
-  installing() {
+  installing () {
     if (!this._canInstall()) { return; }
   }
 
-  writing() {
-    if (!this._canWrite()) { return; }
+  _writePackageJs () {
     this.fs.copyTpl(
       this.templatePath('package.js'),
-      this.destinationPath(
+      path.join(
         this._getPackagePath(),
         'package.js'
       ),
       this.props
     );
+  }
+
+  _writeClientMain () {
     this.fs.copyTpl(
       this.templatePath('client.js'),
-      this.destinationPath(
+      path.join(
         this._getPackagePath(),
         'lib',
         'client',
@@ -92,9 +91,12 @@ module.exports = class extends VulcanGenerator {
       ),
       this.props
     );
+  }
+
+  _writeServerMain () {
     this.fs.copyTpl(
       this.templatePath('server.js'),
-      this.destinationPath(
+      path.join(
         this._getPackagePath(),
         'lib',
         'server',
@@ -102,29 +104,20 @@ module.exports = class extends VulcanGenerator {
       ),
       this.props
     );
-    this.fs.copyTpl(
-      this.templatePath('seed.js'),
-      this.destinationPath(
-        this._getPackagePath(),
-        'lib',
-        'server',
-        'seed.js'
-      ),
-      this.props
-    );
+  }
+
+  _writeModulesIndex () {
     this.fs.copyTpl(
       this.templatePath('module.js'),
-      this.destinationPath(
-        this._getPackagePath(),
-        'lib',
-        'modules',
-        'index.js'
-      ),
+      this._getModulesIndexPath(),
       this.props
     );
+  }
+
+  _writeRoutes () {
     this.fs.copyTpl(
       this.templatePath('routes.js'),
-      this.destinationPath(
+      path.join(
         this._getPackagePath(),
         'lib',
         'modules',
@@ -132,6 +125,15 @@ module.exports = class extends VulcanGenerator {
       ),
       this.props
     );
+  }
+
+  writing () {
+    if (!this._canWrite()) { return; }
+    this._writePackageJs();
+    this._writeClientMain();
+    this._writeServerMain();
+    this._writeModulesIndex();
+    this._writeRoutes();
     // if (this.props.isPackageAutoAdd) {
     //   console.log(this.props.packageName);
     //   this.spawnCommandSync('meteor', [
@@ -141,8 +143,8 @@ module.exports = class extends VulcanGenerator {
     // }
   }
 
-  end() {
+  end () {
+    if (!this._hasNoErrors()) { return this._end(); }
     this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)} to activate your package.`);
-    this._end();
   }
 };

@@ -16,3 +16,7 @@
 
 - React components don't get generated properly.
 - `vulcanjs:remove` is not implemented yet.
+
+## Extra
+
+- To see redux logs, run `NODE_ENV=development`

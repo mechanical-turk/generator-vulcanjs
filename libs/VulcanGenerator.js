@@ -8,6 +8,7 @@ const logger = require('redux-node-logger');
 let store;
 const errors = {};
 const camelCase = require('camelcase');
+const path = require('path');
 
 module.exports = class VulcanGenerator extends Generator {
   constructor(args, options) {
@@ -243,6 +244,38 @@ module.exports = class VulcanGenerator extends Generator {
   _end() {
     this._logAllErrors();
   }
+
+
+  /*
+    Destination paths
+  */
+
+  _getPackagePath () {
+    return this.destinationPath(
+      'packages',
+      this.props.packageName,
+    )
+  }
+
+  _getModulesIndexPath() {
+    return path.join(
+      this._getPackagePath(),
+      'lib',
+      'modules',
+      'index.js'
+    );
+  }
+
+  _getModulePath() {
+    return this.destinationPath(
+      'packages',
+      this.props.packageName,
+      'lib',
+      'modules',
+      this.props.moduleName
+    );
+  }
+
 
   /*
     Common Questions
