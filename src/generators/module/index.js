@@ -1,7 +1,7 @@
-import path from 'path';
-import pascalCase from 'pascal-case';
-import camelCase from 'camelcase';
-import VulcanGenerator from '../../lib/VulcanGenerator';
+const path = require('path');
+const pascalCase = require('pascal-case');
+const camelCase = require('camelcase');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -188,7 +188,7 @@ module.exports = class extends VulcanGenerator {
   _updateModulesIndex () {
     const modulePath = this._getModulesIndexPath();
     const file = this.fs.read(modulePath);
-    const newFile = `import './${this.props.moduleName}/collection.js'; ${file}`;
+    const newFile = `const './${this.props.moduleName}/collection.js'; ${file}`;
     this.fs.write(
       modulePath,
       newFile

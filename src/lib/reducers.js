@@ -1,4 +1,4 @@
-import Redux from 'redux';
+const Redux = require('redux');
 
 const moduleReducer = (state = {}, action) => {
   switch (action.type) {
@@ -96,4 +96,4 @@ const reducers = Redux.combineReducers({
   packages: packagesReducer,
 });
 
-export default reducers;
+module.exports = reducers;

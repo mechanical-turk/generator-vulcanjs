@@ -1,24 +1,9 @@
-'use strict';
+const path = require('path');
+const pascalCase = require('pascal-case');
+const camelCase = require('camelcase');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
 
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _pascalCase = require('pascal-case');
-
-var _pascalCase2 = _interopRequireDefault(_pascalCase);
-
-var _camelcase = require('camelcase');
-
-var _camelcase2 = _interopRequireDefault(_camelcase);
-
-var _VulcanGenerator = require('../../lib/VulcanGenerator');
-
-var _VulcanGenerator2 = _interopRequireDefault(_VulcanGenerator);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = class extends _VulcanGenerator2.default {
+module.exports = class extends VulcanGenerator {
   initializing() {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();
@@ -56,8 +41,8 @@ module.exports = class extends _VulcanGenerator2.default {
     return this.prompt(questions).then(answers => {
       const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
       const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
-      const camelModuleName = (0, _camelcase2.default)(moduleName);
-      const pascalModuleName = (0, _pascalCase2.default)(moduleName);
+      const camelModuleName = camelCase(moduleName);
+      const pascalModuleName = pascalCase(moduleName);
       this.props = {
         packageName: packageName,
         moduleName: moduleName,
@@ -101,55 +86,55 @@ module.exports = class extends _VulcanGenerator2.default {
   }
 
   _writeCollection() {
-    this.fs.copyTpl(this.templatePath('collection.js'), _path2.default.join(this._getModulePath(), 'collection.js'), this.props);
+    this.fs.copyTpl(this.templatePath('collection.js'), path.join(this._getModulePath(), 'collection.js'), this.props);
   }
 
   _writeResolvers() {
     if (!this.props.moduleParts.resolvers) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('resolvers.js'), _path2.default.join(this._getModulePath(), 'resolvers.js'), this.props);
+    this.fs.copyTpl(this.templatePath('resolvers.js'), path.join(this._getModulePath(), 'resolvers.js'), this.props);
   }
 
   _writeFragments() {
     if (!this.props.moduleParts.fragments) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('fragments.js'), _path2.default.join(this._getModulePath(), 'fragments.js'), this.props);
+    this.fs.copyTpl(this.templatePath('fragments.js'), path.join(this._getModulePath(), 'fragments.js'), this.props);
   }
 
   _writeMutations() {
     if (!this.props.moduleParts.mutations) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('mutations.js'), _path2.default.join(this._getModulePath(), 'mutations.js'), this.props);
+    this.fs.copyTpl(this.templatePath('mutations.js'), path.join(this._getModulePath(), 'mutations.js'), this.props);
   }
 
   _writeParameters() {
     if (!this.props.moduleParts.parameters) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('parameters.js'), _path2.default.join(this._getModulePath(), 'parameters.js'), this.props);
+    this.fs.copyTpl(this.templatePath('parameters.js'), path.join(this._getModulePath(), 'parameters.js'), this.props);
   }
 
   _writePermissions() {
     if (!this.props.moduleParts.permissions) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('permissions.js'), _path2.default.join(this._getModulePath(), 'permissions.js'), this.props);
+    this.fs.copyTpl(this.templatePath('permissions.js'), path.join(this._getModulePath(), 'permissions.js'), this.props);
   }
 
   _writeSchema() {
     if (!this.props.moduleParts.schema) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('schema.js'), _path2.default.join(this._getModulePath(), 'schema.js'), this.props);
+    this.fs.copyTpl(this.templatePath('schema.js'), path.join(this._getModulePath(), 'schema.js'), this.props);
   }
 
   _updateModulesIndex() {
     const modulePath = this._getModulesIndexPath();
     const file = this.fs.read(modulePath);
-    const newFile = `import './${this.props.moduleName}/collection.js'; ${file}`;
+    const newFile = `const './${this.props.moduleName}/collection.js'; ${file}`;
     this.fs.write(modulePath, newFile);
   }
 

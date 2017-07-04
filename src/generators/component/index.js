@@ -1,7 +1,7 @@
-import pascalCase from 'pascal-case';
-import VulcanGenerator from '../../lib/VulcanGenerator';
+const pascalCase = require('pascal-case');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
 
-export default class extends VulcanGenerator {
+module.exports = class extends VulcanGenerator {
   initializing () {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();

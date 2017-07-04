@@ -1,8 +1,8 @@
-import chalk from 'chalk';
-import common from '../../lib/common';
-import VulcanGenerator from '../../lib/VulcanGenerator';
+const chalk = require('chalk');
+const common = require('../../lib/common');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
 
-export default class extends VulcanGenerator {
+module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this.option(
       'appname',

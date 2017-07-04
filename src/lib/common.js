@@ -1,5 +1,5 @@
-import gulpBeautify from 'gulp-beautify';
-import dashify from 'dashify';
+const gulpBeautify = require('gulp-beautify');
+const dashify = require('dashify');
 
 const beautify = function() {
   this.registerTransformStream(
@@ -59,4 +59,4 @@ const exposed = {
   getDefaultChoiceIndex: getDefaultChoiceIndex,
 };
 
-export default exposed;
+module.exports = exposed;

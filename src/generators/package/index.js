@@ -1,9 +1,9 @@
-import chalk from 'chalk';
-import path from 'path';
-import VulcanGenerator from '../../lib/VulcanGenerator';
-import common from '../../lib/common';
+const chalk = require('chalk');
+const path = require('path');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
+const common = require('../../lib/common');
 
-export default class extends VulcanGenerator {
+module.exports = class extends VulcanGenerator {
 
   initializing () {
     this._assertIsVulcan();
