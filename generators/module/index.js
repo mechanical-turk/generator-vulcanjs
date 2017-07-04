@@ -1,22 +1,16 @@
-const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
-const common = require('../../lib/common');
 const path = require('path');
 
 module.exports = class extends VulcanGenerator {
-  initializing() {
+  initializing () {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();
     this.inputProps = {};
   }
 
-  _registerArguments() {
-
-  }
-
-  _getSetFromArr(arr) {
+  _getSetFromArr (arr) {
     const set = {};
     arr.forEach((elem) => {
       set[elem] = true;
@@ -24,7 +18,7 @@ module.exports = class extends VulcanGenerator {
     return set;
   }
 
-  prompting() {
+  prompting () {
     if (!this._canPrompt()) { return; }
     const questions = [
       this._getPackageNameListQuestion(),
@@ -34,13 +28,13 @@ module.exports = class extends VulcanGenerator {
         name: 'moduleParts',
         message: 'Create with',
         choices: [
-          { name: 'Collection', value: 'collection', checked:true, disabled: true },
-          { name: 'Fragments', value: 'fragments', checked:true },
-          { name: 'Mutations', value: 'mutations', checked:true },
-          { name: 'Parameters', value: 'parameters', checked:true },
-          { name: 'Permissions', value: 'permissions', checked:true },
-          { name: 'Resolvers', value: 'resolvers', checked:true },
-          { name: 'Schema', value: 'schema', checked:true },
+          { name: 'Collection', value: 'collection', checked: true, disabled: true },
+          { name: 'Fragments', value: 'fragments', checked: true },
+          { name: 'Mutations', value: 'mutations', checked: true },
+          { name: 'Parameters', value: 'parameters', checked: true },
+          { name: 'Permissions', value: 'permissions', checked: true },
+          { name: 'Resolvers', value: 'resolvers', checked: true },
+          { name: 'Schema', value: 'schema', checked: true },
         ],
         when: () => (!this.inputProps.moduleParts),
         filter: this._getSetFromArr,
@@ -89,16 +83,16 @@ module.exports = class extends VulcanGenerator {
       };
       if (this.props.moduleParts.resolvers) {
         const defaultResolvers = this.inputProps.defaultResolvers || answers.defaultResolvers;
-        this.props.hasListResolver = defaultResolvers['list'];
-        this.props.hasSingleResolver = defaultResolvers['single'];
-        this.props.hasTotalResolver = defaultResolvers['total'];
+        this.props.hasListResolver = defaultResolvers.list;
+        this.props.hasSingleResolver = defaultResolvers.single;
+        this.props.hasTotalResolver = defaultResolvers.total;
       }
       this._assertIsPackageExists(this.props.packageName);
       this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
     });
   }
 
-  configuring() {
+  configuring () {
     if (!this._canConfigure()) { return; }
     this._dispatch({
       type: 'ADD_MODULE',
@@ -108,7 +102,7 @@ module.exports = class extends VulcanGenerator {
     this._commitStore();
   }
 
-  _writeCollection() {
+  _writeCollection () {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
       path.join(
@@ -119,7 +113,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeResolvers() {
+  _writeResolvers () {
     if (!this.props.moduleParts.resolvers) { return; }
     this.fs.copyTpl(
       this.templatePath('resolvers.js'),
@@ -131,7 +125,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeFragments() {
+  _writeFragments () {
     if (!this.props.moduleParts.fragments) { return; }
     this.fs.copyTpl(
       this.templatePath('fragments.js'),
@@ -143,7 +137,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeMutations() {
+  _writeMutations () {
     if (!this.props.moduleParts.mutations) { return; }
     this.fs.copyTpl(
       this.templatePath('mutations.js'),
@@ -155,7 +149,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeParameters() {
+  _writeParameters () {
     if (!this.props.moduleParts.parameters) { return; }
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
@@ -167,7 +161,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writePermissions() {
+  _writePermissions () {
     if (!this.props.moduleParts.permissions) { return; }
     this.fs.copyTpl(
       this.templatePath('permissions.js'),
@@ -179,7 +173,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeSchema() {
+  _writeSchema () {
     if (!this.props.moduleParts.schema) { return; }
     this.fs.copyTpl(
       this.templatePath('schema.js'),
@@ -191,17 +185,17 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModulesIndex() {
+  _updateModulesIndex () {
     const modulePath = this._getModulesIndexPath();
     const file = this.fs.read(modulePath);
-    const newFile = `import './${this.props.moduleName}/collection.js';` + file;
+    const newFile = `import './${this.props.moduleName}/collection.js'; ${file}`;
     this.fs.write(
       modulePath,
-      newFile,
+      newFile
     );
   }
 
-  writing() {
+  writing () {
     if (!this._canWrite()) { return; }
     this._writeCollection();
     this._writeResolvers();
@@ -213,7 +207,7 @@ module.exports = class extends VulcanGenerator {
     this._updateModulesIndex();
   }
 
-  end() {
+  end () {
     this._end();
   }
 };

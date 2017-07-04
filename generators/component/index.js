@@ -1,18 +1,14 @@
-const Generator = require('yeoman-generator');
 const pascalCase = require('pascal-case');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
-  initializing() {
+  initializing () {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();
     this.inputProps = {};
   }
 
-  _registerArguments() {
-  }
-
-  prompting() {
+  prompting () {
     if (!this._canPrompt()) { return; }
     const firstQuestions = [
       this._getPackageNameListQuestion(),
@@ -47,7 +43,7 @@ module.exports = class extends VulcanGenerator {
           name: 'isRegister',
           message: 'Register component',
           when: () => (!this.inputProps.isRegister),
-        }
+        },
       ];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
@@ -63,7 +59,7 @@ module.exports = class extends VulcanGenerator {
           componentName: pascalCase(this.inputProps.componentName || answers.componentName),
           componentType: this.inputProps.componentType || answers.componentType,
           isRegister: this.inputProps.isRegister || answers.isRegister,
-        },
+        }
       );
       this.props.componentPath = this.destinationPath(
         'packages',
@@ -80,12 +76,12 @@ module.exports = class extends VulcanGenerator {
     }, () => {});
   }
 
-  configuring() {
+  configuring () {
     if (!this._canConfigure()) { return; }
     this._commitStore();
   }
 
-  writing() {
+  writing () {
     if (!this._canWrite()) { return; }
     this.fs.copyTpl(
       this.props.templatePath,
@@ -94,7 +90,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  end() {
+  end () {
     this._end();
   }
 };

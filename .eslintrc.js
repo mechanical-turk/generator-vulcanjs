@@ -3,8 +3,8 @@ module.exports = {
     "rules": {
       "space-before-function-paren": ["error", "always"],
       "comma-dangle": ["error", {
-        "arrays": "always",
-        "objects": "always",
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
         "imports": "ignore",
         "exports": "ignore",
         "functions": "never",
@@ -12,5 +12,6 @@ module.exports = {
       "no-underscore-dangle": ["error", {
         "allowAfterThis": true
       }],
-   }
+      "arrow-parens": ["error", "always"]
+   },
 };

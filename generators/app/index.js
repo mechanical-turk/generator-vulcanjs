@@ -3,7 +3,7 @@ const common = require('../../lib/common');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
-  _registerArguments() {
+  _registerArguments () {
     this.option(
       'appname',
       {
@@ -33,17 +33,13 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  initializing() {
+  initializing () {
     this._assertIsNotVulcan();
     this.inputProps = {};
   }
 
-  prompting() {
+  prompting () {
     if (!this._canPrompt()) { return; }
-    // this.inputProps = {
-    //   appName: 'kerem',
-    //   reactExtension: 'jsx',
-    // }
     const questions = [
       {
         type: 'input',
@@ -73,7 +69,7 @@ module.exports = class extends VulcanGenerator {
           common.packageManagers,
           this.options.packagemanager
         ),
-      }
+      },
     ];
 
     return this.prompt(questions).then((answers) => {
@@ -90,7 +86,7 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  configuring() {
+  configuring () {
     if (!this._canConfigure()) { return; }
     this.destinationRoot(
       this.destinationPath(this.props.appSubPath)
@@ -113,7 +109,7 @@ module.exports = class extends VulcanGenerator {
     this._commitStore();
   }
 
-  install() {
+  install () {
     if (!this._canInstall()) { return; }
     this.log(chalk.green('\nPulling the most up to date git repository... \n'));
     this.spawnCommandSync('git', [
@@ -142,7 +138,7 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  end() {
+  end () {
     if (!this._hasNoErrors()) { return this._end(); }
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));

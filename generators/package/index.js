@@ -6,10 +6,6 @@ const chalk = require('chalk');
 
 module.exports = class extends VulcanGenerator {
 
-  _registerArguments () {
-
-  }
-
   initializing () {
     this._assertIsVulcan();
     this.inputProps = {};
@@ -46,7 +42,6 @@ module.exports = class extends VulcanGenerator {
       const preProcessedDeps =
         this.inputProps.vulcanDependencies ||
         answers.vulcanDependencies;
-
       this.props = {
         packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
         vulcanDependencies: preProcessedDeps.map((dep) => (`'${dep}'`)),
@@ -63,10 +58,6 @@ module.exports = class extends VulcanGenerator {
       packageName: this.props.packageName,
     });
     this._commitStore();
-  }
-
-  installing () {
-    if (!this._canInstall()) { return; }
   }
 
   _writePackageJs () {
