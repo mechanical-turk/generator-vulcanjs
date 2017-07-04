@@ -43,12 +43,13 @@ module.exports = class extends VulcanGenerator {
     ];
 
     return this.prompt(questions).then((answers) => {
+      const preProcessedDeps =
+        this.inputProps.vulcanDependencies ||
+        answers.vulcanDependencies;
+
       this.props = {
         packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        vulcanDependencies: (
-          this.inputProps.vulcanDependencies ||
-          answers.vulcanDependencies
-        ),
+        vulcanDependencies: preProcessedDeps.map((dep) => (`'${dep}'`)),
         isPackageAutoAdd: this.inputProps.isPackageAutoAdd || answers.isPackageAutoAdd,
       };
       this._assertNotPackageExists(this.props.packageName);
@@ -144,6 +145,6 @@ module.exports = class extends VulcanGenerator {
 
   end () {
     if (!this._hasNoErrors()) { return this._end(); }
-    this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)} to activate your package.`);
+    this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)}`);
   }
 };
