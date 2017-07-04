@@ -123,7 +123,7 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    // this._writeStoriesJs();
+    this._writeStoriesJs();
   }
 
   end () {
