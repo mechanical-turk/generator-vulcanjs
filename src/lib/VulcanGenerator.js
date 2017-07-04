@@ -1,17 +1,17 @@
-const Generator = require('yeoman-generator');
-const common = require('./common.js');
-const chalk = require('chalk');
-const dashify = require('dashify');
-const Redux = require('redux');
-const reducers = require('./reducers');
-const logger = require('redux-node-logger');
+import chalk from 'chalk';
+import Generator from 'yeoman-generator';
+import dashify from 'dashify';
+import Redux from 'redux';
+import logger from 'redux-node-logger';
+import reducers from './reducers';
+import common from './common';
 
 let store;
 const errors = {};
 const camelCase = require('camelcase');
 const path = require('path');
 
-module.exports = class VulcanGenerator extends Generator {
+export default class VulcanGenerator extends Generator {
   constructor (args, options) {
     super(args, options);
     if (!store) {

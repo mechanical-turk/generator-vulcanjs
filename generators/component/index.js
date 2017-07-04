@@ -1,9 +1,20 @@
 'use strict';
 
-const pascalCase = require('pascal-case');
-const VulcanGenerator = require('../../lib/VulcanGenerator');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-module.exports = class extends VulcanGenerator {
+var _pascalCase = require('pascal-case');
+
+var _pascalCase2 = _interopRequireDefault(_pascalCase);
+
+var _VulcanGenerator = require('../../lib/VulcanGenerator');
+
+var _VulcanGenerator2 = _interopRequireDefault(_VulcanGenerator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = class extends _VulcanGenerator2.default {
   initializing() {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();
@@ -45,7 +56,7 @@ module.exports = class extends VulcanGenerator {
     }).then(answers => {
       this.props = Object.assign({}, this.props, {
         moduleName: this.inputProps.moduleName || answers.moduleName,
-        componentName: pascalCase(this.inputProps.componentName || answers.componentName),
+        componentName: (0, _pascalCase2.default)(this.inputProps.componentName || answers.componentName),
         componentType: this.inputProps.componentType || answers.componentType,
         isRegister: this.inputProps.isRegister || answers.isRegister
       });
@@ -73,3 +84,4 @@ module.exports = class extends VulcanGenerator {
     this._end();
   }
 };
+;

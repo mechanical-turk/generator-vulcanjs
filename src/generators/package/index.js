@@ -1,10 +1,9 @@
-const Generator = require('yeoman-generator');
-const path = require('path');
-const VulcanGenerator = require('../../lib/VulcanGenerator');
-const common = require('../../lib/common');
-const chalk = require('chalk');
+import chalk from 'chalk';
+import path from 'path';
+import VulcanGenerator from '../../lib/VulcanGenerator';
+import common from '../../lib/common';
 
-module.exports = class extends VulcanGenerator {
+export default class extends VulcanGenerator {
 
   initializing () {
     this._assertIsVulcan();

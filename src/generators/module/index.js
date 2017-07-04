@@ -1,7 +1,7 @@
-const pascalCase = require('pascal-case');
-const camelCase = require('camelcase');
-const VulcanGenerator = require('../../lib/VulcanGenerator');
-const path = require('path');
+import path from 'path';
+import pascalCase from 'pascal-case';
+import camelCase from 'camelcase';
+import VulcanGenerator from '../../lib/VulcanGenerator';
 
 module.exports = class extends VulcanGenerator {
   initializing () {
