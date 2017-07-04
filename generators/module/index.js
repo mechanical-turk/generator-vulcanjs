@@ -87,16 +87,10 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeCollection() {
-    // console.log(path.join(
-    //   this._getModulePath(),
-    //   'collection.js'
-    // ));
-    // console.log(this._getModulePath('collection.js'));
     this.fs.copyTpl(this.templatePath('collection.js'), path.join(this._getModulePath(), 'collection.js'), this.props);
   }
 
   _writeResolvers() {
-    console.log(this.props);
     if (!this.props.moduleParts.resolvers) {
       return;
     }
@@ -107,41 +101,41 @@ module.exports = class extends VulcanGenerator {
     if (!this.props.moduleParts.fragments) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('fragments.js'), this._getModulePath('fragments.js'), this.props);
+    this.fs.copyTpl(this.templatePath('fragments.js'), this._getModulePath({ isAbsolute: true }, 'fragments.js'), this.props);
   }
 
   _writeMutations() {
     if (!this.props.moduleParts.mutations) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('mutations.js'), this._getModulePath('mutations.js'), this.props);
+    this.fs.copyTpl(this.templatePath('mutations.js'), this._getModulePath({ isAbsolute: true }, 'mutations.js'), this.props);
   }
 
   _writeParameters() {
     if (!this.props.moduleParts.parameters) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('parameters.js'), this._getModulePath('parameters.js'), this.props);
+    this.fs.copyTpl(this.templatePath('parameters.js'), this._getModulePath({ isAbsolute: true }, 'parameters.js'), this.props);
   }
 
   _writePermissions() {
     if (!this.props.moduleParts.permissions) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('permissions.js'), this._getModulePath('permissions.js'), this.props);
+    this.fs.copyTpl(this.templatePath('permissions.js'), this._getModulePath({ isAbsolute: true }, 'permissions.js'), this.props);
   }
 
   _writeSchema() {
     if (!this.props.moduleParts.schema) {
       return;
     }
-    this.fs.copyTpl(this.templatePath('schema.js'), this._getModulePath('schema.js'), this.props);
+    this.fs.copyTpl(this.templatePath('schema.js'), this._getModulePath({ isAbsolute: true }, 'schema.js'), this.props);
   }
 
   _updateModulesIndex() {
-    const modulePath = this._getModulesPath('index.js');
+    const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
     const file = this.fs.read(modulePath);
-    const newFile = `const './${this.props.moduleName}/collection.js'; ${file}`;
+    const newFile = `import './${this.props.moduleName}/collection.js'; ${file}`;
     this.fs.write(modulePath, newFile);
   }
 

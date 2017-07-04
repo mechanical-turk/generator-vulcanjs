@@ -47,7 +47,7 @@ module.exports = class extends VulcanGenerator {
         componentType: this.inputProps.componentType || answers.componentType,
         isRegister: this.inputProps.isRegister || answers.isRegister
       });
-      this.props.componentPath = this._getComponentsPath(this.props.moduleName, `${this.props.componentName}.${this._getReactExtension()}`);
+      this.props.componentPath = this._getComponentsPath({ isAbsolute: true }, this.props.moduleName, `${this.props.componentName}.${this._getReactExtension()}`);
       this.props.templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
       this._assertModuleIsExists(this.props.packageName, this.props.moduleName);
     }, () => {});

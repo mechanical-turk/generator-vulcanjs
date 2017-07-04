@@ -62,6 +62,7 @@ module.exports = class extends VulcanGenerator {
         }
       );
       this.props.componentPath = this._getComponentsPath(
+        { isAbsolute: true },
         this.props.moduleName,
         `${this.props.componentName}.${this._getReactExtension()}`
       );

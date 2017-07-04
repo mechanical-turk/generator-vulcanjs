@@ -45,31 +45,41 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writePackageJs() {
-    this.fs.copyTpl(this.templatePath('package.js'), this._getPackagePath('package.js'), this.props);
+    this.fs.copyTpl(this.templatePath('package.js'), this._getPackagePath({ isAbsolute: true }, 'package.js'), this.props);
   }
 
   _writeClientMain() {
-    this.fs.copyTpl(this.templatePath('client.js'), this._getClientPath('main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('client.js'), this._getClientPath({ isAbsolute: true }, 'main.js'), this.props);
   }
 
   _writeServerMain() {
-    this.fs.copyTpl(this.templatePath('server.js'), this._getServerPath('main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('server.js'), this._getServerPath({ isAbsolute: true }, 'main.js'), this.props);
   }
 
   _writeServerSeed() {
-    this.fs.copyTpl(this.templatePath('seed.js'), this._getServerPath('seed.js'), this.props);
+    this.fs.copyTpl(this.templatePath('seed.js'), this._getServerPath({ isAbsolute: true }, 'seed.js'), this.props);
   }
 
   _writeModulesIndex() {
-    this.fs.copyTpl(this.templatePath('module.js'), this._getModulesPath('index.js'), this.props);
+    this.fs.copyTpl(this.templatePath('module.js'), this._getModulesPath({ isAbsolute: true }, 'index.js'), this.props);
   }
 
   _writeRoutes() {
-    this.fs.copyTpl(this.templatePath('routes.js'), this._getModulesPath('routes.js'), this.props);
+    this.fs.copyTpl(this.templatePath('routes.js'), this._getModulesPath({ isAbsolute: true }, 'routes.js'), this.props);
   }
 
   _writeStoriesJs() {
-    this.fs.copyTpl(this.templatePath('stories.js'), this._getComponentsPath('stories.js'), this.props);
+    this.fs.copyTpl(this.templatePath('stories.js'), this._getPackageStoriesPath({ isAbsolute: true }), this.props);
+  }
+
+  _updateRootStoriesIndex() {
+    const rootStoriesIndexPath = this._getRootStoriesPath({ isAbsolute: true }, 'index.js');
+    const packageStoriesPath = this._getPackageStoriesPath({
+      relativeTo: rootStoriesIndexPath
+    });
+    const file = this.fs.read(rootStoriesIndexPath);
+    const newFile = `import '${packageStoriesPath}'; ${file}`;
+    this.fs.write(rootStoriesIndexPath, newFile);
   }
 
   writing() {
@@ -83,6 +93,7 @@ module.exports = class extends VulcanGenerator {
     this._writeModulesIndex();
     this._writeRoutes();
     this._writeStoriesJs();
+    this._updateRootStoriesIndex();
   }
 
   end() {

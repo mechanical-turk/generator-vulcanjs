@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const path = require('path');
 const Generator = require('yeoman-generator');
 const dashify = require('dashify');
 const Redux = require('redux');
@@ -9,7 +10,6 @@ const common = require('./common');
 let store;
 const errors = {};
 const camelCase = require('camelcase');
-const path = require('path');
 
 module.exports = class VulcanGenerator extends Generator {
   constructor (args, options) {
@@ -249,51 +249,81 @@ module.exports = class VulcanGenerator extends Generator {
     Destination paths
   */
 
-  _getPackagePath (...args) {
-    return this.destinationPath(
+  _getPath (options, ...args) {
+    const relativeToProjectRootPath = path.join(...args);
+    const absolutePath = this.destinationPath(relativeToProjectRootPath);
+    if (options.relativeTo) return path.relative(options.relativeTo, absolutePath);
+    return options.isAbsolute ? absolutePath : relativeToProjectRootPath;
+  }
+
+  _getRootStoriesPath (options, ...args) {
+    return this._getPath(
+      options,
+      '.stories',
+      ...args
+    );
+  }
+
+  _getPackagePath (options, ...args) {
+    return this._getPath(
+      options,
       'packages',
       this.props.packageName,
       ...args
     );
   }
 
-  _getLibPath (...args) {
+  _getLibPath (options, ...args) {
     return this._getPackagePath(
+      options,
       'lib',
       ...args
     );
   }
 
-  _getModulesPath (...args) {
+  _getModulesPath (options, ...args) {
     return this._getLibPath(
+      options,
       'modules',
       ...args
     );
   }
 
-  _getModulePath (...args) {
+  _getModulePath (options, ...args) {
     return this._getModulesPath(
+      options,
       this.props.moduleName,
       ...args
     );
   }
 
-  _getComponentsPath (...args) {
+  _getComponentsPath (options, ...args) {
     return this._getLibPath(
+      options,
       'components',
       ...args
     );
   }
 
-  _getClientPath (...args) {
+  _getPackageStoriesPath (options, ...args) {
+    return this._getComponentsPath(
+      options,
+      'stories.js',
+      ...args
+    );
+  }
+
+  _getClientPath (options, ...args) {
     return this._getLibPath(
+      options,
       'client',
       ...args
     );
   }
 
-  _getServerPath (...args) {
+  _getServerPath (options, ...args) {
     return this._getLibPath(
+      options,
       'server',
       ...args
     );
