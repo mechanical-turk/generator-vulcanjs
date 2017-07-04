@@ -1,6 +1,6 @@
 {
   "name": "generator-vulcanjs",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "The cli scaffolding tool for Vulcan.js",
   "files": [
     "generators",

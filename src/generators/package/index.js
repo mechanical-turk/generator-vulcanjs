@@ -120,6 +120,7 @@ module.exports = class extends VulcanGenerator {
       { isAbsolute: true },
       'index.js'
     );
+    if (!this.fs.exists(rootStoriesIndexPath)) { return; }
     const packageStoriesPath = this._getPackageStoriesPath({
       relativeTo: rootStoriesIndexPath,
     });
