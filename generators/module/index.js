@@ -8,6 +8,7 @@ const path = require('path');
 module.exports = class extends VulcanGenerator {
   initializing() {
     this._assertIsVulcan();
+    this._assertHasNonZeroPackages();
     this.inputProps = {};
   }
 
