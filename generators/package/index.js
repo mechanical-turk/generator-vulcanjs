@@ -106,6 +106,19 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
+  _writeServerSeed () {
+    this.fs.copyTpl(
+      this.templatePath('seed.js'),
+      path.join(
+        this._getPackagePath(),
+        'lib',
+        'server',
+        'seed.js'
+      ),
+      this.props
+    );
+  }
+
   _writeModulesIndex () {
     this.fs.copyTpl(
       this.templatePath('module.js'),
@@ -132,6 +145,7 @@ module.exports = class extends VulcanGenerator {
     this._writePackageJs();
     this._writeClientMain();
     this._writeServerMain();
+    this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
     // if (this.props.isPackageAutoAdd) {
