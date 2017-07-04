@@ -1,13 +1,13 @@
-'use strict';
-
 const gulBeautify = require('gulp-beautify');
 const dashify = require('dashify');
 
-const beautify = function () {
-  this.registerTransformStream(gulBeautify({ indent_size: 2 }));
+const beautify = function() {
+  this.registerTransformStream(
+    gulBeautify({indent_size: 2 })
+  );
 };
 
-const filterPackageName = packageName => {
+const filterPackageName = (packageName) => {
   return dashify(packageName);
 };
 
@@ -26,7 +26,7 @@ const descriptions = {
   packageName: 'The name of the package',
   moduleName: 'The name of your module',
   vulcanDependencies: 'The vulcan packages that your application depends on',
-  isPackageAutoAdd: 'Set to true if you want your package to be added to .meteor/packages'
+  isPackageAutoAdd: 'Set to true if you want your package to be added to .meteor/packages',
 };
 
 const messages = {
@@ -44,7 +44,7 @@ const reactExtensions = ['jsx', 'js'];
 const packageManagers = ['yarn', 'npm'];
 
 const getDefaultChoiceIndex = (choices, option) => {
-  const index = choices.findIndex(elem => elem === option);
+  const index = choices.findIndex((elem) => elem === option);
   return Math.max(index, 0);
 };
 
@@ -56,5 +56,5 @@ module.exports = {
   messages: messages,
   reactExtensions: reactExtensions,
   packageManagers: packageManagers,
-  getDefaultChoiceIndex: getDefaultChoiceIndex
+  getDefaultChoiceIndex: getDefaultChoiceIndex,
 };

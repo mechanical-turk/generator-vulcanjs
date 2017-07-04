@@ -12,7 +12,7 @@ module.exports = (grunt) => {
           expand: true,
           cwd: 'src/',
           src: ['**/*.js', '!**/templates/**'],
-          dest: 'build/',
+          dest: './',
           ext: '.js',
         }],
       },
