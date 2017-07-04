@@ -12,6 +12,5 @@ module.exports = {
       "no-underscore-dangle": ["error", {
         "allowAfterThis": true
       }],
-      "arrow-parens": ["error", "always"]
    },
 };
