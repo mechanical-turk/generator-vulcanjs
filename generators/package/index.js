@@ -3,7 +3,6 @@ const path = require('path');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const common = require('../../lib/common');
 const chalk = require('chalk');
-const path = require('path');
 
 module.exports = class extends VulcanGenerator {
 
