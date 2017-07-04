@@ -1,7 +1,7 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
-const common = require('../../libs/common');
-const VulcanGenerator = require('../../libs/VulcanGenerator');
+const common = require('../../utils/common');
+const VulcanGenerator = require('../../utils/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   _registerArguments() {
