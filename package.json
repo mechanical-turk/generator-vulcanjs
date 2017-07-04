@@ -25,7 +25,6 @@
     "pascal-case": "^2.0.1",
     "redux": "^3.7.1",
     "redux-node-logger": "^0.1.0",
-    "yeoman-generator": "^1.1.1",
-    "yosay": "^2.0.0"
+    "yeoman-generator": "^1.1.1"
   }
 }
