@@ -1,4 +1,3 @@
-const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const common = require('../../lib/common');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
