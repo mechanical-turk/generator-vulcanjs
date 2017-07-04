@@ -10,14 +10,45 @@ module.exports = (grunt) => {
       dist: {
         files: [{
           expand: true,
-          cwd: 'src/',
+          cwd: './src/',
           src: ['**/*.js', '!**/templates/**'],
           dest: './',
-          ext: '.js',
         }],
       },
     },
+    copy: {
+      templates: {
+        files: [{
+          expand: true,
+          cwd: './src/',
+          src: ['**/templates/**'],
+          dest: './',
+        }],
+      },
+    },
+    // watch: {
+    //   src: {
+    //     files: [{
+    //       expand: true,
+    //       cwd: './src/',
+    //       src: ['**/templates/**'],
+    //       dest: './',
+    //     }],
+    //     tasks: ['babel', 'copy'],
+    //   },
+    // },
   });
+
   grunt.loadNpmTasks('grunt-babel');
-  grunt.registerTask('default', ['babel']);
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  // grunt.loadNpmTasks('grunt-contrib-watch');
+
+  grunt.registerTask(
+    'default',
+    [
+      'babel',
+      'copy',
+      // 'watch',
+    ]
+  );
 };

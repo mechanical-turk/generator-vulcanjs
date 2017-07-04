@@ -14,6 +14,9 @@
     "scaffold",
     "yeoman-generator"
   ],
+  "scripts": {
+    "build": "grunt"
+  },
   "main": "index.js",
   "repository": "git@github.com:mechanical-turk/generator-vulcanjs.git",
   "author": "Kerem Kazan",
@@ -38,6 +41,7 @@
     "grunt": "^1.0.1",
     "grunt-babel": "^6.0.0",
     "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0"
   }
 }

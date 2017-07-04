@@ -1,0 +1,2 @@
+
+registerComponent('<%= componentName %>', <%= componentName %>);
