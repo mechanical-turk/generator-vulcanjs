@@ -3,7 +3,8 @@
   "version": "1.0.6",
   "description": "The cli scaffolding tool for Vulcan.js",
   "files": [
-    "generators"
+    "generators",
+    "lib",
   ],
   "keywords": [
     "vulcan",
