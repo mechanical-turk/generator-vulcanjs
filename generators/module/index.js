@@ -192,9 +192,12 @@ module.exports = class extends VulcanGenerator {
 
   _updateModulesIndex() {
     const modulePath = this._getModulesIndexPath();
-    // const file = this.fs.read(modulePath);
-    // const tree = program(file);
-    // console.log(tree);
+    const file = this.fs.read(modulePath);
+    const newFile = `import './${this.props.moduleName}/collection.js';` + file;
+    this.fs.write(
+      modulePath,
+      newFile,
+    );
   }
 
   writing() {
