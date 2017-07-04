@@ -12,7 +12,7 @@ module.exports = class extends VulcanGenerator {
         required: false,
         alias: 'n',
         desc: common.descriptions.appName,
-      },
+      }
     );
     this.option(
       'reactextension',
@@ -21,7 +21,7 @@ module.exports = class extends VulcanGenerator {
         required: false,
         alias: 'rx',
         desc: common.descriptions.reactExtension,
-      },
+      }
     );
     this.option(
       'packagemanager',
@@ -30,7 +30,7 @@ module.exports = class extends VulcanGenerator {
         required: false,
         alias: 'pm',
         desc: common.descriptions.packageManager,
-      },
+      }
     );
   }
 
