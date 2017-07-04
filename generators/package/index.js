@@ -93,3 +93,4 @@ module.exports = class extends VulcanGenerator {
     this.log(`\nTo activate your package, run: ${chalk.green(`meteor add ${this.props.packageName}`)}`);
   }
 };
+//# sourceMappingURL=index.js.map

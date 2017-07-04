@@ -71,3 +71,4 @@ module.exports = class extends VulcanGenerator {
     this._end();
   }
 };
+//# sourceMappingURL=index.js.map
