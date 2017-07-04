@@ -7,7 +7,10 @@ module.exports = {
         "objects": "always",
         "imports": "ignore",
         "exports": "ignore",
-        "functions": "ignore",
-    }]
+        "functions": "never",
+      }],
+      "no-underscore-dangle": ["error", {
+        "allowAfterThis": true
+      }],
    }
 };
