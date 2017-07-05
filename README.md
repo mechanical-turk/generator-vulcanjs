@@ -19,4 +19,5 @@
 
 ## Extra
 
-- To see redux logs, run in development mode. For example:  `NODE_ENV=development yo vulcanjs:package`
+- To see redux logs, set the environment variable `VULCANJS_SEE_REDUX_LOGS` to `true`. For example:  `VULCANJS_SEE_REDUX_LOGS=true yo vulcanjs:package`
+- To turn the logs off, set the same environment variable to `false`. For example: `VULCANJS_SEE_REDUX_LOGS=false yo vulcanjs:package`

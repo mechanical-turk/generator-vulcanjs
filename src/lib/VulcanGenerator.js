@@ -16,7 +16,7 @@ module.exports = class VulcanGenerator extends Generator {
     super(args, options);
     if (!store) {
       const allConfig = this.config.getAll();
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.VULCANJS_SEE_REDUX_LOGS) {
         store = Redux.createStore(
           reducers,
           allConfig,
@@ -312,8 +312,23 @@ module.exports = class VulcanGenerator extends Generator {
   _getPackageStoriesPath (options, ...args) {
     return this._getComponentsPath(
       options,
-      'stories.js',
+      '.stories.js',
       ...args
+    );
+  }
+
+  _getModuleInComponentsPath (options, ...args) {
+    return this._getComponentsPath(
+      options,
+      this.props.moduleName,
+      ...args
+    );
+  }
+
+  _getModuleStoriesPath (options) {
+    return this._getModuleInComponentsPath(
+      options,
+      'stories.js'
     );
   }
 

@@ -36,7 +36,7 @@ module.exports = class extends VulcanGenerator {
         isRegister: this.inputProps.isRegister || answers.isRegister,
         isAddComponentToStoryBook: this.inputProps.isAddComponentToStoryBook || answers.isAddComponentToStoryBook
       });
-      this.props.componentPath = this._getComponentsPath({ isAbsolute: true }, this.props.moduleName, `${this.props.componentName}.${this._getReactExtension()}`);
+      this.props.componentPath = this._getModuleInComponentsPath({ isAbsolute: true }, `${this.props.componentName}.${this._getReactExtension()}`);
       this.props.templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
       this._assertModuleIsExists(this.props.packageName, this.props.moduleName);
     }, () => {});
@@ -46,10 +46,12 @@ module.exports = class extends VulcanGenerator {
     if (!this._canConfigure()) {
       return;
     }
-    this._dispatch({
-      type: 'SET_STORYBOOK_SETUP_STATUS',
-      status: this.props.storyBookSetupStatus
-    });
+    if (this.props.storyBookSetupStatus) {
+      this._dispatch({
+        type: 'SET_STORYBOOK_SETUP_STATUS',
+        status: this.props.storyBookSetupStatus
+      });
+    }
     this._commitStore();
     this._installStorybook();
   }
@@ -64,6 +66,7 @@ module.exports = class extends VulcanGenerator {
     }
     this.log(chalk.green('\nTaking you to react storybook setup... \n'));
     this.spawnCommandSync('getstorybook');
+    console.log('SETTING UP!');
     this._dispatch({
       type: 'SET_STORYBOOK_SETUP_STATUS',
       status: 'installed'

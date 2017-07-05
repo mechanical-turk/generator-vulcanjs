@@ -132,6 +132,10 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('schema.js'), this._getModulePath({ isAbsolute: true }, 'schema.js'), this.props);
   }
 
+  _writeStories() {
+    this.fs.copyTpl(this.templatePath('stories.js'), this._getModuleStoriesPath({ isAbsolute: true }), this.props);
+  }
+
   _updateModulesIndex() {
     const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
     const file = this.fs.read(modulePath);
@@ -150,6 +154,7 @@ module.exports = class extends VulcanGenerator {
     this._writeParameters();
     this._writePermissions();
     this._writeSchema();
+    this._writeStories();
     this._updateModulesIndex();
   }
 
