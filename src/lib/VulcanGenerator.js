@@ -486,4 +486,27 @@ module.exports = class VulcanGenerator extends Generator {
       when: () => (!this.inputProps.isAddComponentToStoryBook),
     };
   }
+
+  _getVulcanDependenciesQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'vulcanDependencies',
+      message: common.messages.vulcanDependencies,
+      choices: [
+        { name: 'vulcan:core', checked: true },
+        'vulcan:posts',
+        'vulcan:comments',
+        'vulcan:newsletter',
+        'vulcan:notifications',
+        'vulcan:getting-started',
+        'vulcan:categories',
+        'vulcan:voting',
+        'vulcan:embedly',
+        'vulcan:api',
+        'vulcan:rss',
+        'vulcan:subscribe',
+      ],
+      when: () => (!this.inputProps.vulcanDependencies),
+    };
+  }
 };

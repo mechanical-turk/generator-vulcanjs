@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
-const common = require('../../lib/common');
 const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
@@ -14,26 +13,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = [
       this._getPackageNameInputQuestion(),
-      {
-        type: 'checkbox',
-        name: 'vulcanDependencies',
-        message: common.messages.vulcanDependencies,
-        choices: [
-          { name: 'vulcan:core', checked: true },
-          'vulcan:posts',
-          'vulcan:comments',
-          'vulcan:newsletter',
-          'vulcan:notifications',
-          'vulcan:getting-started',
-          'vulcan:categories',
-          'vulcan:voting',
-          'vulcan:embedly',
-          'vulcan:api',
-          'vulcan:rss',
-          'vulcan:subscribe',
-        ],
-        when: () => (!this.inputProps.vulcanDependencies),
-      },
+      this._getVulcanDependenciesQuestion(),
       // this._getIsPackageAutoAddQuestion(),
     ];
 
@@ -127,11 +107,14 @@ module.exports = class extends VulcanGenerator {
       }),
     });
     const fileText = this.fs.read(rootStoriesIndexPath);
-    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, `import '${packageStoriesPath}';`);
-    this.fs.write(
-      rootStoriesIndexPath,
-      fileTextWithWithImport
-    );
+    const importStatement = `import '${packageStoriesPath}';`;
+    console.log(fileText);
+    console.log(importStatement);
+    // const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
+    // this.fs.write(
+    //   rootStoriesIndexPath,
+    //   fileTextWithWithImport
+    // );
   }
 
   writing () {
