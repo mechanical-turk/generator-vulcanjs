@@ -69,7 +69,7 @@ const appName = (state = '', action) => {
 
 const isVulcan = (state = false, action) => {
   switch (action.type) {
-    case 'SET_IS_VULCAN': return true;
+    case 'SET_IS_VULCAN_TRUE': return true;
     default: return state;
   }
 };
@@ -88,11 +88,22 @@ const reactExtension = (state = 'jsx', action) => {
   }
 };
 
+const storyBookStatusReducer = (state = 'pending', action) => {
+  switch (action.type) {
+    case 'SET_STORYBOOK_PENDING': return 'pending';
+    case 'SET_STORYBOOK_INSTALLING': return 'installing';
+    case 'SET_STORYBOOK_DONT_ASK': return 'dontask';
+    case 'SET_STORYBOOK_INSTALLED': return 'installed';
+    default: return state;
+  }
+};
+
 const reducers = Redux.combineReducers({
   appName,
   isVulcan,
   packageManager,
   reactExtension,
+  storyBookStatus: storyBookStatusReducer,
   packages: packagesReducer,
 });
 

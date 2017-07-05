@@ -1,5 +1,6 @@
 const pascalCase = require('pascal-case');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
+const chalk = require('chalk');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -12,30 +13,15 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const firstQuestions = [this._getPackageNameListQuestion()];
+    const firstQuestions = [this._getStoryBookSetupQuestion(), this._getPackageNameListQuestion()];
 
     return this.prompt(firstQuestions).then(answers => {
       this.props = {
-        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName)
+        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
+        storyBookStatus: this.inputProps.storyBookStatus || answers.storyBookStatus
       };
       this._assertPackageHasNonZeroModules(this.props.packageName);
-      const secondQuestions = [this._getModuleNameListQuestion(), {
-        type: 'input',
-        name: 'componentName',
-        message: 'Component name',
-        when: () => !this.inputProps.componentName
-      }, {
-        type: 'list',
-        name: 'componentType',
-        message: 'Component type',
-        choices: [{ name: 'Pure Function', value: 'pure' }, { name: 'Class Component', value: 'class' }],
-        when: () => !this.inputProps.componentType
-      }, {
-        type: 'confirm',
-        name: 'isRegister',
-        message: 'Register component',
-        when: () => !this.inputProps.isRegister
-      }];
+      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getIsRegisterComponentQuestion()];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
       }
@@ -57,7 +43,33 @@ module.exports = class extends VulcanGenerator {
     if (!this._canConfigure()) {
       return;
     }
+    const actions = {
+      dontask: 'SET_STORYBOOK_DONT_ASK',
+      pending: 'SET_STORYBOOK_PENDING',
+      installing: 'SET_STORYBOOK_INSTALLING'
+    };
+    const action = actions[this.props.storyBookStatus];
+    if (action) {
+      this._dispatch({
+        type: actions[this.props.storyBookStatus]
+      });
+    }
     this._commitStore();
+  }
+
+  _canInstall() {
+    return super._canInstall() && this.props.storyBookStatus === 'installing';
+  }
+
+  install() {
+    if (!this._canInstall()) {
+      return;
+    }
+    this.log(chalk.green('\nTaking you to react storybook setup... \n'));
+    this.spawnCommandSync('getstorybook');
+    this._dispatch({
+      type: 'SET_STORYBOOK_INSTALLED'
+    });
   }
 
   writing() {

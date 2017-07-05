@@ -1,14 +1,9 @@
 const gulpBeautify = require('gulp-beautify');
-const dashify = require('dashify');
 
-const beautify = function() {
+const beautify = function () {
   this.registerTransformStream(
-    gulpBeautify({indent_size: 2 })
+    gulpBeautify({ indent_size: 2 })
   );
-};
-
-const filterPackageName = (packageName) => {
-  return dashify(packageName);
 };
 
 const alphabeticalSort = (a, b) => {
@@ -37,6 +32,7 @@ const messages = {
   moduleName: 'Module name',
   vulcanDependencies: 'Vulcan dependencies',
   isPackageAutoAdd: 'Add to .meteor/packages',
+  storyBookStatus: 'Looks like you havent set up your react storybook. Would you like to do it now?',
 };
 
 const reactExtensions = ['jsx', 'js'];
@@ -50,13 +46,12 @@ const getDefaultChoiceIndex = (choices, option) => {
 
 const exposed = {
   beautify,
-  filterPackageName,
   alphabeticalSort,
   descriptions,
   messages,
   reactExtensions,
   packageManagers,
-  getDefaultChoiceIndex: getDefaultChoiceIndex,
+  getDefaultChoiceIndex,
 };
 
 module.exports = exposed;

@@ -10,7 +10,8 @@ module.exports = {
         "functions": "never",
       }],
       "no-underscore-dangle": ["error", {
-        "allowAfterThis": true
+        "allowAfterThis": true,
+        "allowAfterSuper": true,
       }],
       "arrow-parens": ["error", "always"],
    },

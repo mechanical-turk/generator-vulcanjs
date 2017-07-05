@@ -92,7 +92,7 @@ module.exports = class extends VulcanGenerator {
       this.destinationPath(this.props.appSubPath)
     );
     this._dispatch({
-      type: 'SET_IS_VULCAN',
+      type: 'SET_IS_VULCAN_TRUE',
     });
     this._dispatch({
       type: 'SET_APP_NAME',
