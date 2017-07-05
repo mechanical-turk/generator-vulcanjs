@@ -112,24 +112,12 @@ module.exports = class extends VulcanGenerator {
   install () {
     if (!this._canInstall()) { return; }
     this.log(chalk.green('\nPulling the most up to date git repository... \n'));
-    this.spawnCommandSync('git', [
-      'init',
-    ]);
-    this.spawnCommandSync('git', [
-      'remote',
-      'add',
-      'origin',
-      'git@github.com:VulcanJS/Vulcan.git',
-    ]);
-    this.spawnCommandSync('git', [
-      'pull',
-      'origin',
-      'master',
-    ]);
-    this.spawnCommandSync('git', [
-      'remote',
-      'rm',
-      'origin',
+    this.spawnCommandSync('git',  [
+      'clone', 
+      'https://github.com/Vulcanjs/Vulcan', 
+      '--depth', 
+      '1', 
+      "./${this.props.appName}"
     ]);
     this.installDependencies({
       npm: this.props.packageManager === 'npm',
