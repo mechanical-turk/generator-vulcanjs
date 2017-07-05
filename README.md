@@ -1,9 +1,9 @@
 # generator-vulcanjs
 
-## Installation
-
-- Install yo: `npm install -g yo`
-- Install generator-vulcanjs: `npm install -g generator-vulcanjs`
+## Installing
+- To run this generator, you need to have `yo` and `@storybook/cli` installed globally.
+- To install all, run `npm install -g generator-vulcanjs yo @storybook/cli`
+- Or, if you use yarn, run `yarn global add generator-vulcanjs yo @storybook/cli`
 
 ## Usage
 

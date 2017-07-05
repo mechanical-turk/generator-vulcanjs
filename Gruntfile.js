@@ -30,13 +30,11 @@ module.exports = (grunt) => {
     },
     watch: {
       src: {
-        files: [{
-          expand: true,
-          cwd: './src/',
-          src: ['**/*.js'],
-          dest: './',
-        }],
-        tasks: ['babel', 'copy'],
+        files: ['src/**/*.*',],
+        tasks: ['default'],
+        options: {
+          interrupt: true,
+        },
       },
     },
   });
@@ -50,7 +48,6 @@ module.exports = (grunt) => {
     [
       'babel',
       'copy',
-      // 'watch',
     ]
   );
 };
