@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const common = require('../../lib/common');
+const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
 
@@ -81,9 +82,9 @@ module.exports = class extends VulcanGenerator {
         isAbsolute: true
       })
     });
-    const file = this.fs.read(rootStoriesIndexPath);
-    const newFile = `import '${packageStoriesPath}'; ${file}`;
-    this.fs.write(rootStoriesIndexPath, newFile);
+    const fileText = this.fs.read(rootStoriesIndexPath);
+    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, `import '${packageStoriesPath}';`);
+    this.fs.write(rootStoriesIndexPath, fileTextWithWithImport);
   }
 
   writing() {
