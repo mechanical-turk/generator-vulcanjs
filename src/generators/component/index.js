@@ -1,6 +1,7 @@
 const pascalCase = require('pascal-case');
-const VulcanGenerator = require('../../lib/VulcanGenerator');
 const chalk = require('chalk');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
+const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -26,6 +27,7 @@ module.exports = class extends VulcanGenerator {
       const secondQuestions = [
         this._getModuleNameListQuestion(),
         this._getComponentNameQuestion(),
+        this._getComponentTypeQuestion(),
         this._getIsRegisterComponentQuestion(),
         this._getIsAddComponentToStoryBookQuestion(),
       ];
@@ -46,10 +48,9 @@ module.exports = class extends VulcanGenerator {
           answers.isAddComponentToStoryBook
         ),
       };
-      this.props.componentPath = this._getModuleInComponentsPath(
-        { isAbsolute: true },
-        `${this.props.componentName}.${this._getReactExtension()}`
-      );
+      this.props.componentPath = this._getComponentPath({
+        isAbsolute: true,
+      });
       this.props.templatePath = this.props.componentType === 'pure' ?
         this.templatePath('pureFunctionComponent.js') :
         this.templatePath('classComponent.js');
@@ -77,7 +78,6 @@ module.exports = class extends VulcanGenerator {
     if (!this._canInstall()) { return; }
     this.log(chalk.green('\nTaking you to react storybook setup... \n'));
     this.spawnCommandSync('getstorybook');
-    console.log('SETTING UP!');
     this._dispatch({
       type: 'SET_STORYBOOK_SETUP_STATUS',
       status: 'installed',
@@ -93,9 +93,27 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
+  _updateModuleStories () {
+    if (!this.props.isAddComponentToStoryBook) { return; }
+    const moduleStoriesPath = this._getModuleStoriesPath({
+      isAbsolute: true,
+    });
+    const fileText = this.fs.read(moduleStoriesPath);
+    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`
+    const fileWithImportText = ast.addImportStatementAndParse(
+      fileText,
+      importStatement,
+    );
+    this.fs.write(
+      moduleStoriesPath,
+      fileWithImportText
+    );
+  }
+
   writing () {
     if (!this._canWrite()) { return; }
     this._writeComponent();
+    this._updateModuleStories();
   }
 
   end () {

@@ -1,8 +1,9 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 const pascalCase = require('pascal-case');
-const VulcanGenerator = require('../../lib/VulcanGenerator');
 const chalk = require('chalk');
+const VulcanGenerator = require('../../lib/VulcanGenerator');
+const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -23,7 +24,7 @@ module.exports = class extends VulcanGenerator {
         storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus
       };
       this._assertPackageHasNonZeroModules(this.props.packageName);
-      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getIsRegisterComponentQuestion(), this._getIsAddComponentToStoryBookQuestion()];
+      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getComponentTypeQuestion(), this._getIsRegisterComponentQuestion(), this._getIsAddComponentToStoryBookQuestion()];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
       }
@@ -36,7 +37,9 @@ module.exports = class extends VulcanGenerator {
         isRegister: this.inputProps.isRegister || answers.isRegister,
         isAddComponentToStoryBook: this.inputProps.isAddComponentToStoryBook || answers.isAddComponentToStoryBook
       });
-      this.props.componentPath = this._getModuleInComponentsPath({ isAbsolute: true }, `${this.props.componentName}.${this._getReactExtension()}`);
+      this.props.componentPath = this._getComponentPath({
+        isAbsolute: true
+      });
       this.props.templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
       this._assertModuleIsExists(this.props.packageName, this.props.moduleName);
     }, () => {});
@@ -66,7 +69,6 @@ module.exports = class extends VulcanGenerator {
     }
     this.log(chalk.green('\nTaking you to react storybook setup... \n'));
     this.spawnCommandSync('getstorybook');
-    console.log('SETTING UP!');
     this._dispatch({
       type: 'SET_STORYBOOK_SETUP_STATUS',
       status: 'installed'
@@ -78,11 +80,25 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.props.templatePath, this.props.componentPath, this.props);
   }
 
+  _updateModuleStories() {
+    if (!this.props.isAddComponentToStoryBook) {
+      return;
+    }
+    const moduleStoriesPath = this._getModuleStoriesPath({
+      isAbsolute: true
+    });
+    const fileText = this.fs.read(moduleStoriesPath);
+    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`;
+    const fileWithImportText = ast.addImportStatementAndParse(fileText, importStatement);
+    this.fs.write(moduleStoriesPath, fileWithImportText);
+  }
+
   writing() {
     if (!this._canWrite()) {
       return;
     }
     this._writeComponent();
+    this._updateModuleStories();
   }
 
   end() {

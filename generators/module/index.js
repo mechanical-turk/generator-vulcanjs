@@ -1,7 +1,7 @@
-const path = require('path');
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
+const ast = require('../../lib/ast');
 
 function getSetFromArr(arr) {
   const set = {};
@@ -138,9 +138,18 @@ module.exports = class extends VulcanGenerator {
 
   _updateModulesIndex() {
     const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    const file = this.fs.read(modulePath);
-    const newFile = `import './${this.props.moduleName}/collection.js'; ${file}`;
-    this.fs.write(modulePath, newFile);
+    const fileText = this.fs.read(modulePath);
+    const fileWithImportText = ast.addImportStatementAndParse(fileText, `import './${this.props.moduleName}/collection.js';`);
+    this.fs.write(modulePath, fileWithImportText);
+  }
+
+  _updatePackageStories() {
+    const packageStoriesPath = this._getPackageStoriesPath({
+      isAbsolute: true
+    });
+    const fileText = this.fs.read(packageStoriesPath);
+    const fileWithImportText = ast.addImportStatementAndParse(fileText, `import './${this.props.moduleName}/.stories.js';`);
+    this.fs.write(packageStoriesPath, fileWithImportText);
   }
 
   writing() {
@@ -156,6 +165,7 @@ module.exports = class extends VulcanGenerator {
     this._writeSchema();
     this._writeStories();
     this._updateModulesIndex();
+    this._updatePackageStories();
   }
 
   end() {

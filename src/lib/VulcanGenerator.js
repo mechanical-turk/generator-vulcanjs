@@ -248,6 +248,14 @@ module.exports = class VulcanGenerator extends Generator {
     this._logAllErrors();
   }
 
+  /*
+    Filenames
+  */
+
+  _getComponentFileName () {
+    return `${this.props.componentName}.${this._getReactExtension()}`;
+  }
+
 
   /*
     Destination paths
@@ -325,10 +333,17 @@ module.exports = class VulcanGenerator extends Generator {
     );
   }
 
+  _getComponentPath (options) {
+    return this._getModuleInComponentsPath(
+      options,
+      this._getComponentFileName()
+    );
+  }
+
   _getModuleStoriesPath (options) {
     return this._getModuleInComponentsPath(
       options,
-      'stories.js'
+      '.stories.js'
     );
   }
 
