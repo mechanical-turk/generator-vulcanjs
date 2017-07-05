@@ -78,7 +78,9 @@ module.exports = class extends VulcanGenerator {
       return;
     }
     const packageStoriesPath = this._getPackageStoriesPath({
-      relativeTo: rootStoriesIndexPath
+      relativeTo: this._getRootStoriesPath({
+        isAbsolute: true
+      })
     });
     const file = this.fs.read(rootStoriesIndexPath);
     const newFile = `import '${packageStoriesPath}'; ${file}`;

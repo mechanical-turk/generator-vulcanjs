@@ -19,4 +19,4 @@
 
 ## Extra
 
-- To see redux logs, run `NODE_ENV=development`
+- To see redux logs, run in development mode. For example:  `NODE_ENV=development yo vulcanjs:package`

@@ -33,7 +33,7 @@ const packageReducer = (state = { modules: {} }, action) => {
   }
 };
 
-const packagesReducer = (state = {}, action) => {
+const packages = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_PACKAGE': {
       const partialNext = {};
@@ -88,7 +88,7 @@ const reactExtension = (state = 'jsx', action) => {
   }
 };
 
-const storyBookStatusReducer = (state = 'pending', action) => {
+const storyBookSetupStatus = (state = 'pending', action) => {
   switch (action.type) {
     case 'SET_STORYBOOK_PENDING': return 'pending';
     case 'SET_STORYBOOK_INSTALLING': return 'installing';
@@ -98,13 +98,38 @@ const storyBookStatusReducer = (state = 'pending', action) => {
   }
 };
 
+const defaultStoryBookState = {
+  isUsed: 'pending',
+  setupStatus: 'pending',
+};
+
+const storyBook = (state = defaultStoryBookState, action) => {
+  switch (action.type) {
+    case 'SET_STORYBOOK_SETUP_STATUS': {
+      const actions = {
+        pending: 'SET_STORYBOOK_PENDING',
+        installing: 'SET_STORYBOOK_INSTALLING',
+        dontask: 'SET_STORYBOOK_DONTASK',
+        installed: 'SET_STORYBOOK_INSTALLED',
+      };
+      return {
+        ...state,
+        setupStatus: storyBookSetupStatus(state.setupStatus, {
+          type: actions[action.status],
+        }),
+      };
+    }
+    default: return state;
+  }
+};
+
 const reducers = Redux.combineReducers({
   appName,
   isVulcan,
   packageManager,
   reactExtension,
-  storyBookStatus: storyBookStatusReducer,
-  packages: packagesReducer,
+  storyBook,
+  packages,
 });
 
 module.exports = reducers;

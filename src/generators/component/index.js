@@ -20,13 +20,14 @@ module.exports = class extends VulcanGenerator {
     .then((answers) => {
       this.props = {
         packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        storyBookStatus: this.inputProps.storyBookStatus || answers.storyBookStatus,
+        storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
       };
       this._assertPackageHasNonZeroModules(this.props.packageName);
       const secondQuestions = [
         this._getModuleNameListQuestion(),
         this._getComponentNameQuestion(),
         this._getIsRegisterComponentQuestion(),
+        this._getIsAddComponentToStoryBookQuestion(),
       ];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
@@ -34,16 +35,17 @@ module.exports = class extends VulcanGenerator {
       return Promise.reject('noModulesInPackage');
     })
     .then((answers) => {
-      this.props = Object.assign(
-        {},
-        this.props,
-        {
-          moduleName: this.inputProps.moduleName || answers.moduleName,
-          componentName: pascalCase(this.inputProps.componentName || answers.componentName),
-          componentType: this.inputProps.componentType || answers.componentType,
-          isRegister: this.inputProps.isRegister || answers.isRegister,
-        }
-      );
+      this.props = {
+        ...this.props,
+        moduleName: this.inputProps.moduleName || answers.moduleName,
+        componentName: pascalCase(this.inputProps.componentName || answers.componentName),
+        componentType: this.inputProps.componentType || answers.componentType,
+        isRegister: this.inputProps.isRegister || answers.isRegister,
+        isAddComponentToStoryBook: (
+          this.inputProps.isAddComponentToStoryBook ||
+          answers.isAddComponentToStoryBook
+        ),
+      };
       this.props.componentPath = this._getComponentsPath(
         { isAbsolute: true },
         this.props.moduleName,
@@ -58,40 +60,40 @@ module.exports = class extends VulcanGenerator {
 
   configuring () {
     if (!this._canConfigure()) { return; }
-    const actions = {
-      dontask: 'SET_STORYBOOK_DONT_ASK',
-      pending: 'SET_STORYBOOK_PENDING',
-      installing: 'SET_STORYBOOK_INSTALLING',
-    };
-    const action = actions[this.props.storyBookStatus];
-    if (action) {
-      this._dispatch({
-        type: actions[this.props.storyBookStatus],
-      });
-    }
+    this._dispatch({
+      type: 'SET_STORYBOOK_SETUP_STATUS',
+      status: this.props.storyBookSetupStatus,
+    });
     this._commitStore();
+    this._installStorybook();
   }
 
   _canInstall () {
-    return super._canInstall() && this.props.storyBookStatus === 'installing';
+    return super._canInstall() && this._getStoryBookSetupStatus() === 'installing';
   }
 
-  install () {
+  _installStorybook () {
     if (!this._canInstall()) { return; }
     this.log(chalk.green('\nTaking you to react storybook setup... \n'));
     this.spawnCommandSync('getstorybook');
     this._dispatch({
-      type: 'SET_STORYBOOK_INSTALLED',
+      type: 'SET_STORYBOOK_SETUP_STATUS',
+      status: 'installed',
     });
+    this._commitStore();
   }
 
-  writing () {
-    if (!this._canWrite()) { return; }
+  _writeComponent () {
     this.fs.copyTpl(
       this.props.templatePath,
       this.props.componentPath,
       this.props
     );
+  }
+
+  writing () {
+    if (!this._canWrite()) { return; }
+    this._writeComponent();
   }
 
   end () {
