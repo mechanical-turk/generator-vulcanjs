@@ -36,11 +36,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestFragments() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testFragmentsProps = _extends({}, this.props, {
       subjectName: 'fragments',
       subjectPath: '../fragments'
     });
-    this.fs.copyTpl(this.templatePath('test.js'), this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('test.js'), this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'), testFragmentsProps);
   }
 
   _updateModuleIndex() {

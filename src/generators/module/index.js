@@ -60,7 +60,7 @@ module.exports = class extends VulcanGenerator {
         this.props.hasTotalResolver = defaultResolvers.total;
       }
       this._assertIsPackageExists(this.props.packageName);
-      this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
+      this._assertNotModuleExists(this.props.packageName, this.props.moduleName);
     });
   }
 
@@ -83,7 +83,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestCollection () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'collection',
       subjectPath: '../collection',
@@ -91,7 +91,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'collection.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -105,7 +105,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestResolvers () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'resolvers',
       subjectPath: '../resolvers',
@@ -113,29 +113,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'resolvers.js'),
-      testCollectionProps
-    );
-  }
-
-  _writeFragments () {
-    if (!this.props.moduleParts.fragments) { return; }
-    this.fs.copyTpl(
-      this.templatePath('fragments.js'),
-      this._getModulePath({ isAbsolute: true }, 'fragments.js'),
-      this.props
-    );
-  }
-
-  _writeTestFragments () {
-    const testCollectionProps = {
-      ...this.props,
-      subjectName: 'fragments',
-      subjectPath: '../fragments',
-    };
-    this.fs.copyTpl(
-      this.templatePath('tests/generic.js'),
-      this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -149,7 +127,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestMutations () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'mutations',
       subjectPath: '../mutations',
@@ -157,7 +135,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'mutations.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -171,7 +149,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestParameters () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'parameters',
       subjectPath: '../parameters',
@@ -179,7 +157,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -193,7 +171,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestPermissions () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'permissions',
       subjectPath: '../permissions',
@@ -201,7 +179,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'permissions.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -215,7 +193,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestSchema () {
-    const testCollectionProps = {
+    const testProps = {
       ...this.props,
       subjectName: 'schema',
       subjectPath: '../scjema',
@@ -223,7 +201,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/generic.js'),
       this._getModuleTestPath({ isAbsolute: true }, 'schema.js'),
-      testCollectionProps
+      testProps
     );
   }
 
@@ -266,7 +244,6 @@ module.exports = class extends VulcanGenerator {
   _writeAllCode () {
     this._writeCollection();
     this._writeResolvers();
-    this._writeFragments();
     this._writeMutations();
     this._writeParameters();
     this._writePermissions();
@@ -277,7 +254,6 @@ module.exports = class extends VulcanGenerator {
   _writeAllTests () {
     this._writeTestCollection();
     this._writeTestResolvers();
-    this._writeTestFragments();
     this._writeTestMutations();
     this._writeTestParameters();
     this._writeTestPermissions();

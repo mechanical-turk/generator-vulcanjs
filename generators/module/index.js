@@ -55,7 +55,7 @@ module.exports = class extends VulcanGenerator {
         this.props.hasTotalResolver = defaultResolvers.total;
       }
       this._assertIsPackageExists(this.props.packageName);
-      this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
+      this._assertNotModuleExists(this.props.packageName, this.props.moduleName);
     });
   }
 
@@ -76,11 +76,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestCollection() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'collection',
       subjectPath: '../collection'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'collection.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'collection.js'), testProps);
   }
 
   _writeResolvers() {
@@ -91,26 +91,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestResolvers() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'resolvers',
       subjectPath: '../resolvers'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'resolvers.js'), testCollectionProps);
-  }
-
-  _writeFragments() {
-    if (!this.props.moduleParts.fragments) {
-      return;
-    }
-    this.fs.copyTpl(this.templatePath('fragments.js'), this._getModulePath({ isAbsolute: true }, 'fragments.js'), this.props);
-  }
-
-  _writeTestFragments() {
-    const testCollectionProps = _extends({}, this.props, {
-      subjectName: 'fragments',
-      subjectPath: '../fragments'
-    });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'resolvers.js'), testProps);
   }
 
   _writeMutations() {
@@ -121,11 +106,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestMutations() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'mutations',
       subjectPath: '../mutations'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'mutations.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'mutations.js'), testProps);
   }
 
   _writeParameters() {
@@ -136,11 +121,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestParameters() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'parameters',
       subjectPath: '../parameters'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'), testProps);
   }
 
   _writePermissions() {
@@ -151,11 +136,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestPermissions() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'permissions',
       subjectPath: '../permissions'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'permissions.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'permissions.js'), testProps);
   }
 
   _writeSchema() {
@@ -166,11 +151,11 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeTestSchema() {
-    const testCollectionProps = _extends({}, this.props, {
+    const testProps = _extends({}, this.props, {
       subjectName: 'schema',
       subjectPath: '../scjema'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'schema.js'), testCollectionProps);
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'schema.js'), testProps);
   }
 
   _writeStories() {
@@ -196,7 +181,6 @@ module.exports = class extends VulcanGenerator {
   _writeAllCode() {
     this._writeCollection();
     this._writeResolvers();
-    this._writeFragments();
     this._writeMutations();
     this._writeParameters();
     this._writePermissions();
@@ -207,7 +191,6 @@ module.exports = class extends VulcanGenerator {
   _writeAllTests() {
     this._writeTestCollection();
     this._writeTestResolvers();
-    this._writeTestFragments();
     this._writeTestMutations();
     this._writeTestParameters();
     this._writeTestPermissions();
