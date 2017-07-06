@@ -27,6 +27,16 @@ const messages = {
   isPackageAutoAdd: 'Add to .meteor/packages',
   storyBookSetupStatus: 'Looks like you havent set up your react storybook. Would you like to do it now?',
   isAddComponentToStoryBook: 'Add component to storybook',
+  isAddCustomCollectionProperty: 'Add a custom property to the collection',
+  isAddAnotherCustomCollectionProperty: 'Add another custom property to the collection',
+  collectionPropertyName: 'Property name',
+  isCollectionPropertyHidden: 'Property is hidden',
+  collectionPropertyLabel: 'Property label',
+  collectionPropertyType: 'Property type',
+  isCollectionPropertyOptional: 'Property is optional',
+  collectionPropertyViewableBy: 'Property viewable by',
+  collectionPropertyInsertableBy: 'Property insertable by',
+  collectionPropertyEditableBy: 'Property editable by',
 };
 
 const errors = {

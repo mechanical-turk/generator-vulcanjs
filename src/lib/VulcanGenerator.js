@@ -579,6 +579,112 @@ module.exports = class VulcanGenerator extends Generator {
     };
   }
 
+  _getIsAddCustomCollectionPropertyQuestion () {
+    return {
+      type: 'confirm',
+      name: 'isAddCustomCollectionProperty',
+      message: uiText.messages.IsAddCustomCollectionProperty,
+      when: () => (!this.inputProps.IsAddCustomCollectionProperty),
+    };
+  }
+
+  _getCollectionPropertyNameQuestion () {
+    return {
+      type: 'input',
+      name: 'collectionPropertyName',
+      message: uiText.messages.collectionPropertyName,
+      // when: () => (!this.inputProps.collectionPropertyName),
+      validate: validations.assertNonEmpty,
+    };
+  }
+
+  _getIsCollectionPropertyHiddenQuestion () {
+    return {
+      type: 'confirm',
+      name: 'isCollectionPropertyHidden',
+      message: uiText.messages.isCollectionPropertyHidden,
+    };
+  }
+
+  _getCollectionPropertyLabelQuestion () {
+    return {
+      type: 'input',
+      name: 'collectionPropertyLabel',
+      message: uiText.messages.collectionPropertyLabel,
+      when: (answers) => (!answers.isCollectionPropertyHidden),
+      validate: validations.assertNonEmpty,
+    };
+  }
+
+  _getCollectionPropertyTypeQuestion () {
+    return {
+      type: 'list',
+      name: 'collectionPropertyType',
+      message: uiText.messages.collectionPropertyType,
+      choices: common.collectionPropertyTypes,
+      // when: () => (!this.inputProps.collectionPropertyType),
+    };
+  }
+
+  _getIsCollectionPropertyOptionalQuestion () {
+    return {
+      type: 'confirm',
+      name: 'isCollectionPropertyOptional',
+      message: uiText.messages.isCollectionPropertyOptional,
+      // when: () => (!this.inputProps.collectionPropertyType),
+    };
+  }
+
+  _getCollectionPropertyViewableByQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'collectionPropertyViewableBy',
+      message: uiText.messages.collectionPropertyViewableBy,
+      choices: common.visitorTypes,
+    };
+  }
+
+  _getCollectionPropertyInsertableByQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'collectionPropertyInsertableBy',
+      message: uiText.messages.collectionPropertyInsertableBy,
+      choices: common.visitorTypes,
+    };
+  }
+
+  _getCollectionPropertyEditableByQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'collectionPropertyEditableBy',
+      message: uiText.messages.collectionPropertyEditableBy,
+      choices: common.visitorTypes,
+    };
+  }
+
+  _getIsAddAnotherCustomCollectionPropertyQuestion () {
+    return {
+      type: 'confirm',
+      name: 'isAddAnotherCustomCollectionProperty',
+      message: uiText.messages.isAddAnotherCustomCollectionProperty,
+      // when: () => (!this.inputProps.IsAddCustomCollectionProperty),
+    };
+  }
+
+  _getAllCollectionPropertyQuestions () {
+    return [
+      this._getCollectionPropertyNameQuestion(),
+      this._getIsCollectionPropertyHiddenQuestion(),
+      this._getCollectionPropertyLabelQuestion(),
+      this._getCollectionPropertyTypeQuestion(),
+      this._getIsCollectionPropertyOptionalQuestion(),
+      this._getCollectionPropertyViewableByQuestion(),
+      this._getCollectionPropertyInsertableByQuestion(),
+      this._getCollectionPropertyEditableByQuestion(),
+      this._getIsAddAnotherCustomCollectionPropertyQuestion(),
+    ];
+  }
+
   /*
     Arguments
   */

@@ -18,6 +18,10 @@ const reactExtensions = ['jsx', 'js'];
 
 const packageManagers = ['yarn', 'npm'];
 
+const visitorTypes = ['guest', 'member', 'admin'];
+
+const collectionPropertyTypes = ['String', 'Number', 'Array', 'Object', 'Custom'];
+
 const getDefaultChoiceIndex = (choices, option) => {
   const index = choices.findIndex((elem) => elem === option);
   return Math.max(index, 0);
@@ -27,6 +31,8 @@ const exposed = {
   alphabeticalSort,
   reactExtensions,
   packageManagers,
+  visitorTypes,
+  collectionPropertyTypes,
   getDefaultChoiceIndex,
   getSetFromArr,
 };
