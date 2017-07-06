@@ -81,21 +81,6 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'), testProps);
   }
 
-  _writePermissions() {
-    if (!this.props.moduleParts.permissions) {
-      return;
-    }
-    this.fs.copyTpl(this.templatePath('permissions.js'), this._getModulePath({ isAbsolute: true }, 'permissions.js'), this.props);
-  }
-
-  _writeTestPermissions() {
-    const testProps = _extends({}, this.props, {
-      subjectName: 'permissions',
-      subjectPath: '../permissions'
-    });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'permissions.js'), testProps);
-  }
-
   _writeStories() {
     this.fs.copyTpl(this.templatePath('stories.js'), this._getModuleStoriesPath({ isAbsolute: true }), this.props);
   }
@@ -119,14 +104,12 @@ module.exports = class extends VulcanGenerator {
   _writeAllCode() {
     this._writeCollection();
     this._writeParameters();
-    this._writePermissions();
     // this._writeStories();
   }
 
   _writeAllTests() {
     this._writeTestCollection();
     this._writeTestParameters();
-    this._writeTestPermissions();
   }
 
   _updateAllCode() {
