@@ -1,11 +1,3 @@
-const gulpBeautify = require('gulp-beautify');
-
-const beautify = function () {
-  this.registerTransformStream(
-    gulpBeautify({ indent_size: 2 })
-  );
-};
-
 const alphabeticalSort = (a, b) => {
   const aLower = a.toLowerCase();
   const bLower = b.toLowerCase();
@@ -32,7 +24,6 @@ const getDefaultChoiceIndex = (choices, option) => {
 };
 
 const exposed = {
-  beautify,
   alphabeticalSort,
   reactExtensions,
   packageManagers,

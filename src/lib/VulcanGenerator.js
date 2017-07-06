@@ -7,10 +7,11 @@ const logger = require('redux-node-logger');
 const reducers = require('./reducers');
 const common = require('./common');
 const uiText = require('./ui-text');
+const camelCase = require('camelcase');
+const beautify = require('gulp-beautify');
 
 let store;
 const errors = {};
-const camelCase = require('camelcase');
 
 module.exports = class VulcanGenerator extends Generator {
   constructor (args, options) {
@@ -31,7 +32,9 @@ module.exports = class VulcanGenerator extends Generator {
       }
     }
     this._registerArguments();
-    common.beautify.bind(this)();
+    this.registerTransformStream(
+      beautify({ indent_size: 2 })
+    );
   }
 
   _registerArguments () {}
