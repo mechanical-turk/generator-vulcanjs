@@ -28,7 +28,6 @@ module.exports = class extends VulcanGenerator {
         packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
         storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
       };
-      console.log(this.props);
       this._assertPackageHasNonZeroModules(this.props.packageName);
       const secondQuestions = [
         this._getModuleNameListQuestion(),
@@ -105,11 +104,10 @@ module.exports = class extends VulcanGenerator {
       isAbsolute: true,
     });
     const fileText = this.fs.read(moduleStoriesPath);
-    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`
-    console.log(importStatement);
+    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`;
     const fileWithImportText = ast.addImportStatementAndParse(
       fileText,
-      importStatement,
+      importStatement
     );
     this.fs.write(
       moduleStoriesPath,
@@ -120,7 +118,7 @@ module.exports = class extends VulcanGenerator {
   writing () {
     if (!this._canWrite()) { return; }
     this._writeComponent();
-    this._updateModuleStories();
+    // this._updateModuleStories();
   }
 
   end () {
