@@ -317,6 +317,14 @@ module.exports = class VulcanGenerator extends Generator {
     );
   }
 
+  _getModuleTestPath (options, ...args) {
+    return this._getModulePath(
+      options,
+      'test',
+      ...args
+    );
+  }
+
   _getPackageStoriesPath (options, ...args) {
     return this._getComponentsPath(
       options,
@@ -484,6 +492,43 @@ module.exports = class VulcanGenerator extends Generator {
       name: 'isAddComponentToStoryBook',
       message: common.messages.isAddComponentToStoryBook,
       when: () => (!this.inputProps.isAddComponentToStoryBook),
+    };
+  }
+
+  _getModuleCreateWithQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'moduleParts',
+      message: 'Create with',
+      choices: [
+        { name: 'Collection', value: 'collection', checked: true, disabled: true },
+        { name: 'Fragments', value: 'fragments', checked: true },
+        { name: 'Mutations', value: 'mutations', checked: true },
+        { name: 'Parameters', value: 'parameters', checked: true },
+        { name: 'Permissions', value: 'permissions', checked: true },
+        { name: 'Resolvers', value: 'resolvers', checked: true },
+        { name: 'Schema', value: 'schema', checked: true },
+      ],
+      when: () => (!this.inputProps.moduleParts),
+      filter: common.getSetFromArr,
+    };
+  }
+
+  _getDefaultResolversQuestion () {
+    return {
+      type: 'checkbox',
+      name: 'defaultResolvers',
+      message: 'Default resolvers',
+      choices: [
+        { name: 'List', value: 'list', checked: true },
+        { name: 'Single', value: 'single', checked: true },
+        { name: 'Total', value: 'total', checked: true },
+      ],
+      when: (answers) => (
+        !this.inputProps.defaultResolvers &&
+        answers.moduleParts.resolvers
+      ),
+      filter: common.getSetFromArr,
     };
   }
 

@@ -14,6 +14,14 @@ const alphabeticalSort = (a, b) => {
   return 0;
 };
 
+const getSetFromArr = (arr) => {
+  const set = {};
+  arr.forEach((elem) => {
+    set[elem] = true;
+  });
+  return set;
+};
+
 const descriptions = {
   appName: 'The name of your app',
   reactExtension: 'Default react component extension',
@@ -58,6 +66,7 @@ const exposed = {
   reactExtensions,
   packageManagers,
   getDefaultChoiceIndex,
+  getSetFromArr,
 };
 
 module.exports = exposed;

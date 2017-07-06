@@ -1,15 +1,9 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
-
-function getSetFromArr(arr) {
-  const set = {};
-  arr.forEach(elem => {
-    set[elem] = true;
-  });
-  return set;
-}
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -22,21 +16,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getPackageNameListQuestion(), this._getModuleNameInputQuestion(), {
-      type: 'checkbox',
-      name: 'moduleParts',
-      message: 'Create with',
-      choices: [{ name: 'Collection', value: 'collection', checked: true, disabled: true }, { name: 'Fragments', value: 'fragments', checked: true }, { name: 'Mutations', value: 'mutations', checked: true }, { name: 'Parameters', value: 'parameters', checked: true }, { name: 'Permissions', value: 'permissions', checked: true }, { name: 'Resolvers', value: 'resolvers', checked: true }, { name: 'Schema', value: 'schema', checked: true }],
-      when: () => !this.inputProps.moduleParts,
-      filter: getSetFromArr
-    }, {
-      type: 'checkbox',
-      name: 'defaultResolvers',
-      message: 'Default Resolvers',
-      choices: [{ name: 'List', value: 'list', checked: true }, { name: 'Single', value: 'single', checked: true }, { name: 'Total', value: 'total', checked: true }],
-      when: answers => !this.inputProps.defaultResolvers && answers.moduleParts.resolvers,
-      filter: getSetFromArr
-    }];
+    const questions = [this._getPackageNameListQuestion(), this._getModuleNameInputQuestion(), this._getModuleCreateWithQuestion(), this._getDefaultResolversQuestion()];
 
     return this.prompt(questions).then(answers => {
       const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
@@ -90,11 +70,27 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('collection.js'), this._getModulePath({ isAbsolute: true }, 'collection.js'), this.props);
   }
 
+  _writeTestCollection() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'collection',
+      subjectPath: '../collection'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'collection.js'), testCollectionProps);
+  }
+
   _writeResolvers() {
     if (!this.props.moduleParts.resolvers) {
       return;
     }
     this.fs.copyTpl(this.templatePath('resolvers.js'), this._getModulePath({ isAbsolute: true }, 'resolvers.js'), this.props);
+  }
+
+  _writeTestResolvers() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'resolvers',
+      subjectPath: '../resolvers'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'resolvers.js'), testCollectionProps);
   }
 
   _writeFragments() {
@@ -104,11 +100,27 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('fragments.js'), this._getModulePath({ isAbsolute: true }, 'fragments.js'), this.props);
   }
 
+  _writeTestFragments() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'fragments',
+      subjectPath: '../fragments'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'), testCollectionProps);
+  }
+
   _writeMutations() {
     if (!this.props.moduleParts.mutations) {
       return;
     }
     this.fs.copyTpl(this.templatePath('mutations.js'), this._getModulePath({ isAbsolute: true }, 'mutations.js'), this.props);
+  }
+
+  _writeTestMutations() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'mutations',
+      subjectPath: '../mutations'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'mutations.js'), testCollectionProps);
   }
 
   _writeParameters() {
@@ -118,6 +130,14 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('parameters.js'), this._getModulePath({ isAbsolute: true }, 'parameters.js'), this.props);
   }
 
+  _writeTestParameters() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'parameters',
+      subjectPath: '../parameters'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'), testCollectionProps);
+  }
+
   _writePermissions() {
     if (!this.props.moduleParts.permissions) {
       return;
@@ -125,11 +145,27 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('permissions.js'), this._getModulePath({ isAbsolute: true }, 'permissions.js'), this.props);
   }
 
+  _writeTestPermissions() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'permissions',
+      subjectPath: '../permissions'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'permissions.js'), testCollectionProps);
+  }
+
   _writeSchema() {
     if (!this.props.moduleParts.schema) {
       return;
     }
     this.fs.copyTpl(this.templatePath('schema.js'), this._getModulePath({ isAbsolute: true }, 'schema.js'), this.props);
+  }
+
+  _writeTestSchema() {
+    const testCollectionProps = _extends({}, this.props, {
+      subjectName: 'schema',
+      subjectPath: '../scjema'
+    });
+    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'schema.js'), testCollectionProps);
   }
 
   _writeStories() {
@@ -152,10 +188,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.write(packageStoriesPath, fileWithImportText);
   }
 
-  writing() {
-    if (!this._canWrite()) {
-      return;
-    }
+  _writeAllCode() {
     this._writeCollection();
     this._writeResolvers();
     this._writeFragments();
@@ -164,8 +197,30 @@ module.exports = class extends VulcanGenerator {
     this._writePermissions();
     this._writeSchema();
     // this._writeStories();
+  }
+
+  _writeAllTests() {
+    this._writeTestCollection();
+    this._writeTestResolvers();
+    this._writeTestFragments();
+    this._writeTestMutations();
+    this._writeTestParameters();
+    this._writeTestPermissions();
+    this._writeTestSchema();
+  }
+
+  _updateAllCode() {
     this._updateModulesIndex();
     // this._updatePackageStories();
+  }
+
+  writing() {
+    if (!this._canWrite()) {
+      return;
+    }
+    this._writeAllCode();
+    this._writeAllTests();
+    this._updateAllCode();
   }
 
   end() {
