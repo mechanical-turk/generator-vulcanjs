@@ -13,6 +13,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerPackageNameOption();
     this._registerModuleNameOption();
+    this._registerComponentNameOption();
   }
 
   prompting () {

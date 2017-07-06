@@ -3,11 +3,12 @@ const Generator = require('yeoman-generator');
 const dashify = require('dashify');
 const Redux = require('redux');
 const logger = require('redux-node-logger');
+const camelCase = require('camelcase');
+const beautify = require('gulp-beautify');
 const reducers = require('./reducers');
 const common = require('./common');
 const uiText = require('./ui-text');
-const camelCase = require('camelcase');
-const beautify = require('gulp-beautify');
+const validations = require('./validations');
 
 let store;
 const errors = {};
@@ -353,8 +354,19 @@ module.exports = class VulcanGenerator extends Generator {
   }
 
   /*
-    Common Questions
+    All Questions
   */
+
+  _getAppNameQuestion () {
+    return {
+      type: 'input',
+      name: 'appName',
+      message: uiText.messages.appName,
+      when: () => (!this.inputProps.appName),
+      default: this.options.appname,
+      validate: validations.assertNonEmpty,
+    };
+  }
 
   _getPackageNameInputQuestion () {
     return {
@@ -363,6 +375,7 @@ module.exports = class VulcanGenerator extends Generator {
       message: uiText.messages.packageName,
       when: () => (!this.inputProps.packageName),
       default: this.options.packagename,
+      validate: validations.assertNonEmpty,
     };
   }
 
@@ -387,6 +400,7 @@ module.exports = class VulcanGenerator extends Generator {
       message: uiText.messages.moduleName,
       when: () => (!this.inputProps.moduleName),
       default: this.options.moduleName,
+      validate: validations.assertNonEmpty,
     };
   }
 
@@ -417,8 +431,9 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'input',
       name: 'componentName',
-      message: 'Component name',
+      message: uiText.messages.componentName,
       when: () => (!this.inputProps.componentName),
+      validate: validations.assertNonEmpty,
     };
   }
 
@@ -536,16 +551,6 @@ module.exports = class VulcanGenerator extends Generator {
     };
   }
 
-  _getAppNameQuestion () {
-    return {
-      type: 'input',
-      name: 'appName',
-      message: uiText.messages.appName,
-      when: () => (!this.inputProps.appName),
-      default: this.options.appname,
-    };
-  }
-
   _getReactExtensionQuestion () {
     return {
       type: 'list',
@@ -590,30 +595,6 @@ module.exports = class VulcanGenerator extends Generator {
     );
   }
 
-  _registerReactExtensionOption () {
-    this.option(
-      'reactextension',
-      {
-        type: String,
-        required: false,
-        alias: 'rx',
-        desc: uiText.descriptions.reactExtension,
-      }
-    );
-  }
-
-  _registerPackageManagerOption () {
-    this.option(
-      'packagemanager',
-      {
-        type: String,
-        required: false,
-        alias: 'pm',
-        desc: uiText.descriptions.packageManager,
-      }
-    );
-  }
-
   _registerPackageNameOption () {
     this.option(
       'packagename',
@@ -634,6 +615,42 @@ module.exports = class VulcanGenerator extends Generator {
         required: false,
         alias: 'm',
         desc: uiText.descriptions.moduleName,
+      }
+    );
+  }
+
+  _registerComponentNameOption () {
+    this.option(
+      'componentname',
+      {
+        type: String,
+        required: false,
+        alias: 'c',
+        desc: uiText.descriptions.componentName,
+      }
+    );
+  }
+
+  _registerReactExtensionOption () {
+    this.option(
+      'reactextension',
+      {
+        type: String,
+        required: false,
+        alias: 'rx',
+        desc: uiText.descriptions.reactExtension,
+      }
+    );
+  }
+
+  _registerPackageManagerOption () {
+    this.option(
+      'packagemanager',
+      {
+        type: String,
+        required: false,
+        alias: 'pm',
+        desc: uiText.descriptions.packageManager,
       }
     );
   }
