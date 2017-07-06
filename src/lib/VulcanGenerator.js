@@ -29,33 +29,11 @@ module.exports = class VulcanGenerator extends Generator {
         );
       }
     }
-    this._registerCommonArguments();
     this._registerArguments();
     common.beautify.bind(this)();
   }
 
   _registerArguments () {}
-
-  _registerCommonArguments () {
-    this.option(
-      'packagename',
-      {
-        type: String,
-        required: false,
-        alias: 'p',
-        desc: common.descriptions.packageName,
-      }
-    );
-    this.option(
-      'modulename',
-      {
-        type: String,
-        required: false,
-        alias: 'm',
-        desc: common.descriptions.moduleName,
-      }
-    );
-  }
 
   /*
     State management
@@ -553,5 +531,107 @@ module.exports = class VulcanGenerator extends Generator {
       ],
       when: () => (!this.inputProps.vulcanDependencies),
     };
+  }
+
+  _getAppNameQuestion () {
+    return {
+      type: 'input',
+      name: 'appName',
+      message: common.messages.appName,
+      when: () => (!this.inputProps.appName),
+      default: this.options.appname,
+    };
+  }
+
+  _getReactExtensionQuestion () {
+    return {
+      type: 'list',
+      name: 'reactExtension',
+      message: common.messages.reactExtension,
+      choices: common.reactExtensions,
+      when: () => (!this.inputProps.reactExtension),
+      default: common.getDefaultChoiceIndex(
+        common.reactExtensions,
+        this.options.reactextension
+      ),
+    };
+  }
+
+  _getPackageManagerQuestion () {
+    return {
+      type: 'list',
+      name: 'packageManager',
+      message: common.messages.packageManager,
+      choices: common.packageManagers,
+      when: () => (!this.inputProps.packageManager),
+      default: common.getDefaultChoiceIndex(
+        common.packageManagers,
+        this.options.packagemanager
+      ),
+    };
+  }
+
+  /*
+    Arguments
+  */
+
+  _registerAppNameOption () {
+    this.option(
+      'appname',
+      {
+        type: String,
+        required: false,
+        alias: 'n',
+        desc: common.descriptions.appName,
+      }
+    );
+  }
+
+  _registerReactExtensionOption () {
+    this.option(
+      'reactextension',
+      {
+        type: String,
+        required: false,
+        alias: 'rx',
+        desc: common.descriptions.reactExtension,
+      }
+    );
+  }
+
+  _registerPackageManagerOption () {
+    this.option(
+      'packagemanager',
+      {
+        type: String,
+        required: false,
+        alias: 'pm',
+        desc: common.descriptions.packageManager,
+      }
+    );
+  }
+
+  _registerPackageNameOption () {
+    this.option(
+      'packagename',
+      {
+        type: String,
+        required: false,
+        alias: 'p',
+        desc: common.descriptions.packageName,
+      }
+    );
+  }
+
+  _registerModuleNameOption () {
+    this.option(
+      'modulename',
+      {
+        type: String,
+        required: false,
+        alias: 'm',
+        desc: common.descriptions.moduleName,
+      }
+    );
   }
 };

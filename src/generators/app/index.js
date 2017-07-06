@@ -1,36 +1,11 @@
 const chalk = require('chalk');
-const common = require('../../lib/common');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   _registerArguments () {
-    this.option(
-      'appname',
-      {
-        type: String,
-        required: false,
-        alias: 'n',
-        desc: common.descriptions.appName,
-      }
-    );
-    this.option(
-      'reactextension',
-      {
-        type: String,
-        required: false,
-        alias: 'rx',
-        desc: common.descriptions.reactExtension,
-      }
-    );
-    this.option(
-      'packagemanager',
-      {
-        type: String,
-        required: false,
-        alias: 'pm',
-        desc: common.descriptions.packageManager,
-      }
-    );
+    this._registerAppNameOption();
+    this._registerReactExtensionOption();
+    this._registerPackageManagerOption();
   }
 
   initializing () {
@@ -41,35 +16,9 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      {
-        type: 'input',
-        name: 'appName',
-        message: common.messages.appName,
-        when: () => (!this.inputProps.appName),
-        default: this.options.appname,
-      },
-      {
-        type: 'list',
-        name: 'reactExtension',
-        message: common.messages.reactExtension,
-        choices: common.reactExtensions,
-        when: () => (!this.inputProps.reactExtension),
-        default: common.getDefaultChoiceIndex(
-          common.reactExtensions,
-          this.options.reactextension
-        ),
-      },
-      {
-        type: 'list',
-        name: 'packageManager',
-        message: common.messages.packageManager,
-        choices: common.packageManagers,
-        when: () => (!this.inputProps.packageManager),
-        default: common.getDefaultChoiceIndex(
-          common.packageManagers,
-          this.options.packagemanager
-        ),
-      },
+      this._getAppNameQuestion(),
+      this._getReactExtensionQuestion(),
+      this._getPackageManagerQuestion(),
     ];
 
     return this.prompt(questions).then((answers) => {

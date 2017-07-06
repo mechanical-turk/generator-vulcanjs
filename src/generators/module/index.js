@@ -10,6 +10,11 @@ module.exports = class extends VulcanGenerator {
     this.inputProps = {};
   }
 
+  _registerArguments () {
+    this._registerPackageNameOption();
+    this._registerModuleNameOption();
+  }
+
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [

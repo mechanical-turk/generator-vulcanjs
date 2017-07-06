@@ -9,6 +9,10 @@ module.exports = class extends VulcanGenerator {
     this.inputProps = {};
   }
 
+  _registerArguments() {
+    this._registerPackageNameOption();
+  }
+
   prompting() {
     if (!this._canPrompt()) {
       return false;
@@ -77,11 +81,8 @@ module.exports = class extends VulcanGenerator {
     });
     const fileText = this.fs.read(rootStoriesIndexPath);
     const importStatement = `import '${packageStoriesPath}';`;
-    // const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
-    // this.fs.write(
-    //   rootStoriesIndexPath,
-    //   fileTextWithWithImport
-    // );
+    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
+    this.fs.write(rootStoriesIndexPath, fileTextWithWithImport);
   }
 
   writing() {
@@ -95,7 +96,7 @@ module.exports = class extends VulcanGenerator {
     this._writeModulesIndex();
     this._writeRoutes();
     this._writeStoriesJs();
-    this._updateRootStoriesIndex();
+    // this._updateRootStoriesIndex();
   }
 
   end() {
