@@ -17,37 +17,48 @@ module.exports = class extends VulcanGenerator {
     const questions = [
       this._getPackageNameListQuestion(),
       this._getModuleNameListQuestion(),
+      this._getDefaultResolversQuestion(),
     ];
     return this.prompt(questions)
     .then((answers) => {
+      const camelModuleName = this._getFinalCamelModuleName(answers);
+      const defaultResolvers = this._getFinalDefaultResolvers(answers);
       this.props = {
         packageName: this._getFinalPackageName(answers),
         moduleName: this._getFinalModuleName(answers),
-        typeName: this._getFinalPascalModuleName(answers),
+        collectionName: this._getFinalCollectionName(answers),
+        listResolverName: `${camelModuleName}List`,
+        singleResolverName: `${camelModuleName}Single`,
+        totalResolverName: `${camelModuleName}Total`,
+        hasListResolver: defaultResolvers.list,
+        hasSingleResolver: defaultResolvers.single,
+        hasTotalResolver: defaultResolvers.total,
       };
+
+      console.log(this.props);
 
       this._assertIsPackageExists(this.props.packageName);
       this._assertIsModuleExists(this.props.packageName, this.props.moduleName);
     });
   }
 
-  _writeFragments () {
+  _writeResolvers () {
     this.fs.copyTpl(
-      this.templatePath('fragments.js'),
-      this._getModulePath({ isAbsolute: true }, 'fragments.js'),
+      this.templatePath('resolvers.js'),
+      this._getModulePath({ isAbsolute: true }, 'resolvers.js'),
       this.props
     );
   }
 
-  _writeTestFragments () {
+  _writeTestResolvers () {
     const testProps = {
       ...this.props,
-      subjectName: 'fragments',
-      subjectPath: '../fragments',
+      subjectName: 'resolvers',
+      subjectPath: '../resolvers',
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
-      this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'),
+      this._getModuleTestPath({ isAbsolute: true }, 'resolvers.js'),
       testProps
     );
   }
@@ -67,8 +78,8 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writeFragments();
-    this._writeTestFragments();
+    this._writeResolvers();
+    this._writeTestResolvers();
     // this._updateModuleIndex();
   }
 

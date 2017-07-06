@@ -23,7 +23,6 @@ module.exports = class extends VulcanGenerator {
       this.props = {
         packageName: this._getFinalPackageName(answers),
         moduleName: this._getFinalModuleName(answers),
-        typeName: this._getFinalPascalModuleName(answers),
       };
 
       this._assertIsPackageExists(this.props.packageName);
@@ -31,24 +30,24 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  _writeFragments () {
+  _writeSchema () {
     this.fs.copyTpl(
-      this.templatePath('fragments.js'),
-      this._getModulePath({ isAbsolute: true }, 'fragments.js'),
+      this.templatePath('schema.js'),
+      this._getModulePath({ isAbsolute: true }, 'schema.js'),
       this.props
     );
   }
 
-  _writeTestFragments () {
-    const testProps = {
+  _writeTestSchema () {
+    const testFragmentsProps = {
       ...this.props,
-      subjectName: 'fragments',
-      subjectPath: '../fragments',
+      subjectName: 'schema',
+      subjectPath: '../schema',
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
-      this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'),
-      testProps
+      this._getModuleTestPath({ isAbsolute: true }, 'schema.js'),
+      testFragmentsProps
     );
   }
 
@@ -67,8 +66,8 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writeFragments();
-    this._writeTestFragments();
+    this._writeSchema();
+    this._writeTestSchema();
     // this._updateModuleIndex();
   }
 

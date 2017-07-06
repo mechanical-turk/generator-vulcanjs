@@ -81,4 +81,3 @@ module.exports = class extends VulcanGenerator {
     this.log(chalk.green(`  ${this.props.packageManager} start \n`));
   }
 };
-//# sourceMappingURL=index.js.map

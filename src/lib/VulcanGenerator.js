@@ -527,10 +527,7 @@ module.exports = class VulcanGenerator extends Generator {
         { name: 'Single', value: 'single', checked: true },
         { name: 'Total', value: 'total', checked: true },
       ],
-      when: (answers) => (
-        !this.inputProps.defaultResolvers &&
-        answers.moduleParts.resolvers
-      ),
+      when: () => (!this.inputProps.defaultResolvers),
       filter: common.getSetFromArr,
     };
   }
@@ -789,4 +786,18 @@ module.exports = class VulcanGenerator extends Generator {
     const moduleName = this.inputProps.moduleName || answers.moduleName;
     return pascalCase(moduleName);
   }
+
+  _getFinalCamelModuleName (answers) {
+    const moduleName = this.inputProps.moduleName || answers.moduleName;
+    return camelCase(moduleName);
+  }
+
+  _getFinalDefaultResolvers (answers) {
+    return this.inputProps.defaultResolvers || answers.defaultResolvers;
+  }
+
+  _getFinalCollectionName (answers) {
+    return this._getFinalPascalModuleName(answers);
+  }
+
 };
