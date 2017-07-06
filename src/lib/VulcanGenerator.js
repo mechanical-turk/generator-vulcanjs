@@ -6,6 +6,7 @@ const Redux = require('redux');
 const logger = require('redux-node-logger');
 const reducers = require('./reducers');
 const common = require('./common');
+const uiText = require('./ui-text');
 
 let store;
 const errors = {};
@@ -143,7 +144,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertIsVulcan () {
     if (!store.getState().isVulcan) {
       errors.notVulcan = {
-        message: 'This is not a Vulcan.js project directory. \nYou cannot run Vulcan.js generators outside of a Vulcan.js project directory.',
+        message: uiText.errors.notVulcan,
       };
     }
   }
@@ -151,7 +152,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertIsNotVulcan () {
     if (store.getState().isVulcan) {
       errors.isVulcan = {
-        message: 'You are already in a Vulcan.js project directory. \nYou may not run this command inside a Vulcan.js project directory.',
+        message: uiText.errors.isVulcan,
       };
     }
   }
@@ -159,7 +160,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertIsPackageExists (packageName) {
     if (!this._isPackageExists(packageName)) {
       errors.notPackageExists = {
-        message: `The package ${packageName} does not exist. \nIf you'd like to work on this package, you should create it first by running: ${chalk.green(`vulcanjs:package ${packageName}`)}`,
+        message: uiText.errors.notPackageExists(packageName),
       };
     }
   }
@@ -167,7 +168,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertNotPackageExists (packageName) {
     if (this._isPackageExists(packageName)) {
       errors.isPackageExists = {
-        message: `A package with the name: '${packageName}' already exists. \nIf you'd like to overwrite this package, you should first run ${chalk.green(`vulcanjs:remove package --p ${packageName}`)}.`,
+        message: uiText.errors.isPackageExists(packageName),
       };
     }
   }
@@ -175,7 +176,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertModuleIsExists (packageName, moduleName) {
     if (!this._isModuleExists(packageName, moduleName)) {
       errors.notModuleExists = {
-        message: `A module with the name: '${moduleName}' under the package '${packageName}' does not exists. \nIf you'd like to work on this module, you should first run ${chalk.green(`vulcanjs:module --p ${packageName} --m ${moduleName}`)}.`,
+        message: uiText.errors.notModuleExists(packageName, moduleName),
       };
     }
   }
@@ -183,7 +184,7 @@ module.exports = class VulcanGenerator extends Generator {
   _assertModuleNotExists (packageName, moduleName) {
     if (this._isModuleExists(packageName, moduleName)) {
       errors.isModuleExists = {
-        message: `A module with the name: '${moduleName}' under the package '${packageName}' already exists. \nIf you'd like to overwrite this module, you should first run ${chalk.green(`vulcanjs:remove module --p ${packageName} --m ${moduleName}`)}.`,
+        message: uiText.errors.isModuleExists(packageName, moduleName),
       };
     }
   }
@@ -192,7 +193,7 @@ module.exports = class VulcanGenerator extends Generator {
     const packages = store.getState().packages;
     if (Object.keys(packages).length < 1) {
       errors.isZeroPackages = {
-        message: `The command you just ran requires at least 1 custom package to be present in your app. \nTo create a package, run ${chalk.green('vulcanjs:package')}`,
+        message: uiText.errors.isZeroPackages,
       };
     }
   }
@@ -201,7 +202,7 @@ module.exports = class VulcanGenerator extends Generator {
     this._assertIsPackageExists(packageName);
     if (!this._packageHasNonZeroModules(packageName)) {
       errors.isZeroModules = {
-        message: `The command you just ran requires at least 1 module to be present in the package: '${packageName}'. \nTo create a module in ${packageName}, run ${chalk.green(`vulcanjs:module --p ${packageName}`)}`,
+        message: uiText.errors.isZeroModules(packageName),
       };
     }
   }
@@ -357,7 +358,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'input',
       name: 'packageName',
-      message: common.messages.packageName,
+      message: uiText.messages.packageName,
       when: () => (!this.inputProps.packageName),
       default: this.options.packagename,
     };
@@ -367,7 +368,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'packageName',
-      message: common.messages.packageName,
+      message: uiText.messages.packageName,
       when: () => (!this.inputProps.packageName),
       choices: this._getPackageNames(),
       default: common.getDefaultChoiceIndex(
@@ -381,7 +382,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'input',
       name: 'moduleName',
-      message: common.messages.moduleName,
+      message: uiText.messages.moduleName,
       when: () => (!this.inputProps.moduleName),
       default: this.options.moduleName,
     };
@@ -391,7 +392,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'moduleName',
-      message: common.messages.moduleName,
+      message: uiText.messages.moduleName,
       when: () => (!this.inputProps.packageName),
       choices: this._getModuleNames(this.props.packageName),
       default: common.getDefaultChoiceIndex(
@@ -405,7 +406,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'confirm',
       name: 'isPackageAutoAdd',
-      message: common.messages.isPackageAutoAdd,
+      message: uiText.messages.isPackageAutoAdd,
       when: () => (!this.inputProps.packageName),
     };
   }
@@ -423,7 +424,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'componentType',
-      message: common.messages.componentType,
+      message: uiText.messages.componentType,
       choices: [
         { name: 'Pure Function', value: 'pure' },
         { name: 'Class Component', value: 'class' },
@@ -436,7 +437,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'confirm',
       name: 'isRegister',
-      message: common.messages.isRegisterComponent,
+      message: uiText.messages.isRegisterComponent,
       when: () => (!this.inputProps.isRegister),
     };
   }
@@ -445,7 +446,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'storyBookSetupStatus',
-      message: common.messages.storyBookSetupStatus,
+      message: uiText.messages.storyBookSetupStatus,
       choices: [
         { name: 'Yes, take me to storybook setup after this.', value: 'installing' },
         { name: 'No, ask later.', value: 'pending' },
@@ -468,7 +469,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'confirm',
       name: 'isAddComponentToStoryBook',
-      message: common.messages.isAddComponentToStoryBook,
+      message: uiText.messages.isAddComponentToStoryBook,
       when: () => (!this.inputProps.isAddComponentToStoryBook),
     };
   }
@@ -514,7 +515,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'checkbox',
       name: 'vulcanDependencies',
-      message: common.messages.vulcanDependencies,
+      message: uiText.messages.vulcanDependencies,
       choices: [
         { name: 'vulcan:core', checked: true },
         'vulcan:posts',
@@ -537,7 +538,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'input',
       name: 'appName',
-      message: common.messages.appName,
+      message: uiText.messages.appName,
       when: () => (!this.inputProps.appName),
       default: this.options.appname,
     };
@@ -547,7 +548,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'reactExtension',
-      message: common.messages.reactExtension,
+      message: uiText.messages.reactExtension,
       choices: common.reactExtensions,
       when: () => (!this.inputProps.reactExtension),
       default: common.getDefaultChoiceIndex(
@@ -561,7 +562,7 @@ module.exports = class VulcanGenerator extends Generator {
     return {
       type: 'list',
       name: 'packageManager',
-      message: common.messages.packageManager,
+      message: uiText.messages.packageManager,
       choices: common.packageManagers,
       when: () => (!this.inputProps.packageManager),
       default: common.getDefaultChoiceIndex(
@@ -582,7 +583,7 @@ module.exports = class VulcanGenerator extends Generator {
         type: String,
         required: false,
         alias: 'n',
-        desc: common.descriptions.appName,
+        desc: uiText.descriptions.appName,
       }
     );
   }
@@ -594,7 +595,7 @@ module.exports = class VulcanGenerator extends Generator {
         type: String,
         required: false,
         alias: 'rx',
-        desc: common.descriptions.reactExtension,
+        desc: uiText.descriptions.reactExtension,
       }
     );
   }
@@ -606,7 +607,7 @@ module.exports = class VulcanGenerator extends Generator {
         type: String,
         required: false,
         alias: 'pm',
-        desc: common.descriptions.packageManager,
+        desc: uiText.descriptions.packageManager,
       }
     );
   }
@@ -618,7 +619,7 @@ module.exports = class VulcanGenerator extends Generator {
         type: String,
         required: false,
         alias: 'p',
-        desc: common.descriptions.packageName,
+        desc: uiText.descriptions.packageName,
       }
     );
   }
@@ -630,7 +631,7 @@ module.exports = class VulcanGenerator extends Generator {
         type: String,
         required: false,
         alias: 'm',
-        desc: common.descriptions.moduleName,
+        desc: uiText.descriptions.moduleName,
       }
     );
   }
