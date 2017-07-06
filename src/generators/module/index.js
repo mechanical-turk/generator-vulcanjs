@@ -213,9 +213,9 @@ module.exports = class extends VulcanGenerator {
     this._writeParameters();
     this._writePermissions();
     this._writeSchema();
-    this._writeStories();
+    // this._writeStories();
     this._updateModulesIndex();
-    this._updatePackageStories();
+    // this._updatePackageStories();
   }
 
   end () {

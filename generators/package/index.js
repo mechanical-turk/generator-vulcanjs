@@ -77,8 +77,6 @@ module.exports = class extends VulcanGenerator {
     });
     const fileText = this.fs.read(rootStoriesIndexPath);
     const importStatement = `import '${packageStoriesPath}';`;
-    console.log(fileText);
-    console.log(importStatement);
     // const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
     // this.fs.write(
     //   rootStoriesIndexPath,

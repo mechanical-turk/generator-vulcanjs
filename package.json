@@ -26,7 +26,7 @@
     "camelcase": "^4.1.0",
     "chalk": "^2.0.1",
     "dashify": "^0.2.2",
-    "escodegen": "^1.8.1",
+    "escodegen-wallaby": "^1.6.11",
     "esprima": "^4.0.0",
     "gulp-beautify": "^2.0.1",
     "pascal-case": "^2.0.1",

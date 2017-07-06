@@ -13,7 +13,7 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const firstQuestions = [
-      this._getStoryBookSetupQuestion(),
+      // this._getStoryBookSetupQuestion(),
       this._getPackageNameListQuestion(),
     ];
 
@@ -30,7 +30,7 @@ module.exports = class extends VulcanGenerator {
         this._getComponentNameQuestion(),
         this._getComponentTypeQuestion(),
         this._getIsRegisterComponentQuestion(),
-        this._getIsAddComponentToStoryBookQuestion(),
+        // this._getIsAddComponentToStoryBookQuestion(),
       ];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
@@ -68,7 +68,7 @@ module.exports = class extends VulcanGenerator {
       });
     }
     this._commitStore();
-    this._installStorybook();
+    // this._installStorybook();
   }
 
   _canInstall () {

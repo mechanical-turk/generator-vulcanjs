@@ -16,7 +16,9 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const firstQuestions = [this._getStoryBookSetupQuestion(), this._getPackageNameListQuestion()];
+    const firstQuestions = [
+    // this._getStoryBookSetupQuestion(),
+    this._getPackageNameListQuestion()];
 
     return this.prompt(firstQuestions).then(answers => {
       this.props = {
@@ -25,7 +27,7 @@ module.exports = class extends VulcanGenerator {
       };
       console.log(this.props);
       this._assertPackageHasNonZeroModules(this.props.packageName);
-      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getComponentTypeQuestion(), this._getIsRegisterComponentQuestion(), this._getIsAddComponentToStoryBookQuestion()];
+      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getComponentTypeQuestion(), this._getIsRegisterComponentQuestion()];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
       }
@@ -57,7 +59,7 @@ module.exports = class extends VulcanGenerator {
       });
     }
     this._commitStore();
-    this._installStorybook();
+    // this._installStorybook();
   }
 
   _canInstall() {
