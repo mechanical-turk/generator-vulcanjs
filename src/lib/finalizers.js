@@ -1,17 +1,16 @@
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
-// const dashify = require('dashify');
-//
-// function filter (propName, propValue) {
-//   const appName = dashify;
-// }
+const filter = require('./filters').filter;
+
+let inputProps;
+let props;
+
+function setup (inputPropsSetup, propsSetup) {
+  inputProps = inputPropsSetup;
+  props = propsSetup;
+}
 
 function finalize (propName, ...args) {
-  const inputProps = this.inputProps;
-  const props = this.props;
-  const _filterAppName = this._filterAppName; // FIX
-  const _filterPackageName = this._filterPackageName; // FIX
-  const _filterModuleName = this._filterModuleName; // FIX
 
   function getRaw (keyBeforeRaw, answers) {
     return (
@@ -23,17 +22,17 @@ function finalize (propName, ...args) {
 
   function appName (answers) {
     const appNameRaw = getRaw.bind(this)('appName', answers);
-    return _filterAppName(appNameRaw);
+    return filter('appName', appNameRaw);
   }
 
   function packageName (answers) {
     const packageNameRaw = getRaw('packageName', answers);
-    return _filterPackageName(packageNameRaw);
+    return filter('packageName', packageNameRaw);
   }
 
   function moduleName (answers) {
     const moduleNameRaw = getRaw('moduleName', answers);
-    return _filterModuleName(moduleNameRaw);
+    return filter('moduleName', moduleNameRaw);
   }
 
   function pascalModuleName (answers) {
@@ -94,5 +93,6 @@ function finalize (propName, ...args) {
 }
 
 module.exports = {
+  setup,
   finalize,
 };

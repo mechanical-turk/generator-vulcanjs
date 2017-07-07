@@ -5,7 +5,7 @@ const ast = require('../../lib/ast');
 module.exports = class extends VulcanGenerator {
 
   initializing () {
-    this._assertIsVulcan();
+    this._assert('isVulcan');
     this.inputProps = {};
   }
 
@@ -27,7 +27,7 @@ module.exports = class extends VulcanGenerator {
         vulcanDependencies: this._finalize('vulcanDependencies', answers),
         isPackageAutoAdd: this._finalize('raw', 'isPackageAutoAdd', answers),
       };
-      this._assertNotPackageExists(this.props.packageName);
+      this._assert('notPackageExists', this.props.packageName);
     });
   }
 
@@ -124,7 +124,7 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    this._writeStoriesJs();
+    // this._writeStoriesJs();
     // this._updateRootStoriesIndex();
   }
 
