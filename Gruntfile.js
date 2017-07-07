@@ -2,7 +2,7 @@ module.exports = (grunt) => {
   grunt.initConfig({
     babel: {
       options: {
-        sourceMap: true,
+        // sourceMap: true,
         plugins: [
           'transform-object-rest-spread',
           // 'transform-es2015-modules-commonjs',

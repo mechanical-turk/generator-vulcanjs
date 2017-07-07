@@ -5,28 +5,28 @@ const ast = require('../../lib/ast');
 module.exports = class extends VulcanGenerator {
 
   initializing () {
-    this._assertIsVulcan();
-    this.inputProps = {};
+    this._assert('isVulcan');
+  }
+
+  _registerArguments () {
+    this._registerPackageNameOption();
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getPackageNameInputQuestion(),
-      this._getVulcanDependenciesQuestion(),
-      // this._getIsPackageAutoAddQuestion(),
+      this._getQuestion('packageName'),
+      this._getQuestion('vulcanDependencies'),
+      // this._getQuestion('isPackageAutoAdd'),
     ];
 
     return this.prompt(questions).then((answers) => {
-      const preProcessedDeps =
-        this.inputProps.vulcanDependencies ||
-        answers.vulcanDependencies;
       this.props = {
-        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        vulcanDependencies: preProcessedDeps.map((dep) => (`'${dep}'`)),
-        isPackageAutoAdd: this.inputProps.isPackageAutoAdd || answers.isPackageAutoAdd,
+        packageName: this._finalize('packageName', answers),
+        vulcanDependencies: this._finalize('vulcanDependencies', answers),
+        isPackageAutoAdd: this._finalize('raw', 'isPackageAutoAdd', answers),
       };
-      this._assertNotPackageExists(this.props.packageName);
+      this._assert('notPackageExists', this.props.packageName);
     });
   }
 
@@ -42,7 +42,11 @@ module.exports = class extends VulcanGenerator {
   _writePackageJs () {
     this.fs.copyTpl(
       this.templatePath('package.js'),
-      this._getPackagePath({ isAbsolute: true }, 'package.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'package',
+        'package.js'
+      ),
       this.props
     );
   }
@@ -50,7 +54,11 @@ module.exports = class extends VulcanGenerator {
   _writeClientMain () {
     this.fs.copyTpl(
       this.templatePath('client.js'),
-      this._getClientPath({ isAbsolute: true }, 'main.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'client',
+        'main.js'
+      ),
       this.props
     );
   }
@@ -58,7 +66,11 @@ module.exports = class extends VulcanGenerator {
   _writeServerMain () {
     this.fs.copyTpl(
       this.templatePath('server.js'),
-      this._getServerPath({ isAbsolute: true }, 'main.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'server',
+        'main.js'
+      ),
       this.props
     );
   }
@@ -66,7 +78,11 @@ module.exports = class extends VulcanGenerator {
   _writeServerSeed () {
     this.fs.copyTpl(
       this.templatePath('seed.js'),
-      this._getServerPath({ isAbsolute: true }, 'seed.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'server',
+        'seed.js'
+      ),
       this.props
     );
   }
@@ -74,7 +90,11 @@ module.exports = class extends VulcanGenerator {
   _writeModulesIndex () {
     this.fs.copyTpl(
       this.templatePath('module.js'),
-      this._getModulesPath({ isAbsolute: true }, 'index.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'modules',
+        'index.js'
+      ),
       this.props
     );
   }
@@ -82,7 +102,11 @@ module.exports = class extends VulcanGenerator {
   _writeRoutes () {
     this.fs.copyTpl(
       this.templatePath('routes.js'),
-      this._getModulesPath({ isAbsolute: true }, 'routes.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'modules',
+        'routes.js'
+      ),
       this.props
     );
   }
@@ -90,31 +114,37 @@ module.exports = class extends VulcanGenerator {
   _writeStoriesJs () {
     this.fs.copyTpl(
       this.templatePath('stories.js'),
-      this._getPackageStoriesPath({ isAbsolute: true }),
+      this._getPath(
+        { isAbsolute: true },
+        'packageStories'
+      ),
       this.props
     );
   }
 
   _updateRootStoriesIndex () {
-    const rootStoriesIndexPath = this._getRootStoriesPath(
+    const rootStoriesIndexPath = this._getPath(
       { isAbsolute: true },
+      'rootStories',
       'index.js'
     );
     if (!this.fs.exists(rootStoriesIndexPath)) { return; }
-    const packageStoriesPath = this._getPackageStoriesPath({
-      relativeTo: this._getRootStoriesPath({
-        isAbsolute: true,
-      }),
-    });
+    const packageStoriesPath = this._getPath(
+      'packageStories',
+      {
+        relativeTo: this._getPath(
+          { isAbsolute: true },
+          'rootStories'
+        ),
+      }
+    );
     const fileText = this.fs.read(rootStoriesIndexPath);
     const importStatement = `import '${packageStoriesPath}';`;
-    console.log(fileText);
-    console.log(importStatement);
-    // const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
-    // this.fs.write(
-    //   rootStoriesIndexPath,
-    //   fileTextWithWithImport
-    // );
+    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
+    this.fs.write(
+      rootStoriesIndexPath,
+      fileTextWithWithImport
+    );
   }
 
   writing () {
@@ -125,8 +155,8 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    this._writeStoriesJs();
-    this._updateRootStoriesIndex();
+    // this._writeStoriesJs();
+    // this._updateRootStoriesIndex();
   }
 
   end () {

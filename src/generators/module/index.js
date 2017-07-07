@@ -1,98 +1,38 @@
-const pascalCase = require('pascal-case');
-const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
 
-function getSetFromArr (arr) {
-  const set = {};
-  arr.forEach((elem) => {
-    set[elem] = true;
-  });
-  return set;
-}
-
 module.exports = class extends VulcanGenerator {
   initializing () {
-    this._assertIsVulcan();
-    this._assertHasNonZeroPackages();
+    this._assert('isVulcan');
+    this._assert('hasNonZeroPackages');
     this.inputProps = {};
+  }
+
+  _registerArguments () {
+    this._registerPackageNameOption();
+    this._registerModuleNameOption();
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getPackageNameListQuestion(),
-      this._getModuleNameInputQuestion(),
-      {
-        type: 'checkbox',
-        name: 'moduleParts',
-        message: 'Create with',
-        choices: [
-          { name: 'Collection', value: 'collection', checked: true, disabled: true },
-          { name: 'Fragments', value: 'fragments', checked: true },
-          { name: 'Mutations', value: 'mutations', checked: true },
-          { name: 'Parameters', value: 'parameters', checked: true },
-          { name: 'Permissions', value: 'permissions', checked: true },
-          { name: 'Resolvers', value: 'resolvers', checked: true },
-          { name: 'Schema', value: 'schema', checked: true },
-        ],
-        when: () => (!this.inputProps.moduleParts),
-        filter: getSetFromArr,
-      },
-      {
-        type: 'checkbox',
-        name: 'defaultResolvers',
-        message: 'Default Resolvers',
-        choices: [
-          { name: 'List', value: 'list', checked: true },
-          { name: 'Single', value: 'single', checked: true },
-          { name: 'Total', value: 'total', checked: true },
-        ],
-        when: (answers) => (
-          !this.inputProps.defaultResolvers &&
-          answers.moduleParts.resolvers
-        ),
-        filter: getSetFromArr,
-      },
+      this._getQuestion('packageNameList'),
+      this._getQuestion('moduleName'),
+      this._getQuestion('moduleCreateWith'),
     ];
 
     return this.prompt(questions)
     .then((answers) => {
-      const packageName = this._filterPackageName(
-        this.inputProps.packageName ||
-        answers.packageName
-      );
-      const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
-      const camelModuleName = camelCase(moduleName);
-      const pascalModuleName = pascalCase(moduleName);
       this.props = {
-        packageName,
-        moduleName,
-        collectionName: pascalModuleName,
-        typeName: pascalModuleName,
-        newMutationName: `${camelModuleName}New`,
-        newPermission: `${camelModuleName}.new`,
-        editMutationName: `${camelModuleName}Edit`,
-        editOwnPermission: `${camelModuleName}.edit.own`,
-        editAllPermission: `${camelModuleName}.edit.all`,
-        removeMutationName: `${camelModuleName}Remove`,
-        removeOwnPermission: `${camelModuleName}.remove.own`,
-        removeAllPermission: `${camelModuleName}.remove.all`,
-        parametersName: `${camelModuleName}.parameters`,
-        listResolverName: `${camelModuleName}List`,
-        singleResolverName: `${camelModuleName}Single`,
-        totalResolverName: `${camelModuleName}Total`,
-        moduleParts: this.inputProps.moduleParts || answers.moduleParts,
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        collectionName: this._finalize('collectionName', answers),
+        typeName: this._finalize('pascalModuleName', answers),
+        moduleParts: this._finalize('raw', 'moduleParts', answers),
       };
 
-      if (this.props.moduleParts.resolvers) {
-        const defaultResolvers = this.inputProps.defaultResolvers || answers.defaultResolvers;
-        this.props.hasListResolver = defaultResolvers.list;
-        this.props.hasSingleResolver = defaultResolvers.single;
-        this.props.hasTotalResolver = defaultResolvers.total;
-      }
-      this._assertIsPackageExists(this.props.packageName);
-      this._assertModuleNotExists(this.props.packageName, this.props.moduleName);
+      this._assert('isPackageExists', this.props.packageName);
+      this._assert('notModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 
@@ -109,75 +49,49 @@ module.exports = class extends VulcanGenerator {
   _writeCollection () {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
-      this._getModulePath({ isAbsolute: true }, 'collection.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'module',
+        'collection.js'
+      ),
       this.props
     );
   }
 
-  _writeResolvers () {
-    if (!this.props.moduleParts.resolvers) { return; }
+  _writeTestCollection () {
+    const testProps = {
+      ...this.props,
+      subjectName: 'collection',
+      subjectPath: '../collection',
+    };
     this.fs.copyTpl(
-      this.templatePath('resolvers.js'),
-      this._getModulePath({ isAbsolute: true }, 'resolvers.js'),
-      this.props
-    );
-  }
-
-  _writeFragments () {
-    if (!this.props.moduleParts.fragments) { return; }
-    this.fs.copyTpl(
-      this.templatePath('fragments.js'),
-      this._getModulePath({ isAbsolute: true }, 'fragments.js'),
-      this.props
-    );
-  }
-
-  _writeMutations () {
-    if (!this.props.moduleParts.mutations) { return; }
-    this.fs.copyTpl(
-      this.templatePath('mutations.js'),
-      this._getModulePath({ isAbsolute: true }, 'mutations.js'),
-      this.props
-    );
-  }
-
-  _writeParameters () {
-    if (!this.props.moduleParts.parameters) { return; }
-    this.fs.copyTpl(
-      this.templatePath('parameters.js'),
-      this._getModulePath({ isAbsolute: true }, 'parameters.js'),
-      this.props
-    );
-  }
-
-  _writePermissions () {
-    if (!this.props.moduleParts.permissions) { return; }
-    this.fs.copyTpl(
-      this.templatePath('permissions.js'),
-      this._getModulePath({ isAbsolute: true }, 'permissions.js'),
-      this.props
-    );
-  }
-
-  _writeSchema () {
-    if (!this.props.moduleParts.schema) { return; }
-    this.fs.copyTpl(
-      this.templatePath('schema.js'),
-      this._getModulePath({ isAbsolute: true }, 'schema.js'),
-      this.props
+      this.templatePath('tests/collection.js'),
+      this._getPath(
+        { isAbsolute: true },
+        'moduleTest',
+        'collection.js'
+      ),
+      testProps
     );
   }
 
   _writeStories () {
     this.fs.copyTpl(
       this.templatePath('stories.js'),
-      this._getModuleStoriesPath({ isAbsolute: true }),
+      this._getPath(
+        { isAbsolute: true },
+        'moduleStories'
+      ),
       this.props
     );
   }
 
   _updateModulesIndex () {
-    const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
+    const modulePath = this._getPath(
+      { isAbsolute: true },
+      'modules',
+      'index.js'
+    );
     const fileText = this.fs.read(modulePath);
     const fileWithImportText = ast.addImportStatementAndParse(
       fileText,
@@ -190,9 +104,10 @@ module.exports = class extends VulcanGenerator {
   }
 
   _updatePackageStories () {
-    const packageStoriesPath = this._getPackageStoriesPath({
-      isAbsolute: true,
-    });
+    const packageStoriesPath = this._getPath(
+      { isAbsolute: true },
+      'packageStories'
+    );
     const fileText = this.fs.read(packageStoriesPath);
     const fileWithImportText = ast.addImportStatementAndParse(
       fileText,
@@ -207,15 +122,10 @@ module.exports = class extends VulcanGenerator {
   writing () {
     if (!this._canWrite()) { return; }
     this._writeCollection();
-    this._writeResolvers();
-    this._writeFragments();
-    this._writeMutations();
-    this._writeParameters();
-    this._writePermissions();
-    this._writeSchema();
-    this._writeStories();
+    // this._writeStories();
     this._updateModulesIndex();
-    this._updatePackageStories();
+    // this._updatePackageStories();
+    this._writeTestCollection();
   }
 
   end () {

@@ -10,27 +10,33 @@ module.exports = class extends VulcanGenerator {
     this.inputProps = {};
   }
 
+  _registerArguments () {
+    this._registerPackageNameOption();
+    this._registerModuleNameOption();
+    this._registerComponentNameOption();
+  }
+
   prompting () {
     if (!this._canPrompt()) { return false; }
     const firstQuestions = [
-      this._getStoryBookSetupQuestion(),
-      this._getPackageNameListQuestion(),
+      // this._getStoryBookSetupQuestion(),
+      this._getQuestion('packageNameList'),
     ];
 
     return this.prompt(firstQuestions)
     .then((answers) => {
       this.props = {
-        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
+        packageName: this._getFinalPackageName(answers),
+        // storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
       };
-      console.log(this.props);
+      console.log('kerem');
       this._assertPackageHasNonZeroModules(this.props.packageName);
       const secondQuestions = [
-        this._getModuleNameListQuestion(),
-        this._getComponentNameQuestion(),
-        this._getComponentTypeQuestion(),
-        this._getIsRegisterComponentQuestion(),
-        this._getIsAddComponentToStoryBookQuestion(),
+        this._getQuestion('moduleNameList'),
+        this._getQuestion('componentName'),
+        this._getQuestion('componentType'),
+        this._getQuestion('isRegisterComponent'),
+        // this._getQuestion('isAddComponentToStoryBook'),
       ];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
@@ -44,10 +50,10 @@ module.exports = class extends VulcanGenerator {
         componentName: pascalCase(this.inputProps.componentName || answers.componentName),
         componentType: this.inputProps.componentType || answers.componentType,
         isRegister: this.inputProps.isRegister || answers.isRegister,
-        isAddComponentToStoryBook: (
-          this.inputProps.isAddComponentToStoryBook ||
-          answers.isAddComponentToStoryBook
-        ),
+        // isAddComponentToStoryBook: (
+        //   this.inputProps.isAddComponentToStoryBook ||
+        //   answers.isAddComponentToStoryBook
+        // ),
       };
       this.props.componentPath = this._getComponentPath({
         isAbsolute: true,
@@ -59,17 +65,17 @@ module.exports = class extends VulcanGenerator {
     }, () => {});
   }
 
-  configuring () {
-    if (!this._canConfigure()) { return; }
-    if (this.props.storyBookSetupStatus) {
-      this._dispatch({
-        type: 'SET_STORYBOOK_SETUP_STATUS',
-        status: this.props.storyBookSetupStatus,
-      });
-    }
-    this._commitStore();
-    this._installStorybook();
-  }
+  // configuring () {
+  //   if (!this._canConfigure()) { return; }
+  //   if (this.props.storyBookSetupStatus) {
+  //     this._dispatch({
+  //       type: 'SET_STORYBOOK_SETUP_STATUS',
+  //       status: this.props.storyBookSetupStatus,
+  //     });
+  //   }
+  //   this._commitStore();
+  //   // this._installStorybook();
+  // }
 
   _canInstall () {
     return super._canInstall() && this._getStoryBookSetupStatus() === 'installing';
@@ -100,11 +106,10 @@ module.exports = class extends VulcanGenerator {
       isAbsolute: true,
     });
     const fileText = this.fs.read(moduleStoriesPath);
-    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`
-    console.log(importStatement);
+    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`;
     const fileWithImportText = ast.addImportStatementAndParse(
       fileText,
-      importStatement,
+      importStatement
     );
     this.fs.write(
       moduleStoriesPath,
@@ -115,7 +120,7 @@ module.exports = class extends VulcanGenerator {
   writing () {
     if (!this._canWrite()) { return; }
     this._writeComponent();
-    this._updateModuleStories();
+    // this._updateModuleStories();
   }
 
   end () {

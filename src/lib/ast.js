@@ -1,5 +1,5 @@
 const esprima = require('esprima');
-const escodegen = require('escodegen');
+const escodegen = require('escodegen-wallaby');
 
 const getLastImportIndex = (tree) => {
   let lastIndex = -1;
@@ -25,10 +25,15 @@ const addImportStatement = (tree, statement) => {
 
 const addImportStatementAndParse = (fileText, statement) => {
   const fileAst = esprima.parseModule(fileText, {
-    jsx: true,
+    range: true,
+    tokens: true,
+    comment: true,
   });
   const fileAstWithImport = addImportStatement(fileAst, statement);
-  const fileWithImport = escodegen.generate(fileAstWithImport);
+  const fileWithImport = escodegen.generate(
+    fileAstWithImport,
+    { comment: true, format: { indent: { style: '  ' } } }
+  );
   return fileWithImport;
 };
 
