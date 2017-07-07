@@ -1,7 +1,5 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-const pascalCase = require('pascal-case');
-const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
 
@@ -21,18 +19,14 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getPackageNameListQuestion(), this._getModuleNameInputQuestion(), this._getModuleCreateWithQuestion()];
+    const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleName'), this._getQuestion('moduleCreateWith')];
 
     return this.prompt(questions).then(answers => {
-      const packageName = this._filterPackageName(this.inputProps.packageName || answers.packageName);
-      const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
-      const camelModuleName = camelCase(moduleName);
-      const pascalModuleName = pascalCase(moduleName);
       this.props = {
-        packageName: packageName,
-        moduleName: moduleName,
-        collectionName: pascalModuleName,
-        typeName: pascalModuleName,
+        packageName: this._getFinalPackageName(answers),
+        moduleName: this._getFinalModuleName(answers),
+        collectionName: this._getFinalPascalModuleName(answers),
+        typeName: this._getFinalPascalModuleName(answers),
         moduleParts: this.inputProps.moduleParts || answers.moduleParts
       };
 

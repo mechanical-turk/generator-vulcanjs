@@ -1,5 +1,3 @@
-const pascalCase = require('pascal-case');
-const camelCase = require('camelcase');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
 
@@ -18,25 +16,18 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getPackageNameListQuestion(),
-      this._getModuleNameInputQuestion(),
-      this._getModuleCreateWithQuestion(),
+      this._getQuestion('packageNameList'),
+      this._getQuestion('moduleName'),
+      this._getQuestion('moduleCreateWith'),
     ];
 
     return this.prompt(questions)
     .then((answers) => {
-      const packageName = this._filterPackageName(
-        this.inputProps.packageName ||
-        answers.packageName
-      );
-      const moduleName = this._filterModuleName(this.inputProps.moduleName || answers.moduleName);
-      const camelModuleName = camelCase(moduleName);
-      const pascalModuleName = pascalCase(moduleName);
       this.props = {
-        packageName,
-        moduleName,
-        collectionName: pascalModuleName,
-        typeName: pascalModuleName,
+        packageName: this._getFinalPackageName(answers),
+        moduleName: this._getFinalModuleName(answers),
+        collectionName: this._getFinalPascalModuleName(answers),
+        typeName: this._getFinalPascalModuleName(answers),
         moduleParts: this.inputProps.moduleParts || answers.moduleParts,
       };
 

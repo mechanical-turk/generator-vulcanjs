@@ -18,7 +18,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getPackageNameListQuestion(), this._getModuleNameListQuestion(), this._getDefaultResolversQuestion()];
+    const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleNameList'), this._getQuestion('defaultResolvers')];
     return this.prompt(questions).then(answers => {
       const camelModuleName = this._getFinalCamelModuleName(answers);
       const defaultResolvers = this._getFinalDefaultResolvers(answers);
@@ -33,9 +33,6 @@ module.exports = class extends VulcanGenerator {
         hasSingleResolver: defaultResolvers.single,
         hasTotalResolver: defaultResolvers.total
       };
-
-      console.log(this.props);
-
       this._assertIsPackageExists(this.props.packageName);
       this._assertIsModuleExists(this.props.packageName, this.props.moduleName);
     });

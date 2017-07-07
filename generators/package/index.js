@@ -17,7 +17,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getPackageNameInputQuestion(), this._getVulcanDependenciesQuestion()];
+    const questions = [this._getQuestion('packageName'), this._getQuestion('vulcanDependencies')];
 
     return this.prompt(questions).then(answers => {
       const preProcessedDeps = this.inputProps.vulcanDependencies || answers.vulcanDependencies;

@@ -15,9 +15,9 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getPackageNameListQuestion(),
-      this._getModuleNameListQuestion(),
-      this._getDefaultResolversQuestion(),
+      this._getQuestion('packageNameList'),
+      this._getQuestion('moduleNameList'),
+      this._getQuestion('defaultResolvers'),
     ];
     return this.prompt(questions)
     .then((answers) => {
@@ -34,9 +34,6 @@ module.exports = class extends VulcanGenerator {
         hasSingleResolver: defaultResolvers.single,
         hasTotalResolver: defaultResolvers.total,
       };
-
-      console.log(this.props);
-
       this._assertIsPackageExists(this.props.packageName);
       this._assertIsModuleExists(this.props.packageName, this.props.moduleName);
     });

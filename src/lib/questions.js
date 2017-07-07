@@ -30,7 +30,7 @@ function get (questionName) {
       this.options.packagename
     ),
   };
-  const moduleNameInput = {
+  const moduleName = {
     type: 'input',
     name: 'moduleName',
     message: uiText.messages.moduleName,
@@ -126,7 +126,7 @@ function get (questionName) {
     when: () => (!this.inputProps.moduleParts),
     filter: common.getSetFromArr,
   };
-  const defaultResolver = {
+  const defaultResolvers = {
     type: 'checkbox',
     name: 'defaultResolvers',
     message: 'Default resolvers',
@@ -246,7 +246,7 @@ function get (questionName) {
     appName,
     packageName,
     packageNameList,
-    moduleNameInput,
+    moduleName,
     moduleNameList,
     isPackageAutoAdd,
     componentName,
@@ -255,7 +255,7 @@ function get (questionName) {
     storyBookSetup,
     isAddComponentToStoryBook,
     moduleCreateWith,
-    defaultResolver,
+    defaultResolvers,
     vulcanDependencies,
     reactExtension,
     packageManager,
