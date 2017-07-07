@@ -48,7 +48,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeCollection() {
-    this.fs.copyTpl(this.templatePath('collection.js'), this._getPath('module', { isAbsolute: true }, 'collection.js'), this.props);
+    this.fs.copyTpl(this.templatePath('collection.js'), this._getPath({ isAbsolute: true }, 'module', 'collection.js'), this.props);
   }
 
   _writeTestCollection() {
@@ -56,24 +56,22 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'collection',
       subjectPath: '../collection'
     });
-    this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getPath('moduleTest', { isAbsolute: true }, 'collection.js'), testProps);
+    this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'collection.js'), testProps);
   }
 
   _writeStories() {
-    this.fs.copyTpl(this.templatePath('stories.js'), this._getPath('moduleStories', { isAbsolute: true }), this.props);
+    this.fs.copyTpl(this.templatePath('stories.js'), this._getPath({ isAbsolute: true }, 'moduleStories'), this.props);
   }
 
   _updateModulesIndex() {
-    const modulePath = this._getPath('modules', { isAbsolute: true }, 'index.js');
+    const modulePath = this._getPath({ isAbsolute: true }, 'modules', 'index.js');
     const fileText = this.fs.read(modulePath);
     const fileWithImportText = ast.addImportStatementAndParse(fileText, `import './${this.props.moduleName}/collection.js';`);
     this.fs.write(modulePath, fileWithImportText);
   }
 
   _updatePackageStories() {
-    const packageStoriesPath = this._getPackageStoriesPath({
-      isAbsolute: true
-    });
+    const packageStoriesPath = this._getPath({ isAbsolute: true }, 'packageStories');
     const fileText = this.fs.read(packageStoriesPath);
     const fileWithImportText = ast.addImportStatementAndParse(fileText, `import './${this.props.moduleName}/.stories.js';`);
     this.fs.write(packageStoriesPath, fileWithImportText);

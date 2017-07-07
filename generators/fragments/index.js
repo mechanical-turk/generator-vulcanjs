@@ -31,7 +31,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeFragments() {
-    this.fs.copyTpl(this.templatePath('fragments.js'), this._getPath('module', { isAbsolute: true }, 'fragments.js'), this.props);
+    this.fs.copyTpl(this.templatePath('fragments.js'), this._getPath({ isAbsolute: true }, 'module', 'fragments.js'), this.props);
   }
 
   _writeTestFragments() {
@@ -39,7 +39,7 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'fragments',
       subjectPath: '../fragments'
     });
-    this.fs.copyTpl(this.templatePath('test.js'), this._getPath('moduleTest', { isAbsolute: true }, 'fragments.js'), testProps);
+    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'fragments.js'), testProps);
   }
 
   _updateModuleIndex() {

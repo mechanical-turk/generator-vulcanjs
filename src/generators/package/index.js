@@ -43,8 +43,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('package.js'),
       this._getPath(
-        'package',
         { isAbsolute: true },
+        'package',
         'package.js'
       ),
       this.props
@@ -55,8 +55,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('client.js'),
       this._getPath(
-        'client',
         { isAbsolute: true },
+        'client',
         'main.js'
       ),
       this.props
@@ -67,8 +67,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('server.js'),
       this._getPath(
-        'server',
         { isAbsolute: true },
+        'server',
         'main.js'
       ),
       this.props
@@ -79,8 +79,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('seed.js'),
       this._getPath(
-        'server',
         { isAbsolute: true },
+        'server',
         'seed.js'
       ),
       this.props
@@ -91,8 +91,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('module.js'),
       this._getPath(
-        'modules',
         { isAbsolute: true },
+        'modules',
         'index.js'
       ),
       this.props
@@ -103,8 +103,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('routes.js'),
       this._getPath(
-        'modules',
         { isAbsolute: true },
+        'modules',
         'routes.js'
       ),
       this.props
@@ -115,8 +115,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('stories.js'),
       this._getPath(
-        'packageStories',
-        { isAbsolute: true }
+        { isAbsolute: true },
+        'packageStories'
       ),
       this.props
     );
@@ -124,8 +124,8 @@ module.exports = class extends VulcanGenerator {
 
   _updateRootStoriesIndex () {
     const rootStoriesIndexPath = this._getPath(
-      'rootStories',
       { isAbsolute: true },
+      'rootStories',
       'index.js'
     );
     if (!this.fs.exists(rootStoriesIndexPath)) { return; }
@@ -133,8 +133,8 @@ module.exports = class extends VulcanGenerator {
       'packageStories',
       {
         relativeTo: this._getPath(
-          'rootStories',
-          { isAbsolute: true }
+          { isAbsolute: true },
+          'rootStories'
         ),
       }
     );

@@ -34,8 +34,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('parameters.js'),
       this._getPath(
-        'module',
         { isAbsolute: true },
+        'module',
         'parameters.js'
       ),
       this.props
@@ -51,8 +51,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('test.js'),
       this._getPath(
-        'moduleTest',
         { isAbsolute: true },
+        'moduleTest',
         'parameters.js'
       ),
       testFragmentsProps

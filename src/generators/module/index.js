@@ -50,8 +50,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('collection.js'),
       this._getPath(
-        'module',
         { isAbsolute: true },
+        'module',
         'collection.js'
       ),
       this.props
@@ -67,8 +67,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('tests/collection.js'),
       this._getPath(
-        'moduleTest',
         { isAbsolute: true },
+        'moduleTest',
         'collection.js'
       ),
       testProps
@@ -79,8 +79,8 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(
       this.templatePath('stories.js'),
       this._getPath(
-        'moduleStories',
-        { isAbsolute: true }
+        { isAbsolute: true },
+        'moduleStories'
       ),
       this.props
     );
@@ -88,8 +88,8 @@ module.exports = class extends VulcanGenerator {
 
   _updateModulesIndex () {
     const modulePath = this._getPath(
-      'modules',
       { isAbsolute: true },
+      'modules',
       'index.js'
     );
     const fileText = this.fs.read(modulePath);
@@ -104,9 +104,10 @@ module.exports = class extends VulcanGenerator {
   }
 
   _updatePackageStories () {
-    const packageStoriesPath = this._getPackageStoriesPath({
-      isAbsolute: true,
-    });
+    const packageStoriesPath = this._getPath(
+      { isAbsolute: true },
+      'packageStories'
+    );
     const fileText = this.fs.read(packageStoriesPath);
     const fileWithImportText = ast.addImportStatementAndParse(
       fileText,

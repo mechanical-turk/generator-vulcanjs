@@ -40,40 +40,40 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writePackageJs() {
-    this.fs.copyTpl(this.templatePath('package.js'), this._getPath('package', { isAbsolute: true }, 'package.js'), this.props);
+    this.fs.copyTpl(this.templatePath('package.js'), this._getPath({ isAbsolute: true }, 'package', 'package.js'), this.props);
   }
 
   _writeClientMain() {
-    this.fs.copyTpl(this.templatePath('client.js'), this._getPath('client', { isAbsolute: true }, 'main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('client.js'), this._getPath({ isAbsolute: true }, 'client', 'main.js'), this.props);
   }
 
   _writeServerMain() {
-    this.fs.copyTpl(this.templatePath('server.js'), this._getPath('server', { isAbsolute: true }, 'main.js'), this.props);
+    this.fs.copyTpl(this.templatePath('server.js'), this._getPath({ isAbsolute: true }, 'server', 'main.js'), this.props);
   }
 
   _writeServerSeed() {
-    this.fs.copyTpl(this.templatePath('seed.js'), this._getPath('server', { isAbsolute: true }, 'seed.js'), this.props);
+    this.fs.copyTpl(this.templatePath('seed.js'), this._getPath({ isAbsolute: true }, 'server', 'seed.js'), this.props);
   }
 
   _writeModulesIndex() {
-    this.fs.copyTpl(this.templatePath('module.js'), this._getPath('modules', { isAbsolute: true }, 'index.js'), this.props);
+    this.fs.copyTpl(this.templatePath('module.js'), this._getPath({ isAbsolute: true }, 'modules', 'index.js'), this.props);
   }
 
   _writeRoutes() {
-    this.fs.copyTpl(this.templatePath('routes.js'), this._getPath('modules', { isAbsolute: true }, 'routes.js'), this.props);
+    this.fs.copyTpl(this.templatePath('routes.js'), this._getPath({ isAbsolute: true }, 'modules', 'routes.js'), this.props);
   }
 
   _writeStoriesJs() {
-    this.fs.copyTpl(this.templatePath('stories.js'), this._getPath('packageStories', { isAbsolute: true }), this.props);
+    this.fs.copyTpl(this.templatePath('stories.js'), this._getPath({ isAbsolute: true }, 'packageStories'), this.props);
   }
 
   _updateRootStoriesIndex() {
-    const rootStoriesIndexPath = this._getPath('rootStories', { isAbsolute: true }, 'index.js');
+    const rootStoriesIndexPath = this._getPath({ isAbsolute: true }, 'rootStories', 'index.js');
     if (!this.fs.exists(rootStoriesIndexPath)) {
       return;
     }
     const packageStoriesPath = this._getPath('packageStories', {
-      relativeTo: this._getPath('rootStories', { isAbsolute: true })
+      relativeTo: this._getPath({ isAbsolute: true }, 'rootStories')
     });
     const fileText = this.fs.read(rootStoriesIndexPath);
     const importStatement = `import '${packageStoriesPath}';`;

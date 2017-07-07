@@ -35,7 +35,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writePermissions() {
-    this.fs.copyTpl(this.templatePath('permissions.js'), this._getPath('module', { isAbsolute: true }, 'permissions.js'), this.props);
+    this.fs.copyTpl(this.templatePath('permissions.js'), this._getPath({ isAbsolute: true }, 'module', 'permissions.js'), this.props);
   }
 
   _writeTestPermissions() {
@@ -43,7 +43,7 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'permissions',
       subjectPath: '../permissions'
     });
-    this.fs.copyTpl(this.templatePath('test.js'), this._getPath('moduleTest', { isAbsolute: true }, 'permissions.js'), testProps);
+    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'permissions.js'), testProps);
   }
 
   _updateModuleIndex() {
