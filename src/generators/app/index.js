@@ -16,9 +16,9 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getAppNameQuestion(),
-      this._getReactExtensionQuestion(),
-      this._getPackageManagerQuestion(),
+      this._getQuestion('appName'),
+      this._getQuestion('reactExtension'),
+      this._getQuestion('packageManager'),
     ];
 
     return this.prompt(questions).then((answers) => {

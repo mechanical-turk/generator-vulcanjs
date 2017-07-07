@@ -4,7 +4,6 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assertIsVulcan();
     this._assertHasNonZeroPackages();
-    this.inputProps = {};
   }
 
   _registerArguments () {
@@ -15,16 +14,15 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getQuestion('packageNameList'),
-      this._getQuestion('moduleNameList'),
+      this._getPackageNameListQuestion(),
+      this._getModuleNameListQuestion(),
     ];
     return this.prompt(questions)
     .then((answers) => {
-      console.log(answers);
       this.props = {
         packageName: this._getFinalPackageName(answers),
         moduleName: this._getFinalModuleName(answers),
-        typeName: this._getFinalPascalModuleName(answers),
+        parametersName: this._getFinalModuleName(answers),
       };
 
       this._assertIsPackageExists(this.props.packageName);
@@ -32,24 +30,24 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  _writeFragments () {
+  _writeParameters () {
     this.fs.copyTpl(
-      this.templatePath('fragments.js'),
-      this._getModulePath({ isAbsolute: true }, 'fragments.js'),
+      this.templatePath('parameters.js'),
+      this._getModulePath({ isAbsolute: true }, 'parameters.js'),
       this.props
     );
   }
 
-  _writeTestFragments () {
-    const testProps = {
+  _writeTestParameters () {
+    const testFragmentsProps = {
       ...this.props,
-      subjectName: 'fragments',
-      subjectPath: '../fragments',
+      subjectName: 'parameters',
+      subjectPath: '../parameters',
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
-      this._getModuleTestPath({ isAbsolute: true }, 'fragments.js'),
-      testProps
+      this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'),
+      testFragmentsProps
     );
   }
 
@@ -68,8 +66,8 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writeFragments();
-    this._writeTestFragments();
+    this._writeParameters();
+    this._writeTestParameters();
     // this._updateModuleIndex();
   }
 

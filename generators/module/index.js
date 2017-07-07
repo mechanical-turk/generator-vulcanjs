@@ -33,7 +33,6 @@ module.exports = class extends VulcanGenerator {
         moduleName: moduleName,
         collectionName: pascalModuleName,
         typeName: pascalModuleName,
-        parametersName: `${camelModuleName}.parameters`,
         moduleParts: this.inputProps.moduleParts || answers.moduleParts
       };
 
@@ -63,22 +62,7 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'collection',
       subjectPath: '../collection'
     });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'collection.js'), testProps);
-  }
-
-  _writeParameters() {
-    if (!this.props.moduleParts.parameters) {
-      return;
-    }
-    this.fs.copyTpl(this.templatePath('parameters.js'), this._getModulePath({ isAbsolute: true }, 'parameters.js'), this.props);
-  }
-
-  _writeTestParameters() {
-    const testProps = _extends({}, this.props, {
-      subjectName: 'parameters',
-      subjectPath: '../parameters'
-    });
-    this.fs.copyTpl(this.templatePath('tests/generic.js'), this._getModuleTestPath({ isAbsolute: true }, 'parameters.js'), testProps);
+    this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getModuleTestPath({ isAbsolute: true }, 'collection.js'), testProps);
   }
 
   _writeStories() {
@@ -101,29 +85,15 @@ module.exports = class extends VulcanGenerator {
     this.fs.write(packageStoriesPath, fileWithImportText);
   }
 
-  _writeAllCode() {
-    this._writeCollection();
-    this._writeParameters();
-    // this._writeStories();
-  }
-
-  _writeAllTests() {
-    this._writeTestCollection();
-    this._writeTestParameters();
-  }
-
-  _updateAllCode() {
-    this._updateModulesIndex();
-    // this._updatePackageStories();
-  }
-
   writing() {
     if (!this._canWrite()) {
       return;
     }
-    this._writeAllCode();
-    this._writeAllTests();
-    this._updateAllCode();
+    this._writeCollection();
+    // this._writeStories();
+    this._updateModulesIndex();
+    // this._updatePackageStories();
+    this._writeTestCollection();
   }
 
   end() {

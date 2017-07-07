@@ -24,15 +24,16 @@ module.exports = class extends VulcanGenerator {
     }
     const firstQuestions = [
     // this._getStoryBookSetupQuestion(),
-    this._getPackageNameListQuestion()];
+    this._getQuestion('packageNameList')];
 
     return this.prompt(firstQuestions).then(answers => {
       this.props = {
-        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus
+        packageName: this._getFinalPackageName(answers)
+        // storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
       };
+      console.log('kerem');
       this._assertPackageHasNonZeroModules(this.props.packageName);
-      const secondQuestions = [this._getModuleNameListQuestion(), this._getComponentNameQuestion(), this._getComponentTypeQuestion(), this._getIsRegisterComponentQuestion()];
+      const secondQuestions = [this._getQuestion('moduleNameList'), this._getQuestion('componentName'), this._getQuestion('componentType'), this._getQuestion('isRegisterComponent')];
       if (this._packageHasNonZeroModules(this.props.packageName)) {
         return this.prompt(secondQuestions);
       }
@@ -42,8 +43,11 @@ module.exports = class extends VulcanGenerator {
         moduleName: this.inputProps.moduleName || answers.moduleName,
         componentName: pascalCase(this.inputProps.componentName || answers.componentName),
         componentType: this.inputProps.componentType || answers.componentType,
-        isRegister: this.inputProps.isRegister || answers.isRegister,
-        isAddComponentToStoryBook: this.inputProps.isAddComponentToStoryBook || answers.isAddComponentToStoryBook
+        isRegister: this.inputProps.isRegister || answers.isRegister
+        // isAddComponentToStoryBook: (
+        //   this.inputProps.isAddComponentToStoryBook ||
+        //   answers.isAddComponentToStoryBook
+        // ),
       });
       this.props.componentPath = this._getComponentPath({
         isAbsolute: true
@@ -53,19 +57,17 @@ module.exports = class extends VulcanGenerator {
     }, () => {});
   }
 
-  configuring() {
-    if (!this._canConfigure()) {
-      return;
-    }
-    if (this.props.storyBookSetupStatus) {
-      this._dispatch({
-        type: 'SET_STORYBOOK_SETUP_STATUS',
-        status: this.props.storyBookSetupStatus
-      });
-    }
-    this._commitStore();
-    // this._installStorybook();
-  }
+  // configuring () {
+  //   if (!this._canConfigure()) { return; }
+  //   if (this.props.storyBookSetupStatus) {
+  //     this._dispatch({
+  //       type: 'SET_STORYBOOK_SETUP_STATUS',
+  //       status: this.props.storyBookSetupStatus,
+  //     });
+  //   }
+  //   this._commitStore();
+  //   // this._installStorybook();
+  // }
 
   _canInstall() {
     return super._canInstall() && this._getStoryBookSetupStatus() === 'installing';
