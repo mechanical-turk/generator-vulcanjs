@@ -2,12 +2,15 @@ const uiText = require('./ui-text');
 const common = require('./common');
 const store = require('./store');
 const validations = require('./validations');
+const finalize = require('./finalizers').finalize;
+
+let generator;
+
+function setup (generatorSetup) {
+  generator = generatorSetup;
+}
 
 function get (questionName) {
-  const inputProps = this.inputProps;
-  const options = this.options;
-  const finalize = this._finalize;
-
   function bindQuestions (unboundQuestions) {
     const boundQuestions = {};
     const questionKeys = Object.keys(unboundQuestions);
@@ -22,8 +25,8 @@ function get (questionName) {
       type: 'input',
       name: 'appName',
       message: uiText.messages.appName,
-      when: () => (!inputProps.appName),
-      default: options.appname,
+      when: () => (!generator.inputProps.appName),
+      default: generator.options.appname,
       validate: validations.assertNonEmpty,
     };
   }
@@ -34,10 +37,10 @@ function get (questionName) {
       name: 'reactExtension',
       message: uiText.messages.reactExtension,
       choices: common.reactExtensions,
-      when: () => (!inputProps.reactExtension),
+      when: () => (!generator.inputProps.reactExtension),
       default: common.getDefaultChoiceIndex(
         common.reactExtensions,
-        options.reactextension
+        generator.options.reactextension
       ),
     };
   }
@@ -48,10 +51,10 @@ function get (questionName) {
       name: 'packageManager',
       message: uiText.messages.packageManager,
       choices: common.packageManagers,
-      when: () => (!inputProps.packageManager),
+      when: () => (!generator.inputProps.packageManager),
       default: common.getDefaultChoiceIndex(
         common.packageManagers,
-        options.packagemanager
+        generator.options.packagemanager
       ),
     };
   }
@@ -61,8 +64,8 @@ function get (questionName) {
       type: 'input',
       name: 'packageName',
       message: uiText.messages.packageName,
-      when: () => !inputProps.packageName,
-      default: options.packagename,
+      when: () => !generator.inputProps.packageName,
+      default: generator.options.packagename,
       validate: validations.combineValidators(
         validations.assertNonEmpty,
         validations.assertNotPackageExists
@@ -89,7 +92,7 @@ function get (questionName) {
         'vulcan:rss',
         'vulcan:subscribe',
       ],
-      when: () => !inputProps.vulcanDependencies,
+      when: () => !generator.inputProps.vulcanDependencies,
     };
   }
 
@@ -98,7 +101,7 @@ function get (questionName) {
       type: 'confirm',
       name: 'isPackageAutoAdd',
       message: uiText.messages.isPackageAutoAdd,
-      when: () => (!inputProps.packageName),
+      when: () => (!generator.inputProps.packageName),
     };
   }
 
@@ -107,11 +110,11 @@ function get (questionName) {
       type: 'list',
       name: 'packageName',
       message: uiText.messages.packageName,
-      when: () => (!inputProps.packageName),
+      when: () => (!generator.inputProps.packageName),
       choices: store.get('packageNames'),
       default: common.getDefaultChoiceIndex(
         store.get('packageNames'),
-        options.packagename
+        generator.options.packagename
       ),
     };
   }
@@ -121,8 +124,8 @@ function get (questionName) {
       type: 'input',
       name: 'moduleName',
       message: uiText.messages.moduleName,
-      when: () => (!inputProps.moduleName),
-      default: options.moduleName,
+      when: () => (!generator.inputProps.moduleName),
+      default: generator.options.moduleName,
       validate: (input, answers) => {
         const combinedValidator = validations.combineValidators(
           validations.assertNonEmpty,
@@ -149,7 +152,7 @@ function get (questionName) {
         { name: 'Resolvers', value: 'resolvers', checked: true },
         { name: 'Schema', value: 'schema', checked: true },
       ],
-      when: () => (!inputProps.moduleParts),
+      when: () => (!generator.inputProps.moduleParts),
       filter: common.getSetFromArr,
     };
   }
@@ -159,7 +162,7 @@ function get (questionName) {
       type: 'list',
       name: 'moduleName',
       message: uiText.messages.moduleName,
-      when: () => (!inputProps.moduleName),
+      when: () => (!generator.inputProps.moduleName),
       choices: (answers) => {
         const finalPackageName = finalize('packageName', answers);
         return store.get('moduleNames', finalPackageName);
@@ -169,7 +172,7 @@ function get (questionName) {
         const moduleNames = store.get('moduleNames', finalPackageName);
         return common.getDefaultChoiceIndex(
           moduleNames,
-          options.moduleName
+          generator.options.moduleName
         );
       },
     };
@@ -185,7 +188,7 @@ function get (questionName) {
         { name: 'Single', value: 'single', checked: true },
         { name: 'Total', value: 'total', checked: true },
       ],
-      when: () => (!inputProps.defaultResolvers),
+      when: () => (!generator.inputProps.defaultResolvers),
       filter: common.getSetFromArr,
     };
   }
@@ -194,7 +197,7 @@ function get (questionName) {
   //   type: 'input',
   //   name: 'componentName',
   //   message: uiText.messages.componentName,
-  //   when: () => (!inputProps.componentName),
+  //   when: () => (!generator.inputProps.componentName),
   //   validate: validations.assertNonEmpty,
   // };
   // const componentType = {
@@ -205,13 +208,13 @@ function get (questionName) {
   //     { name: 'Pure Function', value: 'pure' },
   //     { name: 'Class Component', value: 'class' },
   //   ],
-  //   when: () => (!inputProps.componentType),
+  //   when: () => (!generator.inputProps.componentType),
   // };
   // const isRegisterComponent = {
   //   type: 'confirm',
   //   name: 'isRegister',
   //   message: uiText.messages.isRegisterComponent,
-  //   when: () => (!inputProps.isRegister),
+  //   when: () => (!generator.inputProps.isRegister),
   // };
   // const storyBookSetup = {
   //   type: 'list',
@@ -230,14 +233,14 @@ function get (questionName) {
   //       askagain: true,
   //     };
   //     const isStatusAllowsSetupQuestion = allowedStatuses[storyBookSetupStatus];
-  //     return (!inputProps.packageName && isStatusAllowsSetupQuestion);
+  //     return (!generator.inputProps.packageName && isStatusAllowsSetupQuestion);
   //   },
   // };
   // const isAddComponentToStoryBook = {
   //   type: 'confirm',
   //   name: 'isAddComponentToStoryBook',
   //   message: uiText.messages.isAddComponentToStoryBook,
-  //   when: () => (!inputProps.isAddComponentToStoryBook),
+  //   when: () => (!generator.inputProps.isAddComponentToStoryBook),
   // };
 
 
@@ -248,13 +251,13 @@ function get (questionName) {
   //   type: 'confirm',
   //   name: 'isAddCustomSchemaProperty',
   //   message: uiText.messages.IsAddCustomSchemaProperty,
-  //   when: () => (!inputProps.IsAddCustomSchemaProperty),
+  //   when: () => (!generator.inputProps.IsAddCustomSchemaProperty),
   // };
   // const schemaPropertyName = {
   //   type: 'input',
   //   name: 'schemaPropertyName',
   //   message: uiText.messages.schemaPropertyName,
-  //   // when: () => (!inputProps.schemaPropertyName),
+  //   // when: () => (!generator.inputProps.schemaPropertyName),
   //   validate: validations.assertNonEmpty,
   // };
   // const isSchemaPropertyHidden = {
@@ -274,13 +277,13 @@ function get (questionName) {
   //   name: 'schemaPropertyType',
   //   message: uiText.messages.schemaPropertyType,
   //   choices: common.schemaPropertyTypes,
-  //   // when: () => (!inputProps.schemaPropertyType),
+  //   // when: () => (!generator.inputProps.schemaPropertyType),
   // };
   // const isSchemaPropertyOptional = {
   //   type: 'confirm',
   //   name: 'isSchemaPropertyOptional',
   //   message: uiText.messages.isSchemaPropertyOptional,
-  //   // when: () => (!inputProps.schemaPropertyType),
+  //   // when: () => (!generator.inputProps.schemaPropertyType),
   // };
   // const schemaPropertyViewableBy = {
   //   type: 'checkbox',
@@ -304,7 +307,7 @@ function get (questionName) {
   //   type: 'confirm',
   //   name: 'isAddAnotherCustomSchemaProperty',
   //   message: uiText.messages.isAddAnotherCustomSchemaProperty,
-  //   // when: () => (!inputProps.IsAddCustomSchemaProperty),
+  //   // when: () => (!generator.inputProps.IsAddCustomSchemaProperty),
   // };
   const questions = {
     appName,
@@ -356,5 +359,6 @@ function get (questionName) {
 }
 
 module.exports = {
-  get: get
+  get,
+  setup,
 };

@@ -2,20 +2,17 @@ const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const filter = require('./filters').filter;
 
-let inputProps;
-let props;
+let generator;
 
-function setup (inputPropsSetup, propsSetup) {
-  inputProps = inputPropsSetup;
-  props = propsSetup;
+function setup (generatorSetup) {
+  generator = generatorSetup;
 }
 
 function finalize (propName, ...args) {
-
   function getRaw (keyBeforeRaw, answers) {
     return (
-      inputProps[keyBeforeRaw] ||
-      (props ? props[keyBeforeRaw] : undefined) ||
+      generator.inputProps[keyBeforeRaw] ||
+      (generator.props ? generator.props[keyBeforeRaw] : undefined) ||
       answers[keyBeforeRaw]
     );
   }

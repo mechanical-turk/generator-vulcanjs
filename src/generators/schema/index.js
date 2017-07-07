@@ -32,7 +32,11 @@ module.exports = class extends VulcanGenerator {
   _writeSchema () {
     this.fs.copyTpl(
       this.templatePath('schema.js'),
-      this._getModulePath({ isAbsolute: true }, 'schema.js'),
+      this._getPath(
+        'module',
+        { isAbsolute: true },
+        'schema.js'
+      ),
       this.props
     );
   }
@@ -45,7 +49,10 @@ module.exports = class extends VulcanGenerator {
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
-      this._getModuleTestPath({ isAbsolute: true }, 'schema.js'),
+      this._getPath(
+        'moduleTest',
+        { isAbsolute: true }, 'schema.js'
+      ),
       testFragmentsProps
     );
   }
