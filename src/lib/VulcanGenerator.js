@@ -4,12 +4,12 @@ const dashify = require('dashify');
 const Redux = require('redux');
 const logger = require('redux-node-logger');
 const camelCase = require('camelcase');
-const pascalCase = require('pascal-case');
 const beautify = require('gulp-beautify');
 const reducers = require('./reducers');
 const common = require('./common');
 const uiText = require('./ui-text');
 const questions = require('./questions');
+const finalizers = require('./finalizers');
 
 let store;
 const errors = {};
@@ -38,6 +38,7 @@ module.exports = class VulcanGenerator extends Generator {
     );
     this.inputProps = {};
     this._getQuestion = questions.get.bind(this);
+    this._finalize = finalizers.finalize.bind(this);
   }
 
   _registerArguments () {}
@@ -431,69 +432,4 @@ module.exports = class VulcanGenerator extends Generator {
       }
     );
   }
-
-  /*
-    Prop finalizers
-  */
-
-  _getFinalPackageName (answers) {
-    const packageName = (
-      this.inputProps.packageName ||
-      (this.props ? this.props.packageName : undefined) ||
-      answers.packageName
-    );
-    return this._filterPackageName(packageName);
-  }
-
-  _getFinalModuleName (answers) {
-    const moduleName = (
-      this.inputProps.moduleName ||
-      this.props ? this.props.packageName : undefined ||
-      answers.moduleName
-    );
-    return this._filterModuleName(moduleName);
-  }
-
-  _getFinalPascalModuleName (answers) {
-    const moduleName = (
-      this.inputProps.moduleName ||
-      this.props ? this.props.moduleName : undefined ||
-      answers.moduleName
-    );
-    return pascalCase(moduleName);
-  }
-
-  _getFinalCamelModuleName (answers) {
-    const moduleName = (
-      this.inputProps.moduleName ||
-      this.props ? this.props.moduleName : undefined ||
-      answers.moduleName
-    );
-    return camelCase(moduleName);
-  }
-
-  _getFinalDefaultResolvers (answers) {
-    return (
-      this.inputProps.defaultResolvers ||
-      this.props ? this.props.defaultResolvers : undefined ||
-      answers.defaultResolvers
-    );
-  }
-
-  _getFinalCollectionName (answers) {
-    return this._getFinalPascalModuleName(answers);
-  }
-
-  _getFinalMutationName (answers, mutationType) {
-    const camelModuleName = this._getFinalCamelModuleName(answers);
-    return `${camelModuleName}${mutationType}`;
-  }
-
-  _getFinalPermissionName (answers, permission) {
-    const camelModuleName = this._getFinalCamelModuleName(answers);
-    console.log(camelModuleName);
-    const permissionAppendage = permission.join('.');
-    return `${camelModuleName}.${permissionAppendage}`;
-  }
-
 };

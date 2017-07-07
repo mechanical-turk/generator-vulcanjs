@@ -20,12 +20,10 @@ module.exports = class extends VulcanGenerator {
     const questions = [this._getQuestion('appName'), this._getQuestion('reactExtension'), this._getQuestion('packageManager')];
 
     return this.prompt(questions).then(answers => {
-      const appName = this.inputProps.appName || answers.appName;
       this.props = {
-        appName: appName,
-        reactExtension: this.inputProps.reactExtension || answers.reactExtension,
-        appSubPath: this._filterPackageName(appName),
-        packageManager: this.inputProps.packageManager || answers.packageManager
+        appName: this._finalize('appName', answers),
+        reactExtension: this._finalize('raw', 'reactExtension', answers),
+        packageManager: this._finalize('raw', 'packageManager', answers)
       };
     });
   }
@@ -34,7 +32,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canConfigure()) {
       return;
     }
-    this.destinationRoot(this.destinationPath(this.props.appSubPath));
+    this.destinationRoot(this.destinationPath(this.props.appName));
     this._dispatch({
       type: 'SET_IS_VULCAN_TRUE'
     });
@@ -77,7 +75,7 @@ module.exports = class extends VulcanGenerator {
     this.log(' ');
     this.log(chalk.green('Successfully generated vulcan code base. \n'));
     this.log(chalk.green('To run your new app: \n'));
-    this.log(chalk.green(`  cd ${this.props.appSubPath}`));
+    this.log(chalk.green(`  cd ${this.props.appName}`));
     this.log(chalk.green(`  ${this.props.packageManager} start \n`));
   }
 };
