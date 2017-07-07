@@ -117,7 +117,7 @@ module.exports = class extends VulcanGenerator {
       'https://github.com/Vulcanjs/Vulcan', 
       '--depth', 
       '1', 
-      `./${this.props.appName}`
+      this.props.appName
     ]);
     this.installDependencies({
       npm: this.props.packageManager === 'npm',
