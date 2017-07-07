@@ -93,6 +93,15 @@ function get (questionName) {
     };
   }
 
+  function isPackageAutoAdd () {
+    return {
+      type: 'confirm',
+      name: 'isPackageAutoAdd',
+      message: uiText.messages.isPackageAutoAdd,
+      when: () => (!inputProps.packageName),
+    };
+  }
+
   function packageNameList () {
     return {
       type: 'list',
@@ -144,29 +153,43 @@ function get (questionName) {
       filter: common.getSetFromArr,
     };
   }
-  // const moduleNameList = {
-  //   type: 'list',
-  //   name: 'moduleName',
-  //   message: uiText.messages.moduleName,
-  //   when: () => (!inputProps.moduleName),
-  //   choices: (answers) => {
-  //     const finalPackageName = finalize('packageName', answers);
-  //     return this._getModuleNames(finalPackageName);
-  //   },
-  //   default: (answers) => {
-  //     const finalPackageName = finalize('packageName', answers);
-  //     return common.getDefaultChoiceIndex(
-  //       this._getModuleNames(finalPackageName),
-  //       options.moduleName
-  //     );
-  //   },
-  // };
-  // const isPackageAutoAdd = {
-  //   type: 'confirm',
-  //   name: 'isPackageAutoAdd',
-  //   message: uiText.messages.isPackageAutoAdd,
-  //   when: () => (!inputProps.packageName),
-  // };
+
+  function moduleNameList () {
+    return {
+      type: 'list',
+      name: 'moduleName',
+      message: uiText.messages.moduleName,
+      when: () => (!inputProps.moduleName),
+      choices: (answers) => {
+        const finalPackageName = finalize('packageName', answers);
+        return store.get('moduleNames', finalPackageName);
+      },
+      default: (answers) => {
+        const finalPackageName = finalize('packageName', answers);
+        const moduleNames = store.get('moduleNames', finalPackageName);
+        return common.getDefaultChoiceIndex(
+          moduleNames,
+          options.moduleName
+        );
+      },
+    };
+  }
+
+  function defaultResolvers () {
+    return {
+      type: 'checkbox',
+      name: 'defaultResolvers',
+      message: 'Default resolvers',
+      choices: [
+        { name: 'List', value: 'list', checked: true },
+        { name: 'Single', value: 'single', checked: true },
+        { name: 'Total', value: 'total', checked: true },
+      ],
+      when: () => (!inputProps.defaultResolvers),
+      filter: common.getSetFromArr,
+    };
+  }
+
   // const componentName = {
   //   type: 'input',
   //   name: 'componentName',
@@ -217,18 +240,7 @@ function get (questionName) {
   //   when: () => (!inputProps.isAddComponentToStoryBook),
   // };
 
-  // const defaultResolvers = {
-  //   type: 'checkbox',
-  //   name: 'defaultResolvers',
-  //   message: 'Default resolvers',
-  //   choices: [
-  //     { name: 'List', value: 'list', checked: true },
-  //     { name: 'Single', value: 'single', checked: true },
-  //     { name: 'Total', value: 'total', checked: true },
-  //   ],
-  //   when: () => (!inputProps.defaultResolvers),
-  //   filter: common.getSetFromArr,
-  // };
+
   //
 
 
@@ -300,18 +312,17 @@ function get (questionName) {
     packageManager,
     packageName,
     vulcanDependencies,
+    isPackageAutoAdd,
     packageNameList,
     moduleName,
     moduleCreateWith,
-
-    // moduleNameList,
-    // isPackageAutoAdd,
+    moduleNameList,
+    defaultResolvers,
     // componentName,
     // componentType,
     // isRegisterComponent,
     // storyBookSetup,
     // isAddComponentToStoryBook,
-    // defaultResolvers,
     // isAddCustomSchemaProperty,
     // schemaPropertyName,
     // isSchemaPropertyHidden,
@@ -329,12 +340,15 @@ function get (questionName) {
   switch (questionName) {
     case 'appName': return boundQuestions.appName();
     case 'reactExtension': return boundQuestions.reactExtension();
-    case 'packageName': return boundQuestions.packageName();
     case 'packageManager': return boundQuestions.packageManager();
+    case 'packageName': return boundQuestions.packageName();
     case 'vulcanDependencies': return boundQuestions.vulcanDependencies();
+    case 'isPackageAutoAdd': return boundQuestions.isPackageAutoAdd();
     case 'packageNameList': return boundQuestions.packageNameList();
     case 'moduleName': return boundQuestions.moduleName();
     case 'moduleCreateWith': return boundQuestions.moduleCreateWith();
+    case 'moduleNameList': return boundQuestions.moduleNameList();
+    case 'defaultResolvers': return boundQuestions.defaultResolvers();
     default: return undefined;
   }
 

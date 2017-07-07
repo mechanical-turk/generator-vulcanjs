@@ -46,20 +46,6 @@ function is (checkType, ...args) {
   }
 }
 
-function has (checkType, ...args) {
-  function nonZeroModules (packageName) {
-    if (!this._isPackageExists(packageName)) return false;
-    const thePackage = this._getPackage(packageName);
-    const moduleNames = Object.keys(thePackage.modules);
-    return moduleNames.length > 0;
-  }
-
-  switch (checkType) {
-    case 'nonZeroModules' : return nonZeroModules(...args);
-    default : return undefined;
-  }
-}
-
 function get (checkType, ...args) {
   function reactExtension () {
     return store.getState().reactExtension;
@@ -71,17 +57,17 @@ function get (checkType, ...args) {
     return packageNamesToGet.sort(common.alphabeticalSort);
   }
 
+  function getPackage (packageName) {
+    return store.getState().packages[packageName];
+  }
+
   function moduleNames (packageName) {
-    const thePackage = this._getPackage(packageName);
-    const modules = this._isPackageExists(packageName) ?
+    const thePackage = getPackage(packageName);
+    const modules = is('packageExists', packageName) ?
       thePackage.modules :
       {};
     const moduleNamesToGet = Object.keys(modules);
     return moduleNamesToGet.sort(common.alphabeticalSort);
-  }
-
-  function getPackage (packageName) {
-    return store.getState().packages[packageName];
   }
 
   function storyBookSetupStatus () {
@@ -94,6 +80,26 @@ function get (checkType, ...args) {
     case 'moduleNames' : return moduleNames(...args);
     case 'package' : return getPackage(...args);
     case 'storyBookSetupStatus' : return storyBookSetupStatus(...args);
+    default : return undefined;
+  }
+}
+
+function has (checkType, ...args) {
+  function nonZeroPackages () {
+    const packageNames = get('packageNames');
+    return Object.keys(packageNames).length > 0;
+  }
+
+  function nonZeroModules (packageName) {
+    if (!this._isPackageExists(packageName)) return false;
+    const thePackage = this._getPackage(packageName);
+    const moduleNames = Object.keys(thePackage.modules);
+    return moduleNames.length > 0;
+  }
+
+  switch (checkType) {
+    case 'nonZeroModules': return nonZeroModules(...args);
+    case 'nonZeroPackages': return nonZeroPackages(...args);
     default : return undefined;
   }
 }

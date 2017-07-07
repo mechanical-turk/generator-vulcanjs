@@ -18,7 +18,7 @@ module.exports = class extends VulcanGenerator {
     const questions = [
       this._getQuestion('packageName'),
       this._getQuestion('vulcanDependencies'),
-      // this._getIsPackageAutoAddQuestion(),
+      // this._getQuestion('isPackageAutoAdd'),
     ];
 
     return this.prompt(questions).then((answers) => {

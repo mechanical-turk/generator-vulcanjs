@@ -25,9 +25,8 @@ module.exports = class extends VulcanGenerator {
         moduleName: this._finalize('moduleName', answers),
         typeName: this._finalize('pascalModuleName', answers),
       };
-
-      // this._assert('isPackageExists', this.props.packageName);
-      // this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
+      this._assert('isPackageExists', this.props.packageName);
+      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 

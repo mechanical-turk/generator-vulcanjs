@@ -2,8 +2,8 @@ const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
-    this._assertIsVulcan();
-    this._assertHasNonZeroPackages();
+    this._assert('isVulcan');
+    this._assert('hasNonZeroPackages');
   }
 
   _registerArguments () {
@@ -25,8 +25,8 @@ module.exports = class extends VulcanGenerator {
         parametersName: this._finalize('moduleName', answers),
       };
 
-      this._assertIsPackageExists(this.props.packageName);
-      this._assertIsModuleExists(this.props.packageName, this.props.moduleName);
+      this._assert('isPackageExists', this.props.packageName);
+      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 

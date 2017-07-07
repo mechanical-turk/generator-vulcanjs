@@ -4,8 +4,8 @@ const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
-    this._assertIsVulcan();
-    this._assertHasNonZeroPackages();
+    this._assert('isVulcan');
+    this._assert('hasNonZeroPackages');
     this.inputProps = {};
   }
 
@@ -34,8 +34,8 @@ module.exports = class extends VulcanGenerator {
         removeAllPermission: this._finalize('mutationName', ['remove', 'all'], answers)
       };
 
-      this._assertIsPackageExists(this.props.packageName);
-      this._assertIsModuleExists(this.props.packageName, this.props.moduleName);
+      this._assert('isPackageExists', this.props.packageName);
+      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 
