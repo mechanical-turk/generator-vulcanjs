@@ -20,18 +20,16 @@ module.exports = class extends VulcanGenerator {
     }
     const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleNameList'), this._getQuestion('defaultResolvers')];
     return this.prompt(questions).then(answers => {
-      const camelModuleName = this._getFinalCamelModuleName(answers);
-      const defaultResolvers = this._getFinalDefaultResolvers(answers);
       this.props = {
-        packageName: this._getFinalPackageName(answers),
-        moduleName: this._getFinalModuleName(answers),
-        collectionName: this._getFinalCollectionName(answers),
-        listResolverName: `${camelModuleName}List`,
-        singleResolverName: `${camelModuleName}Single`,
-        totalResolverName: `${camelModuleName}Total`,
-        hasListResolver: defaultResolvers.list,
-        hasSingleResolver: defaultResolvers.single,
-        hasTotalResolver: defaultResolvers.total
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        collectionName: this._finalize('collectionName', answers),
+        listResolverName: this._finalize('resolverName', 'List', answers),
+        singleResolverName: this._finalize('resolverName', 'Single', answers),
+        totalResolverName: this._finalize('resolverName', 'Total', answers),
+        hasListResolver: this._finalize('hasResolver', 'list', answers),
+        hasSingleResolver: this._finalize('hasResolver', 'single', answers),
+        hasTotalResolver: this._finalize('hasResolver', 'total', answers)
       };
       this._assertIsPackageExists(this.props.packageName);
       this._assertIsModuleExists(this.props.packageName, this.props.moduleName);

@@ -23,11 +23,11 @@ module.exports = class extends VulcanGenerator {
 
     return this.prompt(questions).then(answers => {
       this.props = {
-        packageName: this._getFinalPackageName(answers),
-        moduleName: this._getFinalModuleName(answers),
-        collectionName: this._getFinalPascalModuleName(answers),
-        typeName: this._getFinalPascalModuleName(answers),
-        moduleParts: this.inputProps.moduleParts || answers.moduleParts
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        collectionName: this._finalize('collectionName', answers),
+        typeName: this._finalize('pascalModuleName', answers),
+        moduleParts: this._finalize('raw', 'moduleParts', answers)
       };
 
       this._assertIsPackageExists(this.props.packageName);

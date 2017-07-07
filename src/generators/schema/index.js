@@ -15,14 +15,14 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getPackageNameListQuestion(),
-      this._getModuleNameListQuestion(),
+      this._getQuestion('packageNameList'),
+      this._getQuestion('moduleNameList'),
     ];
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
-        packageName: this._getFinalPackageName(answers),
-        moduleName: this._getFinalModuleName(answers),
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
       };
 
       this._assertIsPackageExists(this.props.packageName);

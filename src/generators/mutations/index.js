@@ -21,17 +21,17 @@ module.exports = class extends VulcanGenerator {
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
-        packageName: this._getFinalPackageName(answers),
-        moduleName: this._getFinalModuleName(answers),
-        collectionName: this._getFinalCollectionName(answers),
-        newMutationName: this._getFinalMutationName(answers, 'New'),
-        editMutationName: this._getFinalMutationName(answers, 'Edit'),
-        removeMutationName: this._getFinalMutationName(answers, 'Remove'),
-        newPermission: this._getFinalPermissionName(answers, ['new']),
-        editOwnPermission: this._getFinalPermissionName(answers, ['edit', 'own']),
-        editAllPermission: this._getFinalPermissionName(answers, ['edit', 'all']),
-        removeOwnPermission: this._getFinalPermissionName(answers, ['remove', 'own']),
-        removeAllPermission: this._getFinalPermissionName(answers, ['remove', 'all']),
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        collectionName: this._finalize('collectionName', answers),
+        newMutationName: this._finalize('mutationName', 'new', answers),
+        editMutationName: this._finalize('mutationName', 'edit', answers),
+        removeMutationName: this._finalize('mutationName', 'remove', answers),
+        newPermission: this._finalize('mutationName', ['new'], answers),
+        editOwnPermission: this._finalize('mutationName', ['edit', 'own'], answers),
+        editAllPermission: this._finalize('mutationName', ['edit', 'all'], answers),
+        removeOwnPermission: this._finalize('mutationName', ['remove', 'own'], answers),
+        removeAllPermission: this._finalize('mutationName', ['remove', 'all'], answers),
       };
 
       this._assertIsPackageExists(this.props.packageName);

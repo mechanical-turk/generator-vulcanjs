@@ -21,13 +21,13 @@ module.exports = class extends VulcanGenerator {
     const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleNameList')];
     return this.prompt(questions).then(answers => {
       this.props = {
-        packageName: this._getFinalPackageName(answers),
-        moduleName: this._getFinalModuleName(answers),
-        newPermission: this._getFinalPermissionName(answers, ['new']),
-        editOwnPermission: this._getFinalPermissionName(answers, ['edit', 'own']),
-        editAllPermission: this._getFinalPermissionName(answers, ['edit', 'all']),
-        removeOwnPermission: this._getFinalPermissionName(answers, ['remove', 'own']),
-        removeAllPermission: this._getFinalPermissionName(answers, ['remove', 'all'])
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        newPermission: this._finalize('permissionName', ['new'], answers),
+        editOwnPermission: this._finalize('permissionName', ['edit', 'own'], answers),
+        editAllPermission: this._finalize('permissionName', ['edit', 'all'], answers),
+        removeOwnPermission: this._finalize('permissionName', ['remove', 'own'], answers),
+        removeAllPermission: this._finalize('permissionName', ['remove', 'all'], answers)
       };
 
       this._assertIsPackageExists(this.props.packageName);

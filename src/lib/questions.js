@@ -44,11 +44,11 @@ function get (questionName) {
     message: uiText.messages.moduleName,
     when: () => (!this.inputProps.moduleName),
     choices: (answers) => {
-      const finalPackageName = this._getFinalPackageName(answers);
+      const finalPackageName = this._finalize('packageName', answers);
       return this._getModuleNames(finalPackageName);
     },
     default: (answers) => {
-      const finalPackageName = this._getFinalPackageName(answers);
+      const finalPackageName = this._finalize('packageName', answers);
       return common.getDefaultChoiceIndex(
         this._getModuleNames(finalPackageName),
         this.options.moduleName

@@ -22,13 +22,10 @@ module.exports = class extends VulcanGenerator {
     ];
 
     return this.prompt(questions).then((answers) => {
-      const preProcessedDeps =
-        this.inputProps.vulcanDependencies ||
-        answers.vulcanDependencies;
       this.props = {
-        packageName: this._filterPackageName(this.inputProps.packageName || answers.packageName),
-        vulcanDependencies: preProcessedDeps.map((dep) => (`'${dep}'`)),
-        isPackageAutoAdd: this.inputProps.isPackageAutoAdd || answers.isPackageAutoAdd,
+        packageName: this._finalize('packageName', answers),
+        vulcanDependencies: this._finalize('vulcanDependencies', answers),
+        isPackageAutoAdd: this._finalize('raw', 'isPackageAutoAdd', answers),
       };
       this._assertNotPackageExists(this.props.packageName);
     });

@@ -1,6 +1,6 @@
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
-const dashify = require('dashify');
+// const dashify = require('dashify');
 //
 // function filter (propName, propValue) {
 //   const appName = dashify;
@@ -50,15 +50,30 @@ function finalize (propName, ...args) {
     return pascalModuleName(answers);
   }
 
-  function mutationName (answers, mutationType) {
+  function mutationName (mutationType, answers) {
     const moduleNamePart = camelModuleName(answers);
     return `${moduleNamePart}${mutationType}`;
   }
 
-  function permissionName (answers, permission) {
+  function permissionName (permission, answers) {
     const camelModuleNamePart = camelModuleName(answers);
     const permissionAppendage = permission.join('.');
     return `${camelModuleNamePart}.${permissionAppendage}`;
+  }
+
+  function vulcanDependencies (answers) {
+    const rawDependencies = getRaw('vulcanDependencies', answers);
+    return rawDependencies.map((dep) => (`'${dep}'`));
+  }
+
+  function resolverName (resolverType, answers) {
+    const resolverNamePart = camelModuleName(answers);
+    return `${resolverNamePart}${resolverType}`;
+  }
+
+  function hasResolver (resolverType, answers) {
+    const defaultResolvers = getRaw('defaultResolvers', answers);
+    return defaultResolvers[resolverType];
   }
 
   switch (propName) {
@@ -70,6 +85,9 @@ function finalize (propName, ...args) {
     case 'collectionName' : return collectionName(...args);
     case 'mutationName' : return mutationName(...args);
     case 'permissionName' : return permissionName(...args);
+    case 'vulcanDependencies' : return vulcanDependencies(...args);
+    case 'resolverName' : return resolverName(...args);
+    case 'hasResolver' : return hasResolver(...args);
     case 'raw' : return getRaw(...args);
     default: return undefined;
   }
