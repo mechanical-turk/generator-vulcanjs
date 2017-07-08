@@ -205,29 +205,37 @@ function get (...questionNames) {
     };
   }
 
-  // const componentName = {
-  //   type: 'input',
-  //   name: 'componentName',
-  //   message: uiText.messages.componentName,
-  //   when: () => (!generator.inputProps.componentName),
-  //   validate: validations.assertNonEmpty,
-  // };
-  // const componentType = {
-  //   type: 'list',
-  //   name: 'componentType',
-  //   message: uiText.messages.componentType,
-  //   choices: [
-  //     { name: 'Pure Function', value: 'pure' },
-  //     { name: 'Class Component', value: 'class' },
-  //   ],
-  //   when: () => (!generator.inputProps.componentType),
-  // };
-  // const isRegisterComponent = {
-  //   type: 'confirm',
-  //   name: 'isRegister',
-  //   message: uiText.messages.isRegisterComponent,
-  //   when: () => (!generator.inputProps.isRegister),
-  // };
+  function componentName () {
+    return {
+      type: 'input',
+      name: 'componentName',
+      message: uiText.messages.componentName,
+      when: () => (!generator.inputProps.componentName),
+      validate: validations.assertNonEmpty,
+    };
+  }
+
+  function componentType () {
+    return {
+      type: 'list',
+      name: 'componentType',
+      message: uiText.messages.componentType,
+      choices: [
+        { name: 'Pure Function', value: 'pure' },
+        { name: 'Class Component', value: 'class' },
+      ],
+      when: () => (!generator.inputProps.componentType),
+    };
+  }
+
+  function isRegisterComponent () {
+    return {
+      type: 'confirm',
+      name: 'isRegister',
+      message: uiText.messages.isRegisterComponent,
+      when: () => (!generator.inputProps.isRegister),
+    };
+  }
   // const storyBookSetup = {
   //   type: 'list',
   //   name: 'storyBookSetupStatus',
@@ -334,6 +342,9 @@ function get (...questionNames) {
       case 'moduleName': return moduleName();
       case 'moduleCreateWith': return moduleCreateWith();
       case 'moduleNameList': return moduleNameList();
+      case 'componentName': return componentName();
+      case 'componentType': return componentType();
+      case 'isRegisterComponent': return isRegisterComponent();
       case 'defaultResolvers': return defaultResolvers();
       case 'packageNameWithNumModulesList': return packageNameWithNumModulesList();
       default: return undefined;

@@ -1,106 +1,39 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-const pascalCase = require('pascal-case');
-const chalk = require('chalk');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
-const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
-    this._assertIsVulcan();
-    this._assertHasNonZeroPackages();
+    this._assert('isVulcan');
+    this._assert('hasNonZeroPackages');
     this.inputProps = {};
   }
 
   _registerArguments() {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
-    this._registerComponentNameOption();
+    this._registerOptions('packageName', 'moduleName', 'componentName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const firstQuestions = [
-    // this._getStoryBookSetupQuestion(),
-    this._getQuestion('packageNameList')];
-
-    return this.prompt(firstQuestions).then(answers => {
+    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList', 'componentName', 'componentType', 'isRegisterComponent');
+    return this.prompt(questions).then(answers => {
       this.props = {
-        packageName: this._getFinalPackageName(answers)
-        // storyBookSetupStatus: this.inputProps.storyBookSetupStatus || answers.storyBookSetupStatus,
+        packageName: this._finalize('packageName', answers),
+        moduleName: this._finalize('moduleName', answers),
+        componentName: this._finalize('componentName', answers),
+        componentFileName: this._finalize('componentFileName', answers),
+        componentType: this._finalize('raw', 'componentType', answers),
+        isRegister: this._finalize('raw', 'isRegister', answers)
       };
-      console.log('kerem');
-      this._assertPackageHasNonZeroModules(this.props.packageName);
-      const secondQuestions = [this._getQuestion('moduleNameList'), this._getQuestion('componentName'), this._getQuestion('componentType'), this._getQuestion('isRegisterComponent')];
-      if (this._packageHasNonZeroModules(this.props.packageName)) {
-        return this.prompt(secondQuestions);
-      }
-      return Promise.reject('noModulesInPackage');
-    }).then(answers => {
-      this.props = _extends({}, this.props, {
-        moduleName: this.inputProps.moduleName || answers.moduleName,
-        componentName: pascalCase(this.inputProps.componentName || answers.componentName),
-        componentType: this.inputProps.componentType || answers.componentType,
-        isRegister: this.inputProps.isRegister || answers.isRegister
-        // isAddComponentToStoryBook: (
-        //   this.inputProps.isAddComponentToStoryBook ||
-        //   answers.isAddComponentToStoryBook
-        // ),
-      });
-      this.props.componentPath = this._getComponentPath({
-        isAbsolute: true
-      });
-      this.props.templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
-      this._assertModuleIsExists(this.props.packageName, this.props.moduleName);
-    }, () => {});
-  }
-
-  // configuring () {
-  //   if (!this._canConfigure()) { return; }
-  //   if (this.props.storyBookSetupStatus) {
-  //     this._dispatch({
-  //       type: 'SET_STORYBOOK_SETUP_STATUS',
-  //       status: this.props.storyBookSetupStatus,
-  //     });
-  //   }
-  //   this._commitStore();
-  //   // this._installStorybook();
-  // }
-
-  _canInstall() {
-    return super._canInstall() && this._getStoryBookSetupStatus() === 'installing';
-  }
-
-  _installStorybook() {
-    if (!this._canInstall()) {
-      return;
-    }
-    this.log(chalk.green('\nTaking you to react storybook setup... \n'));
-    this.spawnCommandSync('getstorybook');
-    this._dispatch({
-      type: 'SET_STORYBOOK_SETUP_STATUS',
-      status: 'installed'
+      this.props.componentPath = this._finalize('componentPath', answers);
+      this._assert('isPackageExists', this.props.packageName);
+      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
-    this._commitStore();
   }
 
   _writeComponent() {
-    this.fs.copyTpl(this.props.templatePath, this.props.componentPath, this.props);
-  }
-
-  _updateModuleStories() {
-    if (!this.props.isAddComponentToStoryBook) {
-      return;
-    }
-    const moduleStoriesPath = this._getModuleStoriesPath({
-      isAbsolute: true
-    });
-    const fileText = this.fs.read(moduleStoriesPath);
-    const importStatement = `import ${this.props.componentName} from './${this._getComponentFileName()};'`;
-    const fileWithImportText = ast.addImportStatementAndParse(fileText, importStatement);
-    this.fs.write(moduleStoriesPath, fileWithImportText);
+    const templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
+    this.fs.copyTpl(templatePath, this._getPath({ isAbsolute: true }, 'moduleInComponents', this.props.componentFileName), this.props);
   }
 
   writing() {
@@ -108,7 +41,6 @@ module.exports = class extends VulcanGenerator {
       return;
     }
     this._writeComponent();
-    // this._updateModuleStories();
   }
 
   end() {

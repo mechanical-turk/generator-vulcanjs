@@ -1,6 +1,8 @@
 const pascalCase = require('pascal-case');
 const camelCase = require('camelcase');
 const filter = require('./filters').filter;
+const pathFinder = require('./path-finder');
+const store = require('./store');
 
 let generator;
 
@@ -30,6 +32,24 @@ function finalize (propName, ...args) {
   function moduleName (answers) {
     const moduleNameRaw = getRaw('moduleName', answers);
     return filter('moduleName', moduleNameRaw);
+  }
+
+  function componentName (answers) {
+    const componentNameRaw = getRaw('componentName', answers);
+    return filter('componentName', componentNameRaw);
+  }
+
+  function componentFileName (answers) {
+    const filteredComponentName = filter('componentName', answers.componentName);
+    return `${filteredComponentName}.${store.get('reactExtension')}`;
+  }
+
+  function componentPath (answers) {
+    return pathFinder.get(
+      { isAbsolute: false },
+      'moduleInComponents',
+      componentFileName(answers)
+    );
   }
 
   function pascalModuleName (answers) {
@@ -76,6 +96,9 @@ function finalize (propName, ...args) {
     case 'appName' : return appName(...args);
     case 'packageName' : return packageName(...args);
     case 'moduleName' : return moduleName(...args);
+    case 'componentName' : return componentName(...args);
+    case 'componentFileName' : return componentFileName(...args);
+    case 'componentPath' : return componentPath(...args);
     case 'pascalModuleName' : return pascalModuleName(...args);
     case 'camelModuleName' : return camelModuleName(...args);
     case 'collectionName' : return collectionName(...args);
