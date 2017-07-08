@@ -23,9 +23,6 @@ module.exports = class extends VulcanGenerator {
         moduleName: this._finalize('moduleName', answers),
         parametersName: this._finalize('moduleName', answers)
       };
-
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 

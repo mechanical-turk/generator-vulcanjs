@@ -23,8 +23,6 @@ module.exports = class VulcanGenerator extends Generator {
     this.registerTransformStream(
       beautify({ indent_size: 2 })
     );
-    this.inputProps = {};
-    this.props = {};
     finalizers.setup(this);
     pathFinder.setup(this);
     questions.setup(this);
@@ -35,6 +33,8 @@ module.exports = class VulcanGenerator extends Generator {
     this._getPath = pathFinder.get;
     this._registerOptions = optionsManager.register;
     this._registerArguments();
+    this.inputProps = {};
+    this.props = {};
   }
 
   /*

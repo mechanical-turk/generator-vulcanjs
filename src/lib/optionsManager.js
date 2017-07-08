@@ -9,7 +9,7 @@ function setup (generatorSetup) {
 function register (...optionNames) {
   function appName () {
     generator.option(
-      'appname',
+      'appName',
       {
         type: String,
         required: false,
@@ -21,7 +21,7 @@ function register (...optionNames) {
 
   function packageName () {
     generator.option(
-      'packagename',
+      'packageName',
       {
         type: String,
         required: false,
@@ -33,7 +33,7 @@ function register (...optionNames) {
 
   function moduleName () {
     generator.option(
-      'modulename',
+      'moduleName',
       {
         type: String,
         required: false,
@@ -45,7 +45,7 @@ function register (...optionNames) {
 
   function componentName () {
     generator.option(
-      'componentname',
+      'componentName',
       {
         type: String,
         required: false,
@@ -57,7 +57,7 @@ function register (...optionNames) {
 
   function reactExtension () {
     generator.option(
-      'reactextension',
+      'reactExtension',
       {
         type: String,
         required: false,
@@ -69,7 +69,7 @@ function register (...optionNames) {
 
   function packageManager () {
     generator.option(
-      'packagemanager',
+      'packageManager',
       {
         type: String,
         required: false,

@@ -8,7 +8,6 @@ module.exports = class extends VulcanGenerator {
 
   initializing() {
     this._assert('notVulcan');
-    this.inputProps = {};
   }
 
   prompting() {

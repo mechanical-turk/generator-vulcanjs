@@ -13,7 +13,7 @@ function setup (generatorSetup) {
 function finalize (propName, ...args) {
   function getRaw (keyBeforeRaw, answers) {
     return (
-      generator.inputProps[keyBeforeRaw] ||
+      generator.options[keyBeforeRaw] ||
       (generator.props ? generator.props[keyBeforeRaw] : undefined) ||
       answers[keyBeforeRaw]
     );
@@ -62,6 +62,10 @@ function finalize (propName, ...args) {
     return camelCase(moduleNameRaw);
   }
 
+  function moduleParts (answers) {
+    return Object.keys(answers.moduleParts);
+  }
+
   function collectionName (answers) {
     return pascalModuleName(answers);
   }
@@ -96,6 +100,7 @@ function finalize (propName, ...args) {
     case 'appName' : return appName(...args);
     case 'packageName' : return packageName(...args);
     case 'moduleName' : return moduleName(...args);
+    case 'moduleParts': return moduleParts(...args);
     case 'componentName' : return componentName(...args);
     case 'componentFileName' : return componentFileName(...args);
     case 'componentPath' : return componentPath(...args);

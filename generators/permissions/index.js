@@ -6,7 +6,6 @@ module.exports = class extends VulcanGenerator {
   initializing() {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments() {
@@ -28,8 +27,6 @@ module.exports = class extends VulcanGenerator {
         removeOwnPermission: this._finalize('permissionName', ['remove', 'own'], answers),
         removeAllPermission: this._finalize('permissionName', ['remove', 'all'], answers)
       };
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 

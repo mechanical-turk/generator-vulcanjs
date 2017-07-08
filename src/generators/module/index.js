@@ -5,7 +5,6 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments () {
@@ -20,7 +19,7 @@ module.exports = class extends VulcanGenerator {
     const questions = this._getQuestions(
       'packageNameList',
       'moduleName',
-      'moduleCreateWith'
+      'moduleParts'
     );
     return this.prompt(questions)
     .then((answers) => {
@@ -29,11 +28,21 @@ module.exports = class extends VulcanGenerator {
         moduleName: this._finalize('moduleName', answers),
         collectionName: this._finalize('collectionName', answers),
         typeName: this._finalize('pascalModuleName', answers),
-        moduleParts: this._finalize('raw', 'moduleParts', answers),
+        moduleParts: this._finalize('moduleParts', answers),
       };
+      this._composeGenerators();
+    });
+  }
 
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('notModuleExists', this.props.packageName, this.props.moduleName);
+  _composeGenerators () {
+    this.props.moduleParts.forEach((modulePart) => {
+      const generator = require.resolve(`../${modulePart}`);
+      const nextOptions = {
+        ...this.options,
+        ...this.props,
+        dontAsk: true,
+      };
+      this.composeWith(generator, nextOptions);
     });
   }
 

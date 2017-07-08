@@ -4,7 +4,6 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments () {
@@ -35,8 +34,6 @@ module.exports = class extends VulcanGenerator {
         isRegister: this._finalize('raw', 'isRegister', answers),
       };
       this.props.componentPath = this._finalize('componentPath', answers);
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 
