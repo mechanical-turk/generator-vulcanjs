@@ -1,3 +1,1 @@
-import { addRoute } from 'meteor/vulcan:core';
-
-// addRoute({ name: '', path: '/', component: '' });
+import { Components, addRoute } from 'meteor/vulcan:core';

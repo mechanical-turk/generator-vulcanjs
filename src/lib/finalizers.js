@@ -96,6 +96,19 @@ function finalize (propName, ...args) {
     return defaultResolvers[resolverType];
   }
 
+  function addRouteStatement (answers) {
+    const routeName = getRaw('routeName', answers);
+    const routePath = getRaw('routePath', answers);
+    const layoutName = getRaw('layoutName', answers);
+    const routeComponentName = componentName(answers);
+    return `addRoute({
+      name: '${routeName}',
+      path: '${routePath}',
+      component: Components.${routeComponentName},
+      layoutName: '${layoutName}',
+    });`;
+  }
+
   switch (propName) {
     case 'appName' : return appName(...args);
     case 'packageName' : return packageName(...args);
@@ -112,6 +125,7 @@ function finalize (propName, ...args) {
     case 'vulcanDependencies' : return vulcanDependencies(...args);
     case 'resolverName' : return resolverName(...args);
     case 'hasResolver' : return hasResolver(...args);
+    case 'addRouteStatement' : return addRouteStatement(...args);
     case 'raw' : return getRaw(...args);
     default: return undefined;
   }

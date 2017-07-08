@@ -103,46 +103,9 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('routes.js'),
       this._getPath(
         { isAbsolute: true },
-        'modules',
-        'routes.js'
+        'routes'
       ),
       this.props
-    );
-  }
-
-  _writeStoriesJs () {
-    this.fs.copyTpl(
-      this.templatePath('stories.js'),
-      this._getPath(
-        { isAbsolute: true },
-        'packageStories'
-      ),
-      this.props
-    );
-  }
-
-  _updateRootStoriesIndex () {
-    const rootStoriesIndexPath = this._getPath(
-      { isAbsolute: true },
-      'rootStories',
-      'index.js'
-    );
-    if (!this.fs.exists(rootStoriesIndexPath)) { return; }
-    const packageStoriesPath = this._getPath(
-      'packageStories',
-      {
-        relativeTo: this._getPath(
-          { isAbsolute: true },
-          'rootStories'
-        ),
-      }
-    );
-    const fileText = this.fs.read(rootStoriesIndexPath);
-    const importStatement = `import '${packageStoriesPath}';`;
-    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
-    this.fs.write(
-      rootStoriesIndexPath,
-      fileTextWithWithImport
     );
   }
 
@@ -154,8 +117,6 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    // this._writeStoriesJs();
-    // this._updateRootStoriesIndex();
   }
 
   end () {
