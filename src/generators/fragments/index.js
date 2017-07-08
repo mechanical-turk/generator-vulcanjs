@@ -15,7 +15,7 @@ module.exports = class extends VulcanGenerator {
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = [
-      this._getQuestion('packageNameList'),
+      this._getQuestion('packageNameWithNumModulesList'),
       this._getQuestion('moduleNameList'),
     ];
     return this.prompt(questions)
@@ -59,24 +59,10 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModuleIndex () {
-    // const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    // const fileText = this.fs.read(modulePath);
-    // const fileWithImportText = ast.addImportStatementAndParse(
-    //   fileText,
-    //   `import './${this.props.moduleName}/collection.js';`
-    // );
-    // this.fs.write(
-    //   modulePath,
-    //   fileWithImportText
-    // );
-  }
-
   writing () {
     if (!this._canWrite()) { return; }
     this._writeFragments();
     this._writeTestFragments();
-    // this._updateModuleIndex();
   }
 
   end () {

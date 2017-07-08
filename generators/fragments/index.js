@@ -18,7 +18,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleNameList')];
+    const questions = [this._getQuestion('packageNameWithNumModulesList'), this._getQuestion('moduleNameList')];
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
@@ -42,26 +42,12 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'fragments.js'), testProps);
   }
 
-  _updateModuleIndex() {
-    // const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    // const fileText = this.fs.read(modulePath);
-    // const fileWithImportText = ast.addImportStatementAndParse(
-    //   fileText,
-    //   `import './${this.props.moduleName}/collection.js';`
-    // );
-    // this.fs.write(
-    //   modulePath,
-    //   fileWithImportText
-    // );
-  }
-
   writing() {
     if (!this._canWrite()) {
       return;
     }
     this._writeFragments();
     this._writeTestFragments();
-    // this._updateModuleIndex();
   }
 
   end() {

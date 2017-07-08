@@ -6,17 +6,17 @@ const common = require('./common');
 
 let store = {};
 
-function init (props) {
+function init (savedState) {
   if (process.env.VULCANJS_SEE_REDUX_LOGS) {
     store = Redux.createStore(
       reducers,
-      props,
+      savedState,
       Redux.applyMiddleware(logger())
     );
   } else {
     store = Redux.createStore(
       reducers,
-      props
+      savedState
     );
   }
   return store;
@@ -70,6 +70,15 @@ function get (checkType, ...args) {
     return moduleNamesToGet.sort(common.alphabeticalSort);
   }
 
+  function packageNamesWithNumModules () {
+    const packageNamesList = packageNames();
+    const packageNamesWithModules = packageNamesList.map((packageName) => ({
+      name: packageName,
+      numModules: moduleNames(packageName).length,
+    }));
+    return packageNamesWithModules;
+  }
+
   function storyBookSetupStatus () {
     return store.getState().storyBook.setupStatus;
   }
@@ -80,6 +89,7 @@ function get (checkType, ...args) {
     case 'moduleNames' : return moduleNames(...args);
     case 'package' : return getPackage(...args);
     case 'storyBookSetupStatus' : return storyBookSetupStatus(...args);
+    case 'packageNamesWithNumModules' : return packageNamesWithNumModules(...args);
     default : return undefined;
   }
 }
@@ -90,7 +100,7 @@ function has (checkType, ...args) {
     return Object.keys(packageNames).length > 0;
   }
 
-  function nonZeroModules (packageName) {
+  function nonZeroModulesInPackage (packageName) {
     if (!this._isPackageExists(packageName)) return false;
     const thePackage = this._getPackage(packageName);
     const moduleNames = Object.keys(thePackage.modules);
@@ -98,7 +108,7 @@ function has (checkType, ...args) {
   }
 
   switch (checkType) {
-    case 'nonZeroModules': return nonZeroModules(...args);
+    case 'nonZeroModulesInPackage': return nonZeroModulesInPackage(...args);
     case 'nonZeroPackages': return nonZeroPackages(...args);
     default : return undefined;
   }

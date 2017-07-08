@@ -119,6 +119,27 @@ function get (questionName) {
     };
   }
 
+  function packageNameWithNumModulesList () {
+    return {
+      type: 'list',
+      name: 'packageName',
+      message: uiText.messages.packageName,
+      when: () => (!generator.inputProps.packageName),
+      choices: () => (
+        store.get('packageNamesWithNumModules')
+        .sort(common.numModulesSort)
+        .map(({ name, numModules }) => {
+          if (numModules > 0) return name;
+          return { name, value: name, disabled: true };
+        })
+      ),
+      default: common.getDefaultChoiceIndex(
+        store.get('packageNames'),
+        generator.options.packagename
+      ),
+    };
+  }
+
   function moduleName () {
     return {
       type: 'input',
@@ -314,6 +335,7 @@ function get (questionName) {
     reactExtension,
     packageManager,
     packageName,
+    packageNameWithNumModulesList,
     vulcanDependencies,
     isPackageAutoAdd,
     packageNameList,
@@ -352,6 +374,7 @@ function get (questionName) {
     case 'moduleCreateWith': return boundQuestions.moduleCreateWith();
     case 'moduleNameList': return boundQuestions.moduleNameList();
     case 'defaultResolvers': return boundQuestions.defaultResolvers();
+    case 'packageNameWithNumModulesList': return boundQuestions.packageNameWithNumModulesList();
     default: return undefined;
   }
 
