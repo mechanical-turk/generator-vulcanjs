@@ -32,14 +32,14 @@ const messages = {
   isAddComponentToStoryBook: 'Add component to storybook',
   isAddCustomSchemaProperty: 'Add a custom property to the collection',
   isAddAnotherCustomSchemaProperty: 'Add another custom property to the collection',
-  collectionPropertyName: 'Property name',
+  schemaPropertyName: 'Property name',
   isSchemaPropertyHidden: 'Property is hidden',
-  collectionPropertyLabel: 'Property label',
-  collectionPropertyType: 'Property type',
+  schemaPropertyLabel: 'Property label',
+  schemaPropertyType: 'Property type',
   isSchemaPropertyOptional: 'Property is optional',
-  collectionPropertyViewableBy: 'Property viewable by',
-  collectionPropertyInsertableBy: 'Property insertable by',
-  collectionPropertyEditableBy: 'Property editable by',
+  schemaPropertyViewableBy: 'Property viewable by',
+  schemaPropertyInsertableBy: 'Property insertable by',
+  schemaPropertyEditableBy: 'Property editable by',
 };
 
 const errors = {

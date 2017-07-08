@@ -16,12 +16,37 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList');
+    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList'
+    // 'isAddCustomSchemaProperty'
+    );
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers)
+        moduleName: this._finalize('moduleName', answers),
+        // isAddCustomSchemaProperty: this._finalize('raw', 'isAddCustomSchemaProperty', answers),
+        customSchemaProperties: []
       };
+      // if (this.props.isAddCustomSchemaProperty) {
+      //   return this._askCustomSchemaQuestion();
+      // }
+    });
+  }
+
+  _askCustomSchemaQuestion(callback) {
+    const customSchemaPropertyQuestions = this._getQuestions('schemaPropertyName', 'isSchemaPropertyHidden', 'schemaPropertyLabel', 'schemaPropertyType', 'isSchemaPropertyOptional', 'schemaPropertyViewableBy', 'schemaPropertyInsertableBy', 'schemaPropertyEditableBy', 'isAddAnotherCustomSchemaProperty');
+    const customSchemaProperties = [];
+    this.prompt(customSchemaPropertyQuestions).then(answers => {
+      this.props.customSchemaProperties.push({
+        name: 'kerem',
+        value: 'kazan'
+      });
+      if (answers.isAddAnotherCustomSchemaProperty) {
+        this._askCustomSchemaQuestion(() => {
+          // callback();
+        });
+      } else {
+        // callback();
+      }
     });
   }
 
