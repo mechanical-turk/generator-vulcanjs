@@ -3,9 +3,7 @@ const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   _registerArguments() {
-    this._registerAppNameOption();
-    this._registerReactExtensionOption();
-    this._registerPackageManagerOption();
+    this._registerOptions('appName', 'reactExtension', 'packageManager');
   }
 
   initializing() {
@@ -17,8 +15,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getQuestion('appName'), this._getQuestion('reactExtension'), this._getQuestion('packageManager')];
-
+    const questions = this._getQuestions('appName', 'reactExtension', 'packageManager');
     return this.prompt(questions).then(answers => {
       this.props = {
         appName: this._finalize('appName', answers),

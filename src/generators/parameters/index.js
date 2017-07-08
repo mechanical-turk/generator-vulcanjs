@@ -7,16 +7,18 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions(
+      'packageName',
+      'moduleName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageNameWithNumModulesList'),
-      this._getQuestion('moduleNameList'),
-    ];
+    const questions = this._getQuestions(
+      'packageNameWithNumModulesList',
+      'moduleNameList'
+    );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {

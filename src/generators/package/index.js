@@ -3,23 +3,22 @@ const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
-
   initializing () {
     this._assert('isVulcan');
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
+    this._registerOptions(
+      'packageName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageName'),
-      this._getQuestion('vulcanDependencies'),
-      // this._getQuestion('isPackageAutoAdd'),
-    ];
-
+    const questions = this._getQuestions(
+      'packageName',
+      'vulcanDependencies'
+    );
     return this.prompt(questions).then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),

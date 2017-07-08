@@ -11,16 +11,14 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions('packageName', 'moduleName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleName'), this._getQuestion('moduleCreateWith')];
-
+    const questions = this._getQuestions('packageNameList', 'moduleName', 'moduleCreateWith');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
