@@ -63,6 +63,13 @@ module.exports = class extends VulcanGenerator {
       '1', 
       this.props.appName
     ]);
+	this.spawnCommandSync('mv', [
+	  '.yo-rc.json' ,
+	  this.props.appName
+	]);
+	this.destinationRoot(
+	  this.destinationPath(this.props.appName)
+	);
     this.installDependencies({
       npm: this.props.packageManager === 'npm',
       bower: false,
