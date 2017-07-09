@@ -24,11 +24,22 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  configuring() {
+  writing() {
+    if (!this._canInstall()) {
+      return;
+    }
+    this.log(chalk.green('\nPulling the most up to date git repository... \n'));
+    this.spawnCommandSync('git', ['clone', 'https://github.com/Vulcanjs/Vulcan', '--depth', '1', this.props.appName]);
+    this.destinationRoot(this.destinationPath(this.props.appName));
+    this.installDependencies({
+      npm: this.props.packageManager === 'npm',
+      bower: false,
+      yarn: this.props.packageManager === 'yarn'
+    });
+
     if (!this._canConfigure()) {
       return;
     }
-    this.destinationRoot(this.destinationPath(this.props.appName));
     this._dispatch({
       type: 'SET_IS_VULCAN_TRUE'
     });
@@ -45,22 +56,6 @@ module.exports = class extends VulcanGenerator {
       packageManager: this.props.packageManager
     });
     this._commitStore();
-  }
-
-  install() {
-    if (!this._canInstall()) {
-      return;
-    }
-    this.log(chalk.green('\nPulling the most up to date git repository... \n'));
-    this.spawnCommandSync('git', ['init']);
-    this.spawnCommandSync('git', ['remote', 'add', 'origin', 'git@github.com:VulcanJS/Vulcan.git']);
-    this.spawnCommandSync('git', ['pull', 'origin', 'master']);
-    this.spawnCommandSync('git', ['remote', 'rm', 'origin']);
-    this.installDependencies({
-      npm: this.props.packageManager === 'npm',
-      bower: false,
-      yarn: this.props.packageManager === 'yarn'
-    });
   }
 
   end() {
