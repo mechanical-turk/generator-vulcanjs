@@ -36,7 +36,6 @@ module.exports = class extends VulcanGenerator {
       bower: false,
       yarn: this.props.packageManager === 'yarn'
     });
-
     if (!this._canConfigure()) {
       return;
     }
