@@ -4,21 +4,22 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions(
+      'packageName',
+      'moduleName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageNameList'),
-      this._getQuestion('moduleNameList'),
-      this._getQuestion('defaultResolvers'),
-    ];
+    const questions = this._getQuestions(
+      'packageNameWithNumModulesList',
+      'moduleNameList',
+      'defaultResolvers'
+    );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
@@ -32,8 +33,6 @@ module.exports = class extends VulcanGenerator {
         hasSingleResolver: this._finalize('hasResolver', 'single', answers),
         hasTotalResolver: this._finalize('hasResolver', 'total', answers),
       };
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 
@@ -66,24 +65,10 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModuleIndex () {
-    // const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    // const fileText = this.fs.read(modulePath);
-    // const fileWithImportText = ast.addImportStatementAndParse(
-    //   fileText,
-    //   `import './${this.props.moduleName}/collection.js';`
-    // );
-    // this.fs.write(
-    //   modulePath,
-    //   fileWithImportText
-    // );
-  }
-
   writing () {
     if (!this._canWrite()) { return; }
     this._writeResolvers();
     this._writeTestResolvers();
-    // this._updateModuleIndex();
   }
 
   end () {

@@ -47,6 +47,13 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
+  function routesPath (options) {
+    return modulesPath(
+      options,
+      'routes.js'
+    );
+  }
+
   function modulePath (options, ...args) {
     return modulesPath(
       options,
@@ -87,13 +94,6 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
-  // function componentPath (options) {
-  //   return moduleInComponentsPath(
-  //     options,
-  //     componentFileName()
-  //   );
-  // }
-
   function moduleStoriesPath (options) {
     return moduleInComponentsPath(
       options,
@@ -130,6 +130,7 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     case 'moduleStories': return moduleStoriesPath(wrappedOptions, ...wrappedArgs);
     case 'client': return clientPath(wrappedOptions, ...wrappedArgs);
     case 'server': return serverPath(wrappedOptions, ...wrappedArgs);
+    case 'routes': return routesPath(wrappedOptions, ...wrappedArgs);
     default: return undefined;
   }
 }

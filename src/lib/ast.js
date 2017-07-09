@@ -11,6 +11,21 @@ const getLastImportIndex = (tree) => {
   return lastIndex;
 };
 
+const parseAst = (text) => (
+  esprima.parseModule(text, {
+    range: true,
+    tokens: true,
+    comment: true,
+  })
+);
+
+const generateCode = (ast) => (
+  escodegen.generate(
+    ast,
+    { comment: true, format: { indent: { style: '  ' } } }
+  )
+);
+
 const addImportStatement = (tree, statement) => {
   const newTree = { ...tree };
   const nextImportIndex = getLastImportIndex(tree) + 1;
@@ -24,21 +39,29 @@ const addImportStatement = (tree, statement) => {
 };
 
 const addImportStatementAndParse = (fileText, statement) => {
-  const fileAst = esprima.parseModule(fileText, {
-    range: true,
-    tokens: true,
-    comment: true,
-  });
+  const fileAst = parseAst(fileText);
   const fileAstWithImport = addImportStatement(fileAst, statement);
-  const fileWithImport = escodegen.generate(
-    fileAstWithImport,
-    { comment: true, format: { indent: { style: '  ' } } }
-  );
+  const fileWithImport = generateCode(fileAstWithImport);
   return fileWithImport;
+};
+
+const appendCode = (tree, statement) => {
+  const newTree = { ...tree };
+  const newCodeAst = parseAst(statement);
+  const codeToPush = newCodeAst.body[0];
+  newTree.body.push(codeToPush);
+  return newTree;
+};
+
+const appendCodeAndParse = (fileText, statement) => {
+  const fileAst = parseAst(fileText);
+  const fileAstWithAppendedCode = appendCode(fileAst, statement);
+  const fileWithNewCode = generateCode(fileAstWithAppendedCode);
+  return fileWithNewCode;
 };
 
 module.exports = {
   getLastImportIndex,
-  addImportStatement,
   addImportStatementAndParse,
+  appendCodeAndParse,
 };

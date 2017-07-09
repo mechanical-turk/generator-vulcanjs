@@ -10,6 +10,13 @@
 - Create new package: `yo vulcanjs:package`
 - Create new module: `yo vulcanjs:module`
 - Create new component: `yo vulcanjs:component`
+- Create new route: `yo vulcanjs:route`
+- Create new fragments: `yo vulcanjs:fragments`
+- Create new mutations: `yo vulcanjs:mutations`
+- Create new parameters: `yo vulcanjs:parameters`
+- Create new permissions: `yo vulcanjs:permissions`
+- Create new resolvers: `yo vulcanjs:resolvers`
+- Create new schema: `yo vulcanjs:schema`
 
 ## Issues
 - React components don't get generated properly.

@@ -4,20 +4,21 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions(
+      'packageName',
+      'moduleName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageNameList'),
-      this._getQuestion('moduleNameList'),
-    ];
+    const questions = this._getQuestions(
+      'packageNameWithNumModulesList',
+      'moduleNameList'
+    );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
@@ -25,8 +26,6 @@ module.exports = class extends VulcanGenerator {
         moduleName: this._finalize('moduleName', answers),
         typeName: this._finalize('pascalModuleName', answers),
       };
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
     });
   }
 
@@ -59,24 +58,10 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModuleIndex () {
-    // const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    // const fileText = this.fs.read(modulePath);
-    // const fileWithImportText = ast.addImportStatementAndParse(
-    //   fileText,
-    //   `import './${this.props.moduleName}/collection.js';`
-    // );
-    // this.fs.write(
-    //   modulePath,
-    //   fileWithImportText
-    // );
-  }
-
   writing () {
     if (!this._canWrite()) { return; }
     this._writeFragments();
     this._writeTestFragments();
-    // this._updateModuleIndex();
   }
 
   end () {

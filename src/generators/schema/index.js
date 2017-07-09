@@ -4,28 +4,61 @@ module.exports = class extends VulcanGenerator {
   initializing () {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions(
+      'packageName',
+      'moduleName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageNameList'),
-      this._getQuestion('moduleNameList'),
-    ];
+    const questions = this._getQuestions(
+      'packageNameWithNumModulesList',
+      'moduleNameList',
+      // 'isAddCustomSchemaProperty'
+    );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
+        // isAddCustomSchemaProperty: this._finalize('raw', 'isAddCustomSchemaProperty', answers),
+        customSchemaProperties: [],
       };
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('isModuleExists', this.props.packageName, this.props.moduleName);
+      // if (this.props.isAddCustomSchemaProperty) {
+      //   return this._askCustomSchemaQuestion();
+      // }
+    });
+  }
+
+  _askCustomSchemaQuestion (callback) {
+    const customSchemaPropertyQuestions = this._getQuestions(
+      'schemaPropertyName',
+      'isSchemaPropertyHidden',
+      'schemaPropertyLabel',
+      'schemaPropertyType',
+      'isSchemaPropertyOptional',
+      'schemaPropertyViewableBy',
+      'schemaPropertyInsertableBy',
+      'schemaPropertyEditableBy',
+      'isAddAnotherCustomSchemaProperty'
+    );
+    const customSchemaProperties = [];
+    this.prompt(customSchemaPropertyQuestions).then((answers) => {
+      this.props.customSchemaProperties.push({
+        name: 'kerem',
+        value: 'kazan',
+      });
+      if (answers.isAddAnotherCustomSchemaProperty) {
+        this._askCustomSchemaQuestion(() => {
+          // callback();
+        });
+      } else {
+        // callback();
+      }
     });
   }
 
@@ -58,24 +91,10 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModuleIndex () {
-    // const modulePath = this._getModulesPath({ isAbsolute: true }, 'index.js');
-    // const fileText = this.fs.read(modulePath);
-    // const fileWithImportText = ast.addImportStatementAndParse(
-    //   fileText,
-    //   `import './${this.props.moduleName}/collection.js';`
-    // );
-    // this.fs.write(
-    //   modulePath,
-    //   fileWithImportText
-    // );
-  }
-
   writing () {
     if (!this._canWrite()) { return; }
     this._writeSchema();
     this._writeTestSchema();
-    // this._updateModuleIndex();
   }
 
   end () {

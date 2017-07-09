@@ -7,31 +7,36 @@ module.exports = class extends VulcanGenerator {
   initializing() {
     this._assert('isVulcan');
     this._assert('hasNonZeroPackages');
-    this.inputProps = {};
   }
 
   _registerArguments() {
-    this._registerPackageNameOption();
-    this._registerModuleNameOption();
+    this._registerOptions('packageName', 'moduleName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = [this._getQuestion('packageNameList'), this._getQuestion('moduleName'), this._getQuestion('moduleCreateWith')];
-
+    const questions = this._getQuestions('packageNameList', 'moduleName', 'moduleParts');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
         collectionName: this._finalize('collectionName', answers),
         typeName: this._finalize('pascalModuleName', answers),
-        moduleParts: this._finalize('raw', 'moduleParts', answers)
+        moduleParts: this._finalize('moduleParts', answers)
       };
+      this._composeGenerators();
+    });
+  }
 
-      this._assert('isPackageExists', this.props.packageName);
-      this._assert('notModuleExists', this.props.packageName, this.props.moduleName);
+  _composeGenerators() {
+    this.props.moduleParts.forEach(modulePart => {
+      const generator = require.resolve(`../${modulePart}`);
+      const nextOptions = _extends({}, this.options, this.props, {
+        dontAsk: true
+      });
+      this.composeWith(generator, nextOptions);
     });
   }
 

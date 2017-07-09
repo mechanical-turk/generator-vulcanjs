@@ -1,4 +1,5 @@
 const VulcanGenerator = require('../../lib/VulcanGenerator');
+const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -9,8 +10,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName',
-      'componentName'
+      'moduleName'
     );
   }
 
@@ -19,9 +19,11 @@ module.exports = class extends VulcanGenerator {
     const questions = this._getQuestions(
       'packageNameWithNumModulesList',
       'moduleNameList',
+      'routeName',
+      'routePath',
       'componentName',
-      'componentType',
-      'isRegisterComponent'
+      'layoutName'
+      // ,'parentRoute'
     );
     return this.prompt(questions)
     .then((answers) => {
@@ -29,32 +31,34 @@ module.exports = class extends VulcanGenerator {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
         componentName: this._finalize('componentName', answers),
-        componentFileName: this._finalize('componentFileName', answers),
-        componentType: this._finalize('raw', 'componentType', answers),
-        isRegister: this._finalize('raw', 'isRegister', answers),
+        routeName: this._finalize('raw', 'routeName', answers),
+        routePath: this._finalize('raw', 'routePath', answers),
+        layoutName: this._finalize('raw', 'layoutName', answers),
+        addRouteStatement: this._finalize('addRouteStatement', answers),
       };
-      this.props.componentPath = this._finalize('componentPath', answers);
     });
   }
 
-  _writeComponent () {
-    const templatePath = this.props.componentType === 'pure' ?
-      this.templatePath('pureFunctionComponent.js') :
-      this.templatePath('classComponent.js');
-    this.fs.copyTpl(
-      templatePath,
-      this._getPath(
-        { isAbsolute: true },
-        'moduleInComponents',
-        this.props.componentFileName
-      ),
-      this.props
+  _updateRoutes () {
+    const routesPath = this._getPath(
+      { isAbsolute: true },
+      'routes'
+    );
+
+    const fileText = this.fs.read(routesPath);
+    const fileTextWithWithImport = ast.appendCodeAndParse(
+      fileText,
+      this.props.addRouteStatement
+    );
+    this.fs.write(
+      routesPath,
+      fileTextWithWithImport
     );
   }
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writeComponent();
+    this._updateRoutes();
   }
 
   end () {

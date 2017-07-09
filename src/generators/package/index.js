@@ -3,23 +3,22 @@ const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
-
   initializing () {
     this._assert('isVulcan');
   }
 
   _registerArguments () {
-    this._registerPackageNameOption();
+    this._registerOptions(
+      'packageName'
+    );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
-    const questions = [
-      this._getQuestion('packageName'),
-      this._getQuestion('vulcanDependencies'),
-      // this._getQuestion('isPackageAutoAdd'),
-    ];
-
+    const questions = this._getQuestions(
+      'packageName',
+      'vulcanDependencies'
+    );
     return this.prompt(questions).then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
@@ -104,46 +103,9 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('routes.js'),
       this._getPath(
         { isAbsolute: true },
-        'modules',
-        'routes.js'
+        'routes'
       ),
       this.props
-    );
-  }
-
-  _writeStoriesJs () {
-    this.fs.copyTpl(
-      this.templatePath('stories.js'),
-      this._getPath(
-        { isAbsolute: true },
-        'packageStories'
-      ),
-      this.props
-    );
-  }
-
-  _updateRootStoriesIndex () {
-    const rootStoriesIndexPath = this._getPath(
-      { isAbsolute: true },
-      'rootStories',
-      'index.js'
-    );
-    if (!this.fs.exists(rootStoriesIndexPath)) { return; }
-    const packageStoriesPath = this._getPath(
-      'packageStories',
-      {
-        relativeTo: this._getPath(
-          { isAbsolute: true },
-          'rootStories'
-        ),
-      }
-    );
-    const fileText = this.fs.read(rootStoriesIndexPath);
-    const importStatement = `import '${packageStoriesPath}';`;
-    const fileTextWithWithImport = ast.addImportStatementAndParse(fileText, importStatement);
-    this.fs.write(
-      rootStoriesIndexPath,
-      fileTextWithWithImport
     );
   }
 
@@ -155,8 +117,6 @@ module.exports = class extends VulcanGenerator {
     this._writeServerSeed();
     this._writeModulesIndex();
     this._writeRoutes();
-    // this._writeStoriesJs();
-    // this._updateRootStoriesIndex();
   }
 
   end () {
