@@ -10,6 +10,12 @@ function setup (generatorSetup) {
   generator = generatorSetup;
 }
 
+const arrayToEjsString = (arr) => {
+  const quotedList = arr.map((elem) => `'${elem}'`);
+  const quotedAndCsv = quotedList.join(',');
+  return `[${quotedAndCsv}]`;
+};
+
 function finalize (propName, ...args) {
   function getRaw (keyBeforeRaw, answers) {
     return (
@@ -17,6 +23,11 @@ function finalize (propName, ...args) {
       (generator.props ? generator.props[keyBeforeRaw] : undefined) ||
       answers[keyBeforeRaw]
     );
+  }
+
+  function permissionTo (permissionType, answers) {
+    const permissionsArr = answers[permissionType];
+    return arrayToEjsString(permissionsArr);
   }
 
   function appName (answers) {
@@ -126,6 +137,7 @@ function finalize (propName, ...args) {
     case 'resolverName' : return resolverName(...args);
     case 'hasResolver' : return hasResolver(...args);
     case 'addRouteStatement' : return addRouteStatement(...args);
+    case 'permissionTo': return permissionTo(...args);
     case 'raw' : return getRaw(...args);
     default: return undefined;
   }

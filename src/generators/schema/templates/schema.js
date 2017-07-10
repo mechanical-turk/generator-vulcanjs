@@ -21,7 +21,9 @@ const schema = {
   //   resolveAs: 'user: User', // resolve this field as "user" on the client
   // },
 
-  // custom properties
+  <% customSchemaProperties.forEach((schemaProperty) => { %>
+    <%- include('./partials/schemaProperty.js', schemaProperty) %>
+  <% }); %>
 };
 
 export default schema;
