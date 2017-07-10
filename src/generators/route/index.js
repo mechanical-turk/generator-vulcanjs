@@ -9,14 +9,14 @@ module.exports = class extends VulcanGenerator {
 
   _registerArguments () {
     this._registerOptions(
-      'packageName',
+      'packageName'
     );
   }
 
   prompting () {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
-      'packageNameWithNumModulesList',
+      'packageNameList',
       'routeName',
       'routePath',
       'componentName',
@@ -51,6 +51,16 @@ module.exports = class extends VulcanGenerator {
       routesPath,
       fileTextWithWithImport
     );
+  }
+
+  configuring () {
+    if (!this._canConfigure()) { return; }
+    this._dispatch({
+      type: 'ADD_ROUTE',
+      packageName: this.props.packageName,
+      routeName: this.props.routeName,
+    });
+    this._commitStore();
   }
 
   writing () {

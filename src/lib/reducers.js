@@ -28,8 +28,36 @@ const modulesReducer = (state = {}, action) => {
   }
 };
 
-const packageReducer = (state = { modules: {} }, action) => {
+const routeReducer = (state = {}, action) => {
   switch (action.type) {
+    default: return state;
+  }
+};
+
+const routesReducer = (state = {}, action) => {
+  switch (action.type) {
+    case 'ADD_ROUTE': {
+      const nextState = { ...state };
+      const nextRoute = routeReducer(undefined, action);
+      nextState[action.routeName] = nextRoute;
+      return nextState;
+    }
+    default: return state;
+  }
+};
+
+const packageReducer = (state = { modules: {}, routes: {} }, action) => {
+  switch (action.type) {
+
+    case 'ADD_ROUTE': {
+      const nextState = { ...state };
+      nextState.routes = routesReducer(
+        nextState.routes,
+        action
+      );
+      return nextState;
+    }
+
     case 'ADD_MODULE': {
       const prevModules = state.modules;
       return {
@@ -54,6 +82,19 @@ const packages = (state = {}, action) => {
     case 'ADD_PACKAGE': {
       const partialNext = {};
       partialNext[action.packageName] = packageReducer(undefined, {});
+      return {
+        ...state,
+        ...partialNext,
+      };
+    }
+
+    case 'ADD_ROUTE': {
+      const prevPackage = state[action.packageName];
+      const partialNext = {};
+      partialNext[action.packageName] = packageReducer(
+        prevPackage,
+        action
+      );
       return {
         ...state,
         ...partialNext,

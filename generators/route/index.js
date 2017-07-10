@@ -15,7 +15,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameWithNumModulesList', 'routeName', 'routePath', 'componentName', 'layoutName'
+    const questions = this._getQuestions('packageNameList', 'routeName', 'routePath', 'componentName', 'layoutName'
     // ,'parentRoute'
     );
     return this.prompt(questions).then(answers => {
@@ -36,6 +36,18 @@ module.exports = class extends VulcanGenerator {
     const fileText = this.fs.read(routesPath);
     const fileTextWithWithImport = ast.appendCode(fileText, this.props.addRouteStatement);
     this.fs.write(routesPath, fileTextWithWithImport);
+  }
+
+  configuring() {
+    if (!this._canConfigure()) {
+      return;
+    }
+    this._dispatch({
+      type: 'ADD_ROUTE',
+      packageName: this.props.packageName,
+      routeName: this.props.routeName
+    });
+    this._commitStore();
   }
 
   writing() {
