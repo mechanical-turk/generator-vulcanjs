@@ -398,6 +398,16 @@ function get (...questionNames) {
     };
   }
 
+  function vulcanjsRemovableComponentsList () {
+    return {
+      type: 'list',
+      name: 'vulcanjsComponent',
+      message: uiText.messages.vulcanjsRemovableComponents,
+      when: () => when('vulcanjsComponent'),
+      choices: common.vulcanjsRemovableComponents,
+    };
+  }
+
   function getSingleQuestion (questionName) {
     switch (questionName) {
       case 'appName': return appName();
@@ -428,6 +438,7 @@ function get (...questionNames) {
       case 'schemaPropertyInsertableBy': return schemaPropertyInsertableBy();
       case 'schemaPropertyEditableBy': return schemaPropertyEditableBy();
       case 'isAddAnotherCustomSchemaProperty': return isAddAnotherCustomSchemaProperty();
+      case 'vulcanjsRemovableComponentsList': return vulcanjsRemovableComponentsList();
       default: return undefined;
     }
   }

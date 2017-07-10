@@ -1,5 +1,6 @@
 const esprima = require('esprima');
 const escodegen = require('escodegen-wallaby');
+const find = require('lodash/find');
 
 const getLastImportIndex = (tree) => {
   let lastIndex = -1;
@@ -26,6 +27,13 @@ const generateCode = (ast) => (
   )
 );
 
+const parseModifyGenerate = (modifier) => (text, ...args) => {
+  const ast = parseAst(text);
+  const newAst = modifier(ast, ...args);
+  const generated = generateCode(newAst);
+  return generated;
+};
+
 const addImportStatement = (tree, statement) => {
   const newTree = { ...tree };
   const nextImportIndex = getLastImportIndex(tree) + 1;
@@ -38,13 +46,6 @@ const addImportStatement = (tree, statement) => {
   return newTree;
 };
 
-const addImportStatementAndParse = (fileText, statement) => {
-  const fileAst = parseAst(fileText);
-  const fileAstWithImport = addImportStatement(fileAst, statement);
-  const fileWithImport = generateCode(fileAstWithImport);
-  return fileWithImport;
-};
-
 const appendCode = (tree, statement) => {
   const newTree = { ...tree };
   const newCodeAst = parseAst(statement);
@@ -53,15 +54,36 @@ const appendCode = (tree, statement) => {
   return newTree;
 };
 
-const appendCodeAndParse = (fileText, statement) => {
-  const fileAst = parseAst(fileText);
-  const fileAstWithAppendedCode = appendCode(fileAst, statement);
-  const fileWithNewCode = generateCode(fileAstWithAppendedCode);
-  return fileWithNewCode;
+const removeRoute = (tree, routeToRemove) => {
+  const newTree = { ...tree };
+  newTree.body = tree.body.filter((node) => {
+    if (node.type !== 'ExpressionStatement') return true;
+    if (!node.expression) return true;
+    const expression = node.expression;
+    if (!expression.callee) return true;
+    if (expression.callee.name !== 'addRoute') return true;
+    const args = node.expression.arguments;
+    // console.log(JSON.stringify(args, null, 2));
+    if (!args) return true;
+    const properties = args[0].properties;
+    if (!properties) return true;
+    const namePropOfRoute = find(properties, {
+      type: 'Property',
+      key: {
+        type: 'Identifier',
+        name: 'name',
+      }
+    });
+    if (!namePropOfRoute.value) return true;
+    if (!namePropOfRoute.value.value) return true;
+    return namePropOfRoute.value.value !== routeToRemove;
+  });
+  return newTree;
 };
 
 module.exports = {
   getLastImportIndex,
-  addImportStatementAndParse,
-  appendCodeAndParse,
+  addImportStatement: parseModifyGenerate(addImportStatement),
+  appendCode: parseModifyGenerate(appendCode),
+  removeRoute: parseModifyGenerate(removeRoute),
 };

@@ -85,17 +85,6 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _writeStories () {
-    this.fs.copyTpl(
-      this.templatePath('stories.js'),
-      this._getPath(
-        { isAbsolute: true },
-        'moduleStories'
-      ),
-      this.props
-    );
-  }
-
   _updateModulesIndex () {
     const modulePath = this._getPath(
       { isAbsolute: true },
@@ -103,7 +92,7 @@ module.exports = class extends VulcanGenerator {
       'index.js'
     );
     const fileText = this.fs.read(modulePath);
-    const fileWithImportText = ast.addImportStatementAndParse(
+    const fileWithImportText = ast.addImportStatement(
       fileText,
       `import './${this.props.moduleName}/collection.js';`
     );
@@ -113,28 +102,10 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updatePackageStories () {
-    const packageStoriesPath = this._getPath(
-      { isAbsolute: true },
-      'packageStories'
-    );
-    const fileText = this.fs.read(packageStoriesPath);
-    const fileWithImportText = ast.addImportStatementAndParse(
-      fileText,
-      `import './${this.props.moduleName}/.stories.js';`
-    );
-    this.fs.write(
-      packageStoriesPath,
-      fileWithImportText
-    );
-  }
-
   writing () {
     if (!this._canWrite()) { return; }
     this._writeCollection();
-    // this._writeStories();
     this._updateModulesIndex();
-    // this._updatePackageStories();
     this._writeTestCollection();
   }
 

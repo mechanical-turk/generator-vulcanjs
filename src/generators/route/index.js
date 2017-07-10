@@ -10,7 +10,6 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName'
     );
   }
 
@@ -18,7 +17,6 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameWithNumModulesList',
-      'moduleNameList',
       'routeName',
       'routePath',
       'componentName',
@@ -29,7 +27,6 @@ module.exports = class extends VulcanGenerator {
     .then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
         componentName: this._finalize('componentName', answers),
         routeName: this._finalize('raw', 'routeName', answers),
         routePath: this._finalize('raw', 'routePath', answers),
@@ -46,7 +43,7 @@ module.exports = class extends VulcanGenerator {
     );
 
     const fileText = this.fs.read(routesPath);
-    const fileTextWithWithImport = ast.appendCodeAndParse(
+    const fileTextWithWithImport = ast.appendCode(
       fileText,
       this.props.addRouteStatement
     );

@@ -31,6 +31,12 @@ const visitorTypes = ['guest', 'member', 'admin'];
 
 const schemaPropertyTypes = ['String', 'Number', 'Array', 'Object', 'Custom'];
 
+const vulcanjsRemovableComponents = [
+  'route',
+  'module',
+  'package',
+];
+
 const getDefaultChoiceIndex = (choices, option) => {
   const index = choices.findIndex((elem) => elem === option);
   return Math.max(index, 0);
@@ -45,6 +51,7 @@ const exposed = {
   schemaPropertyTypes,
   getDefaultChoiceIndex,
   getSetFromArr,
+  vulcanjsRemovableComponents,
 };
 
 module.exports = exposed;

@@ -40,6 +40,7 @@ const messages = {
   schemaPropertyViewableBy: 'Property viewable by',
   schemaPropertyInsertableBy: 'Property insertable by',
   schemaPropertyEditableBy: 'Property editable by',
+  vulcanjsRemovableComponents: 'Part to remove',
 };
 
 const errors = {

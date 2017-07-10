@@ -1,4 +1,5 @@
 const Redux = require('redux');
+const _ = require('lodash');
 
 const moduleReducer = (state = {}, action) => {
   switch (action.type) {
@@ -16,6 +17,13 @@ const modulesReducer = (state = {}, action) => {
         ...partialNext,
       };
     }
+
+    case 'REMOVE_MODULE': {
+      return _.pickBy(
+        state,
+        (value, key) => key !== action.moduleName
+      );
+    }
     default: return state;
   }
 };
@@ -23,6 +31,14 @@ const modulesReducer = (state = {}, action) => {
 const packageReducer = (state = { modules: {} }, action) => {
   switch (action.type) {
     case 'ADD_MODULE': {
+      const prevModules = state.modules;
+      return {
+        ...state,
+        modules: modulesReducer(prevModules, action),
+      };
+    }
+
+    case 'REMOVE_MODULE': {
       const prevModules = state.modules;
       return {
         ...state,
@@ -56,6 +72,24 @@ const packages = (state = {}, action) => {
         ...partialNext,
       };
     }
+
+    case 'REMOVE_PACKAGE': {
+      return _.pickBy(
+        state,
+        (value, key) => key !== action.packageName
+      );
+    }
+
+    case 'REMOVE_MODULE': {
+      const packageToWork = state[action.packageName];
+      const partialNext = {};
+      partialNext[action.packageName] = packageReducer(packageToWork, action);
+      return {
+        ...state,
+        ...partialNext,
+      };
+    }
+
     default: return state;
   }
 };
