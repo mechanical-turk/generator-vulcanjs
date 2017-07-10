@@ -20,12 +20,20 @@ const parseAst = (text) => (
   })
 );
 
-const generateCode = (ast) => (
-  escodegen.generate(
+const generateCode = (ast) => {
+  const astWithComments = escodegen.attachComments(
     ast,
-    { comment: true, format: { indent: { style: '  ' } } }
-  )
-);
+    ast.comments,
+    ast.tokens
+  );
+  return escodegen.generate(
+    astWithComments,
+    {
+      comment: true,
+      format: { index: { style: '  ' } },
+    }
+  );
+};
 
 const parseModifyGenerate = (modifier) => (text, ...args) => {
   const ast = parseAst(text);
