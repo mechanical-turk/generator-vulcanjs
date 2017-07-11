@@ -52,8 +52,7 @@ function finalize (propName, ...args) {
 
   function componentFileName (answers) {
     const filteredComponentName = filter('componentName', answers.componentName);
-    // return `${filteredComponentName}.${store.get('reactExtension')}`;
-    return `${filteredComponentName}.jsx}`;
+    return `${filteredComponentName}.${store.get('reactExtension')}`;
   }
 
   function componentPath (answers) {
