@@ -62,7 +62,7 @@ function get (...questionNames) {
       name: 'packageName',
       message: uiText.messages.packageName,
       when: () => when('packageName'),
-      default: options.packagename,
+      default: options.packageName,
       validate: validations.combineValidators(
         validations.assertNonEmpty,
         validations.assertNotPackageExists
@@ -111,7 +111,7 @@ function get (...questionNames) {
       choices: store.get('packageNames'),
       default: common.getDefaultChoiceIndex(
         store.get('packageNames'),
-        options.packagename
+        options.packageName
       ),
     };
   }
@@ -132,7 +132,7 @@ function get (...questionNames) {
       ),
       default: common.getDefaultChoiceIndex(
         store.get('packageNames'),
-        options.packagename
+        options.packageName
       ),
     };
   }
