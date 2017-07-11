@@ -20,15 +20,7 @@
 
 ## Issues
 - React components don't get generated properly.
-- `vulcanjs:remove` is not implemented yet.
 
 ## Extra
 - To see redux logs, set the environment variable `VULCANJS_SEE_REDUX_LOGS` to `true`. For example:  `VULCANJS_SEE_REDUX_LOGS=true yo vulcanjs:package`
 - To turn the logs off, set the same environment variable to `false`. For example: `VULCANJS_SEE_REDUX_LOGS=false yo vulcanjs:package`
-
-## Contributing
-- Install `grunt`
-- In the project root, run `npm run watch`
-- Do not work on the root. Make your changes in the `/src` directory.
-- Grunt will compile your code into the root directory.
-- PRs are always welcome!
