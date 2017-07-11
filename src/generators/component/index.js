@@ -9,7 +9,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName',
+      'modelName',
       'componentName'
     );
   }
@@ -18,7 +18,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameWithNumModulesList',
-      'moduleNameList',
+      'modelNameList',
       'componentName',
       'componentType',
       'isRegisterComponent'
@@ -27,7 +27,7 @@ module.exports = class extends VulcanGenerator {
     .then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         componentName: this._finalize('componentName', answers),
         componentFileName: this._finalize('componentFileName', answers),
         componentType: this._finalize('raw', 'componentType', answers),
@@ -45,7 +45,7 @@ module.exports = class extends VulcanGenerator {
       templatePath,
       this._getPath(
         { isAbsolute: true },
-        'moduleInComponents',
+        'modelInComponents',
         this.props.componentFileName
       ),
       this.props

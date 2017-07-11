@@ -56,7 +56,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeModulesIndex() {
-    this.fs.copyTpl(this.templatePath('module.js'), this._getPath({ isAbsolute: true }, 'modules', 'index.js'), this.props);
+    this.fs.copyTpl(this.templatePath('model.js'), this._getPath({ isAbsolute: true }, 'models', 'index.js'), this.props);
   }
 
   _writeRoutes() {

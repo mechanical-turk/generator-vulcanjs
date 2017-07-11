@@ -1,1 +1,1 @@
-import '../modules/index.js';
+import '../models/index.js';

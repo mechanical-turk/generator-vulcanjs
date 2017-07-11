@@ -9,7 +9,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName'
+      'modelName'
     );
   }
 
@@ -17,14 +17,14 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameWithNumModulesList',
-      'moduleNameList',
+      'modelNameList',
       'isAddCustomSchemaProperty'
     );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         isAddCustomSchemaProperty: this._finalize('raw', 'isAddCustomSchemaProperty', answers),
         customSchemaProperties: [],
       };
@@ -70,7 +70,7 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('schema.js'),
       this._getPath(
         { isAbsolute: true },
-        'module',
+        'model',
         'schema.js'
       ),
       this.props
@@ -87,7 +87,7 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('test.js'),
       this._getPath(
         { isAbsolute: true },
-        'moduleTest',
+        'modelTest',
         'schema.js'
       ),
       testFragmentsProps

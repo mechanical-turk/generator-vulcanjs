@@ -1,17 +1,17 @@
 const Redux = require('redux');
 const _ = require('lodash');
 
-const moduleReducer = (state = {}, action) => {
+const modelReducer = (state = {}, action) => {
   switch (action.type) {
     default: return state;
   }
 };
 
-const modulesReducer = (state = {}, action) => {
+const modelsReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_MODULE': {
       const partialNext = {};
-      partialNext[action.moduleName] = moduleReducer(undefined, {});
+      partialNext[action.modelName] = modelReducer(undefined, {});
       return {
         ...state,
         ...partialNext,
@@ -21,7 +21,7 @@ const modulesReducer = (state = {}, action) => {
     case 'REMOVE_MODULE': {
       return _.pickBy(
         state,
-        (value, key) => key !== action.moduleName
+        (value, key) => key !== action.modelName
       );
     }
     default: return state;
@@ -46,7 +46,7 @@ const routesReducer = (state = {}, action) => {
   }
 };
 
-const packageReducer = (state = { modules: {}, routes: {} }, action) => {
+const packageReducer = (state = { models: {}, routes: {} }, action) => {
   switch (action.type) {
 
     case 'ADD_ROUTE': {
@@ -59,18 +59,18 @@ const packageReducer = (state = { modules: {}, routes: {} }, action) => {
     }
 
     case 'ADD_MODULE': {
-      const prevModules = state.modules;
+      const prevModules = state.models;
       return {
         ...state,
-        modules: modulesReducer(prevModules, action),
+        models: modelsReducer(prevModules, action),
       };
     }
 
     case 'REMOVE_MODULE': {
-      const prevModules = state.modules;
+      const prevModules = state.models;
       return {
         ...state,
-        modules: modulesReducer(prevModules, action),
+        models: modelsReducer(prevModules, action),
       };
     }
     default: return state;

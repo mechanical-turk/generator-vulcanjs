@@ -9,18 +9,18 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName', 'moduleName');
+    this._registerOptions('packageName', 'modelName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList');
+    const questions = this._getQuestions('packageNameWithNumModulesList', 'modelNameList');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         collectionName: this._finalize('collectionName', answers),
         newMutationName: this._finalize('mutationName', 'new', answers),
         editMutationName: this._finalize('mutationName', 'edit', answers),
@@ -35,7 +35,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _writeMutations() {
-    this.fs.copyTpl(this.templatePath('mutations.js'), this._getPath({ isAbsolute: true }, 'module', 'mutations.js'), this.props);
+    this.fs.copyTpl(this.templatePath('mutations.js'), this._getPath({ isAbsolute: true }, 'model', 'mutations.js'), this.props);
   }
 
   _writeTestMutations() {
@@ -43,7 +43,7 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'mutations',
       subjectPath: '../mutations'
     });
-    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'mutations.js'), testProps);
+    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'modelTest', 'mutations.js'), testProps);
   }
 
   writing() {

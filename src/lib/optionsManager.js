@@ -31,14 +31,14 @@ function register (...optionNames) {
     );
   }
 
-  function moduleName () {
+  function modelName () {
     generator.option(
-      'moduleName',
+      'modelName',
       {
         type: String,
         required: false,
         alias: 'm',
-        desc: uiText.descriptions.moduleName,
+        desc: uiText.descriptions.modelName,
       }
     );
   }
@@ -83,7 +83,7 @@ function register (...optionNames) {
     switch (optionName) {
       case 'appName': return appName();
       case 'packageName': return packageName();
-      case 'moduleName': return moduleName();
+      case 'modelName': return modelName();
       case 'componentName': return componentName();
       case 'reactExtension': return reactExtension();
       case 'packageManager': return packageManager();

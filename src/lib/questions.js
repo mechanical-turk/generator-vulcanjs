@@ -137,13 +137,13 @@ function get (...questionNames) {
     };
   }
 
-  function moduleName () {
+  function modelName () {
     return {
       type: 'input',
-      name: 'moduleName',
-      message: uiText.messages.moduleName,
-      when: () => when('moduleName'),
-      default: options.moduleName,
+      name: 'modelName',
+      message: uiText.messages.modelName,
+      when: () => when('modelName'),
+      default: options.modelName,
       validate: (input, answers) => {
         const combinedValidator = validations.combineValidators(
           validations.assertNonEmpty,
@@ -156,10 +156,10 @@ function get (...questionNames) {
     };
   }
 
-  function moduleParts () {
+  function modelParts () {
     return {
       type: 'checkbox',
-      name: 'moduleParts',
+      name: 'modelParts',
       message: 'Create with',
       choices: [
         { name: 'Fragments', value: 'fragments', checked: true },
@@ -169,27 +169,27 @@ function get (...questionNames) {
         { name: 'Resolvers', value: 'resolvers', checked: true },
         { name: 'Schema', value: 'schema', checked: true },
       ],
-      when: () => when('moduleParts'),
+      when: () => when('modelParts'),
       filter: common.getSetFromArr,
     };
   }
 
-  function moduleNameList () {
+  function modelNameList () {
     return {
       type: 'list',
-      name: 'moduleName',
-      message: uiText.messages.moduleName,
-      when: () => when('moduleName'),
+      name: 'modelName',
+      message: uiText.messages.modelName,
+      when: () => when('modelName'),
       choices: (answers) => {
         const finalPackageName = finalize('packageName', answers);
-        return store.get('moduleNames', finalPackageName);
+        return store.get('modelNames', finalPackageName);
       },
       default: (answers) => {
         const finalPackageName = finalize('packageName', answers);
-        const moduleNames = store.get('moduleNames', finalPackageName);
+        const modelNames = store.get('modelNames', finalPackageName);
         return common.getDefaultChoiceIndex(
-          moduleNames,
-          options.moduleName
+          modelNames,
+          options.modelName
         );
       },
     };
@@ -417,9 +417,9 @@ function get (...questionNames) {
       case 'vulcanDependencies': return vulcanDependencies();
       case 'isPackageAutoAdd': return isPackageAutoAdd();
       case 'packageNameList': return packageNameList();
-      case 'moduleName': return moduleName();
-      case 'moduleParts': return moduleParts();
-      case 'moduleNameList': return moduleNameList();
+      case 'modelName': return modelName();
+      case 'modelParts': return modelParts();
+      case 'modelNameList': return modelNameList();
       case 'componentName': return componentName();
       case 'componentType': return componentType();
       case 'isRegisterComponent': return isRegisterComponent();

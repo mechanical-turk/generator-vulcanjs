@@ -7,18 +7,18 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName', 'moduleName', 'componentName');
+    this._registerOptions('packageName', 'modelName', 'componentName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList', 'componentName', 'componentType', 'isRegisterComponent');
+    const questions = this._getQuestions('packageNameWithNumModulesList', 'modelNameList', 'componentName', 'componentType', 'isRegisterComponent');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         componentName: this._finalize('componentName', answers),
         componentFileName: this._finalize('componentFileName', answers),
         componentType: this._finalize('raw', 'componentType', answers),
@@ -30,7 +30,7 @@ module.exports = class extends VulcanGenerator {
 
   _writeComponent() {
     const templatePath = this.props.componentType === 'pure' ? this.templatePath('pureFunctionComponent.js') : this.templatePath('classComponent.js');
-    this.fs.copyTpl(templatePath, this._getPath({ isAbsolute: true }, 'moduleInComponents', this.props.componentFileName), this.props);
+    this.fs.copyTpl(templatePath, this._getPath({ isAbsolute: true }, 'modelInComponents', this.props.componentFileName), this.props);
   }
 
   writing() {

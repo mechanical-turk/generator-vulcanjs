@@ -11,7 +11,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName' 
+      'modelName'
     );
   }
 
@@ -19,13 +19,13 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameList',
-      'moduleName'
+      'modelName'
     );
     return this.prompt(questions)
     .then((answers) => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         collectionName: this._finalize('collectionName', answers),
         typeName: this._finalize('pascalModuleName', answers),
       };
@@ -34,8 +34,8 @@ module.exports = class extends VulcanGenerator {
   }
 
   _composeGenerators () {
-    common.modelParts.forEach((modulePart) => {
-      const generator = require.resolve(`./${modulePart}`);
+    common.modelParts.forEach((modelPart) => {
+      const generator = require.resolve(`./${modelPart}`);
       const nextOptions = {
         ...this.options,
         ...this.props,
@@ -50,7 +50,7 @@ module.exports = class extends VulcanGenerator {
     this._dispatch({
       type: 'ADD_MODULE',
       packageName: this.props.packageName,
-      moduleName: this.props.moduleName,
+      modelName: this.props.modelName,
     });
     this._commitStore();
   }
@@ -60,7 +60,7 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('collection.js'),
       this._getPath(
         { isAbsolute: true },
-        'module',
+        'model',
         'collection.js'
       ),
       this.props
@@ -77,7 +77,7 @@ module.exports = class extends VulcanGenerator {
       this.templatePath('tests/collection.js'),
       this._getPath(
         { isAbsolute: true },
-        'moduleTest',
+        'modelTest',
         'collection.js'
       ),
       testProps
@@ -85,18 +85,18 @@ module.exports = class extends VulcanGenerator {
   }
 
   _updateModulesIndex () {
-    const modulePath = this._getPath(
+    const modelPath = this._getPath(
       { isAbsolute: true },
-      'modules',
+      'models',
       'index.js'
     );
-    const fileText = this.fs.read(modulePath);
+    const fileText = this.fs.read(modelPath);
     const fileWithImportText = ast.addImportStatement(
       fileText,
-      `import './${this.props.moduleName}/collection.js';`
+      `import './${this.props.modelName}/collection.js';`
     );
     this.fs.write(
-      modulePath,
+      modelPath,
       fileWithImportText
     );
   }

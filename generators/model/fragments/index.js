@@ -9,25 +9,25 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName', 'moduleName');
+    this._registerOptions('packageName', 'modelName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameWithNumModulesList', 'moduleNameList');
+    const questions = this._getQuestions('packageNameWithNumModulesList', 'modelNameList');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         typeName: this._finalize('pascalModuleName', answers)
       };
     });
   }
 
   _writeFragments() {
-    this.fs.copyTpl(this.templatePath('fragments.js'), this._getPath({ isAbsolute: true }, 'module', 'fragments.js'), this.props);
+    this.fs.copyTpl(this.templatePath('fragments.js'), this._getPath({ isAbsolute: true }, 'model', 'fragments.js'), this.props);
   }
 
   _writeTestFragments() {
@@ -35,7 +35,7 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'fragments',
       subjectPath: '../fragments'
     });
-    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'fragments.js'), testProps);
+    this.fs.copyTpl(this.templatePath('test.js'), this._getPath({ isAbsolute: true }, 'modelTest', 'fragments.js'), testProps);
   }
 
   writing() {

@@ -35,7 +35,7 @@ const modelParts = ['fragments', 'resolvers', 'mutations', 'schema', 'permission
 
 const vulcanjsRemovableComponents = [
   'route',
-  'module',
+  'model',
   'package',
 ];
 

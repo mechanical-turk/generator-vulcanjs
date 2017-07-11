@@ -23,9 +23,9 @@ const assertNotPackageExists = (packageName) => {
   return uiText.errors.isPackageExists(packageName);
 };
 
-const assertNotModuleExists = (packageName, moduleName) => {
-  if (!store.is('moduleExists', packageName, moduleName)) return true;
-  return uiText.errors.isModuleExists(packageName, moduleName);
+const assertNotModuleExists = (packageName, modelName) => {
+  if (!store.is('modelExists', packageName, modelName)) return true;
+  return uiText.errors.isModuleExists(packageName, modelName);
 };
 
 const generateNotModuleExists = (packageName) => (

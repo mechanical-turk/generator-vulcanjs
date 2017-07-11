@@ -40,9 +40,9 @@ function finalize (propName, ...args) {
     return filter('packageName', packageNameRaw);
   }
 
-  function moduleName (answers) {
-    const moduleNameRaw = getRaw('moduleName', answers);
-    return filter('moduleName', moduleNameRaw);
+  function modelName (answers) {
+    const modelNameRaw = getRaw('modelName', answers);
+    return filter('modelName', modelNameRaw);
   }
 
   function componentName (answers) {
@@ -58,23 +58,23 @@ function finalize (propName, ...args) {
   function componentPath (answers) {
     return pathFinder.get(
       { isAbsolute: false },
-      'moduleInComponents',
+      'modelInComponents',
       componentFileName(answers)
     );
   }
 
   function pascalModuleName (answers) {
-    const moduleNameRaw = getRaw('moduleName', answers);
-    return pascalCase(moduleNameRaw);
+    const modelNameRaw = getRaw('modelName', answers);
+    return pascalCase(modelNameRaw);
   }
 
   function camelModuleName (answers) {
-    const moduleNameRaw = getRaw('moduleName', answers);
-    return camelCase(moduleNameRaw);
+    const modelNameRaw = getRaw('modelName', answers);
+    return camelCase(modelNameRaw);
   }
 
-  function moduleParts (answers) {
-    return Object.keys(answers.moduleParts);
+  function modelParts (answers) {
+    return Object.keys(answers.modelParts);
   }
 
   function collectionName (answers) {
@@ -82,8 +82,8 @@ function finalize (propName, ...args) {
   }
 
   function mutationName (mutationType, answers) {
-    const moduleNamePart = camelModuleName(answers);
-    return `${moduleNamePart}${mutationType}`;
+    const modelNamePart = camelModuleName(answers);
+    return `${modelNamePart}${mutationType}`;
   }
 
   function permissionName (permission, answers) {
@@ -123,8 +123,8 @@ function finalize (propName, ...args) {
   switch (propName) {
     case 'appName' : return appName(...args);
     case 'packageName' : return packageName(...args);
-    case 'moduleName' : return moduleName(...args);
-    case 'moduleParts': return moduleParts(...args);
+    case 'modelName' : return modelName(...args);
+    case 'modelParts': return modelParts(...args);
     case 'componentName' : return componentName(...args);
     case 'componentFileName' : return componentFileName(...args);
     case 'componentPath' : return componentPath(...args);

@@ -39,25 +39,25 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
-  function modulesPath (options, ...args) {
+  function modelsPath (options, ...args) {
     return libPath(
       options,
-      'modules',
+      'models',
       ...args
     );
   }
 
   function routesPath (options) {
-    return modulesPath(
+    return modelsPath(
       options,
       'routes.js'
     );
   }
 
-  function modulePath (options, ...args) {
-    return modulesPath(
+  function modelPath (options, ...args) {
+    return modelsPath(
       options,
-      generator.props.moduleName,
+      generator.props.modelName,
       ...args
     );
   }
@@ -70,8 +70,8 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
-  function moduleTestPath (options, ...args) {
-    return modulePath(
+  function modelTestPath (options, ...args) {
+    return modelPath(
       options,
       'test',
       ...args
@@ -86,16 +86,16 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
-  function moduleInComponentsPath (options, ...args) {
+  function modelInComponentsPath (options, ...args) {
     return componentsPath(
       options,
-      generator.props.moduleName,
+      generator.props.modelName,
       ...args
     );
   }
 
-  function moduleStoriesPath (options) {
-    return moduleInComponentsPath(
+  function modelStoriesPath (options) {
+    return modelInComponentsPath(
       options,
       '.stories.js'
     );
@@ -121,13 +121,13 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     case 'rootStories': return rootStoriesPath(wrappedOptions, ...wrappedArgs);
     case 'package': return packagePath(wrappedOptions, ...wrappedArgs);
     case 'lib': return libPath(wrappedOptions, ...wrappedArgs);
-    case 'modules': return modulesPath(wrappedOptions, ...wrappedArgs);
-    case 'module': return modulePath(wrappedOptions, ...wrappedArgs);
+    case 'models': return modelsPath(wrappedOptions, ...wrappedArgs);
+    case 'model': return modelPath(wrappedOptions, ...wrappedArgs);
     case 'components': return componentsPath(wrappedOptions, ...wrappedArgs);
-    case 'moduleTest': return moduleTestPath(wrappedOptions, ...wrappedArgs);
+    case 'modelTest': return modelTestPath(wrappedOptions, ...wrappedArgs);
     case 'packageStories': return packageStoriesPath(wrappedOptions, ...wrappedArgs);
-    case 'moduleInComponents': return moduleInComponentsPath(wrappedOptions, ...wrappedArgs);
-    case 'moduleStories': return moduleStoriesPath(wrappedOptions, ...wrappedArgs);
+    case 'modelInComponents': return modelInComponentsPath(wrappedOptions, ...wrappedArgs);
+    case 'modelStories': return modelStoriesPath(wrappedOptions, ...wrappedArgs);
     case 'client': return clientPath(wrappedOptions, ...wrappedArgs);
     case 'server': return serverPath(wrappedOptions, ...wrappedArgs);
     case 'routes': return routesPath(wrappedOptions, ...wrappedArgs);

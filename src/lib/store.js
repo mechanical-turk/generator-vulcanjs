@@ -32,15 +32,15 @@ function is (checkType, ...args) {
     return !!store.getState().packages[filteredPackageName];
   }
 
-  function moduleExists (packageName, moduleName) {
-    const filteredModuleName = filter('moduleName', moduleName);
+  function modelExists (packageName, modelName) {
+    const filteredModuleName = filter('modelName', modelName);
     return (packageExists(packageName)) &&
-    !!store.getState().packages[packageName].modules[filteredModuleName];
+    !!store.getState().packages[packageName].models[filteredModuleName];
   }
 
   switch (checkType) {
     case 'packageExists' : return packageExists(...args);
-    case 'moduleExists' : return moduleExists(...args);
+    case 'modelExists' : return modelExists(...args);
     case 'vulcan' : return vulcan(...args);
     default : return undefined;
   }
@@ -61,20 +61,20 @@ function get (checkType, ...args) {
     return store.getState().packages[packageName];
   }
 
-  function moduleNames (packageName) {
+  function modelNames (packageName) {
     const thePackage = getPackage(packageName);
-    const modules = is('packageExists', packageName) ?
-      thePackage.modules :
+    const models = is('packageExists', packageName) ?
+      thePackage.models :
       {};
-    const moduleNamesToGet = Object.keys(modules);
-    return moduleNamesToGet.sort(common.alphabeticalSort);
+    const modelNamesToGet = Object.keys(models);
+    return modelNamesToGet.sort(common.alphabeticalSort);
   }
 
   function packageNamesWithNumModules () {
     const packageNamesList = packageNames();
     const packageNamesWithModules = packageNamesList.map((packageName) => ({
       name: packageName,
-      numModules: moduleNames(packageName).length,
+      numModules: modelNames(packageName).length,
     }));
     return packageNamesWithModules;
   }
@@ -86,7 +86,7 @@ function get (checkType, ...args) {
   switch (checkType) {
     case 'reactExtension' : return reactExtension(...args);
     case 'packageNames' : return packageNames(...args);
-    case 'moduleNames' : return moduleNames(...args);
+    case 'modelNames' : return modelNames(...args);
     case 'package' : return getPackage(...args);
     case 'storyBookSetupStatus' : return storyBookSetupStatus(...args);
     case 'packageNamesWithNumModules' : return packageNamesWithNumModules(...args);
@@ -103,8 +103,8 @@ function has (checkType, ...args) {
   function nonZeroModulesInPackage (packageName) {
     if (!this._isPackageExists(packageName)) return false;
     const thePackage = this._getPackage(packageName);
-    const moduleNames = Object.keys(thePackage.modules);
-    return moduleNames.length > 0;
+    const modelNames = Object.keys(thePackage.models);
+    return modelNames.length > 0;
   }
 
   switch (checkType) {

@@ -11,18 +11,18 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName', 'moduleName');
+    this._registerOptions('packageName', 'modelName');
   }
 
   prompting() {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameList', 'moduleName');
+    const questions = this._getQuestions('packageNameList', 'modelName');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        moduleName: this._finalize('moduleName', answers),
+        modelName: this._finalize('modelName', answers),
         collectionName: this._finalize('collectionName', answers),
         typeName: this._finalize('pascalModuleName', answers)
       };
@@ -31,8 +31,8 @@ module.exports = class extends VulcanGenerator {
   }
 
   _composeGenerators() {
-    common.modelParts.forEach(modulePart => {
-      const generator = require.resolve(`./${modulePart}`);
+    common.modelParts.forEach(modelPart => {
+      const generator = require.resolve(`./${modelPart}`);
       const nextOptions = _extends({}, this.options, this.props, {
         dontAsk: true
       });
@@ -47,13 +47,13 @@ module.exports = class extends VulcanGenerator {
     this._dispatch({
       type: 'ADD_MODULE',
       packageName: this.props.packageName,
-      moduleName: this.props.moduleName
+      modelName: this.props.modelName
     });
     this._commitStore();
   }
 
   _writeCollection() {
-    this.fs.copyTpl(this.templatePath('collection.js'), this._getPath({ isAbsolute: true }, 'module', 'collection.js'), this.props);
+    this.fs.copyTpl(this.templatePath('collection.js'), this._getPath({ isAbsolute: true }, 'model', 'collection.js'), this.props);
   }
 
   _writeTestCollection() {
@@ -61,14 +61,14 @@ module.exports = class extends VulcanGenerator {
       subjectName: 'collection',
       subjectPath: '../collection'
     });
-    this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getPath({ isAbsolute: true }, 'moduleTest', 'collection.js'), testProps);
+    this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getPath({ isAbsolute: true }, 'modelTest', 'collection.js'), testProps);
   }
 
   _updateModulesIndex() {
-    const modulePath = this._getPath({ isAbsolute: true }, 'modules', 'index.js');
-    const fileText = this.fs.read(modulePath);
-    const fileWithImportText = ast.addImportStatement(fileText, `import './${this.props.moduleName}/collection.js';`);
-    this.fs.write(modulePath, fileWithImportText);
+    const modelPath = this._getPath({ isAbsolute: true }, 'models', 'index.js');
+    const fileText = this.fs.read(modelPath);
+    const fileWithImportText = ast.addImportStatement(fileText, `import './${this.props.modelName}/collection.js';`);
+    this.fs.write(modelPath, fileWithImportText);
   }
 
   writing() {

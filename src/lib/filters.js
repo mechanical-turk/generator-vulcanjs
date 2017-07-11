@@ -10,7 +10,7 @@ function appName (toFilter) {
   return dashify(toFilter);
 }
 
-function moduleName (toFilter) {
+function modelName (toFilter) {
   return camelCase(toFilter);
 }
 
@@ -22,7 +22,7 @@ function filter (filterType, toFilter) {
   switch (filterType) {
     case 'packageName' : return packageName(toFilter);
     case 'appName' : return appName(toFilter);
-    case 'moduleName' : return moduleName(toFilter);
+    case 'modelName' : return modelName(toFilter);
     case 'componentName' : return componentName(toFilter);
     default : return toFilter;
   }
