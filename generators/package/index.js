@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const VulcanGenerator = require('../../lib/VulcanGenerator');
-const ast = require('../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -15,11 +14,14 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageName', 'vulcanDependencies');
+    const questions = this._getQuestions('packageName'
+    // 'vulcanDependencies'
+    );
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
-        vulcanDependencies: this._finalize('vulcanDependencies', answers),
+        // vulcanDependencies: this._finalize('vulcanDependencies', answers),
+        vulcanDependencies: ['\'vulcan:core\''],
         isPackageAutoAdd: this._finalize('raw', 'isPackageAutoAdd', answers)
       };
       this._assert('notPackageExists', this.props.packageName);
