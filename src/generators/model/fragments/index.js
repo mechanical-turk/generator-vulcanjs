@@ -1,4 +1,4 @@
-const VulcanGenerator = require('../../lib/VulcanGenerator');
+const VulcanGenerator = require('../../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing () {

@@ -1,5 +1,6 @@
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
+const common = require('../../lib/common');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -10,7 +11,7 @@ module.exports = class extends VulcanGenerator {
   _registerArguments () {
     this._registerOptions(
       'packageName',
-      'moduleName'
+      'moduleName' 
     );
   }
 
@@ -18,8 +19,7 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameList',
-      'moduleName',
-      'moduleParts'
+      'moduleName'
     );
     return this.prompt(questions)
     .then((answers) => {
@@ -28,15 +28,14 @@ module.exports = class extends VulcanGenerator {
         moduleName: this._finalize('moduleName', answers),
         collectionName: this._finalize('collectionName', answers),
         typeName: this._finalize('pascalModuleName', answers),
-        moduleParts: this._finalize('moduleParts', answers),
       };
       this._composeGenerators();
     });
   }
 
   _composeGenerators () {
-    this.props.moduleParts.forEach((modulePart) => {
-      const generator = require.resolve(`../${modulePart}`);
+    common.modelParts.forEach((modulePart) => {
+      const generator = require.resolve(`./${modulePart}`);
       const nextOptions = {
         ...this.options,
         ...this.props,

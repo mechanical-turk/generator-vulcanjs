@@ -2,6 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 const ast = require('../../lib/ast');
+const common = require('../../lib/common');
 
 module.exports = class extends VulcanGenerator {
   initializing() {
@@ -17,22 +18,21 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) {
       return false;
     }
-    const questions = this._getQuestions('packageNameList', 'moduleName', 'moduleParts');
+    const questions = this._getQuestions('packageNameList', 'moduleName');
     return this.prompt(questions).then(answers => {
       this.props = {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
         collectionName: this._finalize('collectionName', answers),
-        typeName: this._finalize('pascalModuleName', answers),
-        moduleParts: this._finalize('moduleParts', answers)
+        typeName: this._finalize('pascalModuleName', answers)
       };
       this._composeGenerators();
     });
   }
 
   _composeGenerators() {
-    this.props.moduleParts.forEach(modulePart => {
-      const generator = require.resolve(`../${modulePart}`);
+    common.modelParts.forEach(modulePart => {
+      const generator = require.resolve(`./${modulePart}`);
       const nextOptions = _extends({}, this.options, this.props, {
         dontAsk: true
       });

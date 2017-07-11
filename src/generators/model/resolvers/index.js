@@ -1,4 +1,4 @@
-const VulcanGenerator = require('../../lib/VulcanGenerator');
+const VulcanGenerator = require('../../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -17,7 +17,8 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameWithNumModulesList',
-      'moduleNameList'
+      'moduleNameList',
+      'defaultResolvers'
     );
     return this.prompt(questions)
     .then((answers) => {
@@ -25,42 +26,40 @@ module.exports = class extends VulcanGenerator {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
         collectionName: this._finalize('collectionName', answers),
-        newMutationName: this._finalize('mutationName', 'new', answers),
-        editMutationName: this._finalize('mutationName', 'edit', answers),
-        removeMutationName: this._finalize('mutationName', 'remove', answers),
-        newPermission: this._finalize('mutationName', ['new'], answers),
-        editOwnPermission: this._finalize('mutationName', ['edit', 'own'], answers),
-        editAllPermission: this._finalize('mutationName', ['edit', 'all'], answers),
-        removeOwnPermission: this._finalize('mutationName', ['remove', 'own'], answers),
-        removeAllPermission: this._finalize('mutationName', ['remove', 'all'], answers),
+        listResolverName: this._finalize('resolverName', 'List', answers),
+        singleResolverName: this._finalize('resolverName', 'Single', answers),
+        totalResolverName: this._finalize('resolverName', 'Total', answers),
+        hasListResolver: this._finalize('hasResolver', 'list', answers),
+        hasSingleResolver: this._finalize('hasResolver', 'single', answers),
+        hasTotalResolver: this._finalize('hasResolver', 'total', answers),
       };
     });
   }
 
-  _writeMutations () {
+  _writeResolvers () {
     this.fs.copyTpl(
-      this.templatePath('mutations.js'),
+      this.templatePath('resolvers.js'),
       this._getPath(
         { isAbsolute: true },
         'module',
-        'mutations.js'
+        'resolvers.js'
       ),
       this.props
     );
   }
 
-  _writeTestMutations () {
+  _writeTestResolvers () {
     const testProps = {
       ...this.props,
-      subjectName: 'mutations',
-      subjectPath: '../mutations',
+      subjectName: 'resolvers',
+      subjectPath: '../resolvers',
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
       this._getPath(
         { isAbsolute: true },
         'moduleTest',
-        'mutations.js'
+        'resolvers.js'
       ),
       testProps
     );
@@ -68,8 +67,8 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writeMutations();
-    this._writeTestMutations();
+    this._writeResolvers();
+    this._writeTestResolvers();
   }
 
   end () {

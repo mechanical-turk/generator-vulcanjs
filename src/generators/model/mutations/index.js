@@ -1,4 +1,4 @@
-const VulcanGenerator = require('../../lib/VulcanGenerator');
+const VulcanGenerator = require('../../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -24,39 +24,43 @@ module.exports = class extends VulcanGenerator {
       this.props = {
         packageName: this._finalize('packageName', answers),
         moduleName: this._finalize('moduleName', answers),
-        newPermission: this._finalize('permissionName', ['new'], answers),
-        editOwnPermission: this._finalize('permissionName', ['edit', 'own'], answers),
-        editAllPermission: this._finalize('permissionName', ['edit', 'all'], answers),
-        removeOwnPermission: this._finalize('permissionName', ['remove', 'own'], answers),
-        removeAllPermission: this._finalize('permissionName', ['remove', 'all'], answers),
+        collectionName: this._finalize('collectionName', answers),
+        newMutationName: this._finalize('mutationName', 'new', answers),
+        editMutationName: this._finalize('mutationName', 'edit', answers),
+        removeMutationName: this._finalize('mutationName', 'remove', answers),
+        newPermission: this._finalize('mutationName', ['new'], answers),
+        editOwnPermission: this._finalize('mutationName', ['edit', 'own'], answers),
+        editAllPermission: this._finalize('mutationName', ['edit', 'all'], answers),
+        removeOwnPermission: this._finalize('mutationName', ['remove', 'own'], answers),
+        removeAllPermission: this._finalize('mutationName', ['remove', 'all'], answers),
       };
     });
   }
 
-  _writePermissions () {
+  _writeMutations () {
     this.fs.copyTpl(
-      this.templatePath('permissions.js'),
+      this.templatePath('mutations.js'),
       this._getPath(
         { isAbsolute: true },
         'module',
-        'permissions.js'
+        'mutations.js'
       ),
       this.props
     );
   }
 
-  _writeTestPermissions () {
+  _writeTestMutations () {
     const testProps = {
       ...this.props,
-      subjectName: 'permissions',
-      subjectPath: '../permissions',
+      subjectName: 'mutations',
+      subjectPath: '../mutations',
     };
     this.fs.copyTpl(
       this.templatePath('test.js'),
       this._getPath(
         { isAbsolute: true },
         'moduleTest',
-        'permissions.js'
+        'mutations.js'
       ),
       testProps
     );
@@ -64,8 +68,8 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return; }
-    this._writePermissions();
-    this._writeTestPermissions();
+    this._writeMutations();
+    this._writeTestMutations();
   }
 
   end () {

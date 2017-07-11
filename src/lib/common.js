@@ -31,6 +31,8 @@ const visitorTypes = ['guest', 'member', 'admin'];
 
 const schemaPropertyTypes = ['String', 'Number', 'Array', 'Object', 'Custom'];
 
+const modelParts = ['fragments', 'resolvers', 'mutations', 'schema', 'permissions', 'parameters'];
+
 const vulcanjsRemovableComponents = [
   'route',
   'module',
@@ -52,6 +54,7 @@ const exposed = {
   getDefaultChoiceIndex,
   getSetFromArr,
   vulcanjsRemovableComponents,
+  modelParts,
 };
 
 module.exports = exposed;

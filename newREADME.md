@@ -39,12 +39,6 @@ $ yarn global add yo generator-vulcanjs
 - Create new module: `vulcanjs g:module`
 - Create new component: `vulcanjs g:component`
 - Create new route: `vulcanjs g:route`
-- Create new fragments: `vulcanjs g:fragments`
-- Create new mutations: `vulcanjs g:mutations`
-- Create new parameters: `vulcanjs g:parameters`
-- Create new permissions: `vulcanjs g:permissions`
-- Create new resolvers: `vulcanjs g:resolvers`
-- Create new schema: `vulcanjs g:schema`
 
 
 ## Maintainers
