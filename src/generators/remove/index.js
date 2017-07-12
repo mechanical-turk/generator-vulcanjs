@@ -8,7 +8,7 @@ module.exports = class extends VulcanGenerator {
 
   _registerArguments () {
     this._registerOptions(
-      'packageName'
+      'vulcanjsRemovableComponent'
     );
   }
 
@@ -28,7 +28,11 @@ module.exports = class extends VulcanGenerator {
   composing () {
     if (!this._canWrite()) { return false; }
     const remover = require.resolve(`./removers/${this.props.vulcanjsComponent}`);
-    return this.composeWith(remover);
+    const nextOptions = {
+      ...this.options,
+      ...this.props,
+    };
+    return this.composeWith(remover, nextOptions);
   }
 
   end () {

@@ -8,7 +8,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName');
+    this._registerOptions('packageName', 'routeName', 'routePath', 'componentName', 'layoutName');
   }
 
   prompting() {

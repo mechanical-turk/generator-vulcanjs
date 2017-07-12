@@ -1,3 +1,5 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const VulcanGenerator = require('../../lib/VulcanGenerator');
 
 module.exports = class extends VulcanGenerator {
@@ -7,7 +9,7 @@ module.exports = class extends VulcanGenerator {
   }
 
   _registerArguments() {
-    this._registerOptions('packageName');
+    this._registerOptions('vulcanjsRemovableComponent');
   }
 
   prompting() {
@@ -27,7 +29,8 @@ module.exports = class extends VulcanGenerator {
       return false;
     }
     const remover = require.resolve(`./removers/${this.props.vulcanjsComponent}`);
-    return this.composeWith(remover);
+    const nextOptions = _extends({}, this.options, this.props);
+    return this.composeWith(remover, nextOptions);
   }
 
   end() {

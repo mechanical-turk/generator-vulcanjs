@@ -9,7 +9,11 @@ module.exports = class extends VulcanGenerator {
 
   _registerArguments () {
     this._registerOptions(
-      'packageName'
+      'packageName',
+      'routeName',
+      'routePath',
+      'componentName',
+      'layoutName'
     );
   }
 

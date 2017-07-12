@@ -23,7 +23,7 @@ function get (...questionNames) {
       name: 'appName',
       message: uiText.messages.appName,
       when: () => when('appName'),
-      default: options.appname,
+      default: options.appName,
       validate: validations.assertNonEmpty,
     };
   }
@@ -35,10 +35,6 @@ function get (...questionNames) {
       message: uiText.messages.reactExtension,
       choices: common.reactExtensions,
       when: () => when('reactExtension'),
-      default: common.getDefaultChoiceIndex(
-        common.reactExtensions,
-        options.reactextension
-      ),
     };
   }
 
@@ -217,6 +213,7 @@ function get (...questionNames) {
       message: uiText.messages.componentName,
       when: () => when('componentName'),
       validate: validations.assertNonEmpty,
+      default: options.componentName,
     };
   }
 
@@ -249,6 +246,7 @@ function get (...questionNames) {
       message: uiText.messages.routeName,
       when: when('routeName'),
       validate: validations.assertNonEmpty,
+      default: options.routeName,
     };
   }
 
@@ -259,6 +257,7 @@ function get (...questionNames) {
       message: uiText.messages.routePath,
       when: when('routePath'),
       validate: validations.assertNonEmpty,
+      default: options.routePath,
     };
   }
 
@@ -269,7 +268,7 @@ function get (...questionNames) {
       message: uiText.messages.layoutName,
       when: when('layoutName'),
       validate: validations.assertNonEmpty,
-      default: 'Components.Layout',
+      default: options.layoutName || 'Components.Layout',
     };
   }
   // const storyBookSetup = {
@@ -305,6 +304,7 @@ function get (...questionNames) {
       name: 'isAddCustomSchemaProperty',
       message: uiText.messages.isAddCustomSchemaProperty,
       when: () => when('isAddCustomSchemaProperty'),
+      default: false,
     };
   }
 
@@ -405,6 +405,7 @@ function get (...questionNames) {
       message: uiText.messages.vulcanjsRemovableComponents,
       when: () => when('vulcanjsComponent'),
       choices: common.vulcanjsRemovableComponents,
+      default: options.vulcanjsRemovableComponent,
     };
   }
 
