@@ -3,6 +3,7 @@
 ## Notice
 - This yeoman generator is a sub component of our bigger project, [VulcanJS-cli](https://www.npmjs.com/package/vulcanjs-cli). If you wish to use this tool as a scaffolder, we advise that you use [VulcanJS-cli](https://www.npmjs.com/package/vulcanjs-cli).
 - However, you can still use this as a yeoman generator if you wish, for whatever reason.
+- If you've come here to contribute, check [Contributing](CONTRIBUTE.md) for instructions.
 
 ## Installing
 - To run this generator, you need to have `yo` installed globally.
