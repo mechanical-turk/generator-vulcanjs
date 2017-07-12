@@ -12,6 +12,7 @@ const descriptions = {
   componentType: 'The type of the component. Is it a pure function, or a class?',
   vulcanDependencies: 'The vulcan packages that your application depends on',
   isPackageAutoAdd: 'Set to true if you want your package to be added to .meteor/packages',
+  dontAsk: 'Set to true if you want the generators to skip prompting for the arguments you have supplied from the command line',
 };
 
 const messages = {

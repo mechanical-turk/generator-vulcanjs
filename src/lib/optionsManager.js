@@ -2,7 +2,7 @@ const uiText = require('./ui-text');
 
 let generator;
 
-const optionObjs = {
+const allOptions = {
   appName: {
     type: String,
     required: false,
@@ -33,6 +33,12 @@ const optionObjs = {
     alias: 'pm',
     desc: uiText.descriptions.packageManager,
   },
+  dontAsk: {
+    type: Boolean,
+    required: false,
+    alias: 'd',
+    desc: uiText.descriptions.dontAsk,
+  },
 };
 
 function setup (generatorSetup) {
@@ -43,7 +49,7 @@ function register (...optionNames) {
   function registerSingleOption (optionName) {
     generator.option(
       optionName,
-      optionObjs[optionName]
+      allOptions[optionName]
     );
   }
 
@@ -55,4 +61,5 @@ function register (...optionNames) {
 module.exports = {
   setup,
   register,
+  allOptions,
 };
