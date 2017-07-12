@@ -45,7 +45,7 @@ module.exports = class extends VulcanGenerator {
       return;
     }
     this._dispatch({
-      type: 'ADD_MODULE',
+      type: 'ADD_MODEL',
       packageName: this.props.packageName,
       modelName: this.props.modelName
     });

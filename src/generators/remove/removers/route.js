@@ -15,7 +15,9 @@ module.exports = class extends VulcanGenerator {
     if (!this._canPrompt()) { return false; }
     const questions = this._getQuestions(
       'packageNameWithNumModelsList',
-      'routeName'
+      'packageNameIfManual',
+      'routeNameList',
+      'routeNameIfManual'
     );
     return this.prompt(questions)
     .then((answers) => {
@@ -42,7 +44,13 @@ module.exports = class extends VulcanGenerator {
 
   writing () {
     if (!this._canWrite()) { return false; }
+    this._dispatch({
+      type: 'REMOVE_ROUTE',
+      packageName: this.props.packageName,
+      routeName: this.props.routeName,
+    });
     this._updateRoutes();
+    return this._commitStore();
   }
 
   end () {

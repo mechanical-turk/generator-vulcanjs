@@ -53,7 +53,7 @@ module.exports = class extends VulcanGenerator {
   writing () {
     if (!this._canWrite()) { return false; }
     this._dispatch({
-      type: 'REMOVE_MODULE',
+      type: 'REMOVE_MODEL',
       packageName: this.props.packageName,
       modelName: this.props.modelName,
     });

@@ -3,22 +3,23 @@ const _ = require('lodash');
 
 const modelReducer = (state = {}, action) => {
   switch (action.type) {
+    case 'ADD_MODEL': return state;
     default: return state;
   }
 };
 
 const modelsReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_MODULE': {
+    case 'ADD_MODEL': {
       const partialNext = {};
-      partialNext[action.modelName] = modelReducer(undefined, {});
+      partialNext[action.modelName] = modelReducer(undefined, action);
       return {
         ...state,
         ...partialNext,
       };
     }
 
-    case 'REMOVE_MODULE': {
+    case 'REMOVE_MODEL': {
       return _.pickBy(
         state,
         (value, key) => key !== action.modelName
@@ -30,6 +31,13 @@ const modelsReducer = (state = {}, action) => {
 
 const routeReducer = (state = {}, action) => {
   switch (action.type) {
+    case 'ADD_ROUTE': return { routePath: action.routePath };
+    case 'REMOVE_ROUTE': {
+      return _.pickBy(
+        state,
+        (value, key) => key !== action.routeName
+      );
+    }
     default: return state;
   }
 };
@@ -37,10 +45,19 @@ const routeReducer = (state = {}, action) => {
 const routesReducer = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_ROUTE': {
-      const nextState = { ...state };
-      const nextRoute = routeReducer(undefined, action);
-      nextState[action.routeName] = nextRoute;
-      return nextState;
+      const partialNext = {};
+      partialNext[action.routeName] = routeReducer(undefined, action);
+      return {
+        ...state,
+        ...partialNext,
+      };
+    }
+
+    case 'REMOVE_ROUTE': {
+      return _.pickBy(
+        state,
+        (value, key) => key !== action.routeName
+      );
     }
     default: return state;
   }
@@ -50,15 +67,22 @@ const packageReducer = (state = { models: {}, routes: {} }, action) => {
   switch (action.type) {
 
     case 'ADD_ROUTE': {
-      const nextState = { ...state };
-      nextState.routes = routesReducer(
-        nextState.routes,
-        action
-      );
-      return nextState;
+      const prevRoutes = state.routes;
+      return {
+        ...state,
+        routes: routesReducer(prevRoutes, action),
+      };
     }
 
-    case 'ADD_MODULE': {
+    case 'REMOVE_ROUTE': {
+      const prevRoutes = state.routes;
+      return {
+        ...state,
+        routes: routesReducer(prevRoutes, action),
+      };
+    }
+
+    case 'ADD_MODEL': {
       const prevModels = state.models;
       return {
         ...state,
@@ -66,7 +90,7 @@ const packageReducer = (state = { models: {}, routes: {} }, action) => {
       };
     }
 
-    case 'REMOVE_MODULE': {
+    case 'REMOVE_MODEL': {
       const prevModels = state.models;
       return {
         ...state,
@@ -101,7 +125,7 @@ const packages = (state = {}, action) => {
       };
     }
 
-    case 'ADD_MODULE': {
+    case 'ADD_MODEL': {
       const prevPackage = state[action.packageName];
       const partialNext = {};
       partialNext[action.packageName] = packageReducer(
@@ -121,7 +145,17 @@ const packages = (state = {}, action) => {
       );
     }
 
-    case 'REMOVE_MODULE': {
+    case 'REMOVE_MODEL': {
+      const packageToWork = state[action.packageName];
+      const partialNext = {};
+      partialNext[action.packageName] = packageReducer(packageToWork, action);
+      return {
+        ...state,
+        ...partialNext,
+      };
+    }
+
+    case 'REMOVE_ROUTE': {
       const packageToWork = state[action.packageName];
       const partialNext = {};
       partialNext[action.packageName] = packageReducer(packageToWork, action);

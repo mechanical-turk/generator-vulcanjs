@@ -45,9 +45,9 @@ module.exports = class extends VulcanGenerator {
     this._dispatch({
       type: 'ADD_ROUTE',
       packageName: this.props.packageName,
-      routeName: this.props.routeName
+      routeName: this.props.routeName,
+      routePath: this.props.routePath
     });
-    this._commitStore();
   }
 
   writing() {
@@ -55,6 +55,7 @@ module.exports = class extends VulcanGenerator {
       return;
     }
     this._updateRoutes();
+    this._commitStore();
   }
 
   end() {

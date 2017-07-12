@@ -64,13 +64,14 @@ module.exports = class extends VulcanGenerator {
       type: 'ADD_ROUTE',
       packageName: this.props.packageName,
       routeName: this.props.routeName,
+      routePath: this.props.routePath,
     });
-    this._commitStore();
   }
 
   writing () {
     if (!this._canWrite()) { return; }
     this._updateRoutes();
+    this._commitStore();
   }
 
   end () {

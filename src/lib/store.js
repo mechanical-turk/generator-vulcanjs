@@ -83,10 +83,17 @@ function get (checkType, ...args) {
     return store.getState().storyBook.setupStatus;
   }
 
+  function routeNames (packageName) {
+    const thePackage = getPackage(packageName);
+    const routes = thePackage.routes;
+    return Object.keys(routes);
+  }
+
   switch (checkType) {
     case 'reactExtension' : return reactExtension(...args);
     case 'packageNames' : return packageNames(...args);
     case 'modelNames' : return modelNames(...args);
+    case 'routeNames' : return routeNames(...args);
     case 'package' : return getPackage(...args);
     case 'storyBookSetupStatus' : return storyBookSetupStatus(...args);
     case 'packageNamesWithNumModels' : return packageNamesWithNumModels(...args);

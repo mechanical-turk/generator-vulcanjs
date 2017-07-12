@@ -235,14 +235,36 @@ function get (...questionNames) {
     };
   }
 
-  function routeName () {
+  function routeName (questionOptions) {
     return {
       type: 'input',
       name: 'routeName',
       message: uiText.messages.routeName,
-      when: when('routeName'),
+      when: (answers) => when('routeName', answers, questionOptions),
       validate: validations.assertNonEmpty,
       default: options.routeName,
+    };
+  }
+
+  function routeNameList () {
+    return {
+      type: 'list',
+      name: 'routeName',
+      message: uiText.messages.routeName,
+      when: () => when('routeName'),
+      choices: (answers) => {
+        const finalPackageName = finalize('packageName', answers);
+        const routeNames = store.get('routeNames', finalPackageName);
+        return [...routeNames, common.manualChoice];
+      },
+      // default: (answers) => {
+      //   const finalPackageName = finalize('packageName', answers);
+      //   const modelNames = store.get('modelNames', finalPackageName);
+      //   return common.getDefaultChoiceIndex(
+      //     modelNames,
+      //     options.modelName
+      //   );
+      // },
     };
   }
 
@@ -425,6 +447,8 @@ function get (...questionNames) {
       case 'isRegisterComponent': return isRegisterComponent();
       case 'defaultResolvers': return defaultResolvers();
       case 'routeName': return routeName();
+      case 'routeNameIfManual': return routeName({ isManual: true });
+      case 'routeNameList': return routeNameList();
       case 'routePath': return routePath();
       case 'layoutName': return layoutName();
       case 'isAddCustomSchemaProperty': return isAddCustomSchemaProperty();

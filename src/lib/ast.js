@@ -83,7 +83,7 @@ const removeRoute = (tree, routeToRemove) => {
       key: {
         type: 'Identifier',
         name: 'name',
-      }
+      },
     });
     if (!namePropOfRoute.value) return true;
     if (!namePropOfRoute.value.value) return true;
