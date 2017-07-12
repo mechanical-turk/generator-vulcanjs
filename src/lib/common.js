@@ -39,6 +39,10 @@ const vulcanjsRemovableComponents = [
   'package',
 ];
 
+const manualChoiceValue = '__vjs_manual';
+
+const manualChoice = { name: '[MANUAL]', value: manualChoiceValue };
+
 const getDefaultChoiceIndex = (choices, option) => {
   const index = choices.findIndex((elem) => elem === option);
   return Math.max(index, 0);
@@ -55,6 +59,8 @@ const exposed = {
   getSetFromArr,
   vulcanjsRemovableComponents,
   modelParts,
+  manualChoiceValue,
+  manualChoice,
 };
 
 module.exports = exposed;

@@ -36,18 +36,18 @@ function assert (assertion, ...args) {
     }
   }
 
-  function isModuleExists (packageName, modelName) {
+  function isModelExists (packageName, modelName) {
     if (!store.is('modelExists', packageName, modelName)) {
-      errors.notModuleExists = {
-        message: uiText.errors.notModuleExists(packageName, modelName),
+      errors.notModelExists = {
+        message: uiText.errors.notModelExists(packageName, modelName),
       };
     }
   }
 
-  function notModuleExists (packageName, modelName) {
+  function notModelExists (packageName, modelName) {
     if (store.is('modelExists', packageName, modelName)) {
-      errors.isModuleExists = {
-        message: uiText.errors.isModuleExists(packageName, modelName),
+      errors.isModelExists = {
+        message: uiText.errors.isModelExists(packageName, modelName),
       };
     }
   }
@@ -74,8 +74,8 @@ function assert (assertion, ...args) {
     case 'notVulcan' : return notVulcan(...args);
     case 'isPackageExists' : return isPackageExists(...args);
     case 'notPackageExists' : return notPackageExists(...args);
-    case 'isModuleExists' : return isModuleExists(...args);
-    case 'notModuleExists' : return notModuleExists(...args);
+    case 'isModelExists' : return isModelExists(...args);
+    case 'notModelExists' : return notModelExists(...args);
     case 'hasNonZeroPackages' : return hasNonZeroPackages(...args);
     case 'packageHasNonZeroModels' : return packageHasNonZeroModels(...args);
     default : return undefined;

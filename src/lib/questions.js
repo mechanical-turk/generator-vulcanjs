@@ -13,7 +13,10 @@ function setup (generatorSetup) {
 function get (...questionNames) {
   const options = generator.options;
 
-  function when (fieldName) {
+  function when (fieldName, answers, questionOptions) {
+    if (questionOptions && questionOptions.isManual) {
+      return answers[fieldName] === common.manualChoiceValue;
+    }
     return (!(options.dontAsk && options[fieldName]));
   }
 
@@ -52,12 +55,12 @@ function get (...questionNames) {
     };
   }
 
-  function packageName () {
+  function packageName (questionOptions) {
     return {
       type: 'input',
       name: 'packageName',
       message: uiText.messages.packageName,
-      when: () => when('packageName'),
+      when: (answers) => when('packageName', answers, questionOptions),
       default: options.packageName,
       validate: validations.combineValidators(
         validations.assertNonEmpty,
@@ -98,13 +101,26 @@ function get (...questionNames) {
     };
   }
 
-  function packageNameList () {
+  function packageNameList (questionOptions) {
     return {
       type: 'list',
       name: 'packageName',
       message: uiText.messages.packageName,
       when: () => when('packageName'),
-      choices: store.get('packageNames'),
+      choices: () => {
+        let packageNames;
+        if (questionOptions && questionOptions.isWithNumModels) {
+          packageNames = store.get('packageNamesWithNumModels')
+          .sort(common.numModelsSort)
+          .map(({ name, numModels }) => {
+            if (numModels > 0) return name;
+            return { name, value: name, disabled: true };
+          });
+        } else {
+          packageNames = store.get('packageNames');
+        }
+        return [...packageNames, common.manualChoice];
+      },
       default: common.getDefaultChoiceIndex(
         store.get('packageNames'),
         options.packageName
@@ -112,38 +128,17 @@ function get (...questionNames) {
     };
   }
 
-  function packageNameWithNumModelsList () {
-    return {
-      type: 'list',
-      name: 'packageName',
-      message: uiText.messages.packageName,
-      when: () => when('packageName'),
-      choices: () => (
-        store.get('packageNamesWithNumModels')
-        .sort(common.numModelsSort)
-        .map(({ name, numModels }) => {
-          if (numModels > 0) return name;
-          return { name, value: name, disabled: true };
-        })
-      ),
-      default: common.getDefaultChoiceIndex(
-        store.get('packageNames'),
-        options.packageName
-      ),
-    };
-  }
-
-  function modelName () {
+  function modelName (questionOptions) {
     return {
       type: 'input',
       name: 'modelName',
       message: uiText.messages.modelName,
-      when: () => when('modelName'),
+      when: (answers) => when('modelName', answers, questionOptions),
       default: options.modelName,
       validate: (input, answers) => {
         const combinedValidator = validations.combineValidators(
           validations.assertNonEmpty,
-          validations.generateNotModuleExists(
+          validations.generateNotModelExists(
             finalize('packageName', answers)
           )
         );
@@ -178,7 +173,8 @@ function get (...questionNames) {
       when: () => when('modelName'),
       choices: (answers) => {
         const finalPackageName = finalize('packageName', answers);
-        return store.get('modelNames', finalPackageName);
+        const modelNames = store.get('modelNames', finalPackageName);
+        return [...modelNames, common.manualChoice];
       },
       default: (answers) => {
         const finalPackageName = finalize('packageName', answers);
@@ -415,17 +411,19 @@ function get (...questionNames) {
       case 'reactExtension': return reactExtension();
       case 'packageManager': return packageManager();
       case 'packageName': return packageName();
+      case 'packageNameIfManual': return packageName({ isManual: true });
       case 'vulcanDependencies': return vulcanDependencies();
       case 'isPackageAutoAdd': return isPackageAutoAdd();
       case 'packageNameList': return packageNameList();
+      case 'packageNameWithNumModelsList': return packageNameList({ isWithNumModels: true });
       case 'modelName': return modelName();
+      case 'modelNameIfManual': return modelName({ isManual: true });
       case 'modelParts': return modelParts();
       case 'modelNameList': return modelNameList();
       case 'componentName': return componentName();
       case 'componentType': return componentType();
       case 'isRegisterComponent': return isRegisterComponent();
       case 'defaultResolvers': return defaultResolvers();
-      case 'packageNameWithNumModelsList': return packageNameWithNumModelsList();
       case 'routeName': return routeName();
       case 'routePath': return routePath();
       case 'layoutName': return layoutName();

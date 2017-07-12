@@ -63,12 +63,12 @@ function finalize (propName, ...args) {
     );
   }
 
-  function pascalModuleName (answers) {
+  function pascalModelName (answers) {
     const modelNameRaw = getRaw('modelName', answers);
     return pascalCase(modelNameRaw);
   }
 
-  function camelModuleName (answers) {
+  function camelModelName (answers) {
     const modelNameRaw = getRaw('modelName', answers);
     return camelCase(modelNameRaw);
   }
@@ -78,18 +78,18 @@ function finalize (propName, ...args) {
   }
 
   function collectionName (answers) {
-    return pascalModuleName(answers);
+    return pascalModelName(answers);
   }
 
   function mutationName (mutationType, answers) {
-    const modelNamePart = camelModuleName(answers);
+    const modelNamePart = camelModelName(answers);
     return `${modelNamePart}${mutationType}`;
   }
 
   function permissionName (permission, answers) {
-    const camelModuleNamePart = camelModuleName(answers);
+    const camelModelNamePart = camelModelName(answers);
     const permissionAppendage = permission.join('.');
-    return `${camelModuleNamePart}.${permissionAppendage}`;
+    return `${camelModelNamePart}.${permissionAppendage}`;
   }
 
   function vulcanDependencies (answers) {
@@ -98,7 +98,7 @@ function finalize (propName, ...args) {
   }
 
   function resolverName (resolverType, answers) {
-    const resolverNamePart = camelModuleName(answers);
+    const resolverNamePart = camelModelName(answers);
     return `${resolverNamePart}${resolverType}`;
   }
 
@@ -128,8 +128,8 @@ function finalize (propName, ...args) {
     case 'componentName' : return componentName(...args);
     case 'componentFileName' : return componentFileName(...args);
     case 'componentPath' : return componentPath(...args);
-    case 'pascalModuleName' : return pascalModuleName(...args);
-    case 'camelModuleName' : return camelModuleName(...args);
+    case 'pascalModelName' : return pascalModelName(...args);
+    case 'camelModelName' : return camelModelName(...args);
     case 'collectionName' : return collectionName(...args);
     case 'mutationName' : return mutationName(...args);
     case 'permissionName' : return permissionName(...args);

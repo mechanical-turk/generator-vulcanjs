@@ -33,9 +33,9 @@ function is (checkType, ...args) {
   }
 
   function modelExists (packageName, modelName) {
-    const filteredModuleName = filter('modelName', modelName);
+    const filteredModelName = filter('modelName', modelName);
     return (packageExists(packageName)) &&
-    !!store.getState().packages[packageName].models[filteredModuleName];
+    !!store.getState().packages[packageName].models[filteredModelName];
   }
 
   switch (checkType) {
