@@ -52,7 +52,7 @@ const errors = {
   notModuleExists: (packageName, modelName) => (`A model with the name: '${modelName}' under the package '${packageName}' does not exist. \nIf you'd like to work on this model, you should first run ${chalk.green(`vulcanjs:model --p ${packageName} --m ${modelName}`)}.`),
   isModuleExists: (packageName, modelName) => (`A model with the name '${modelName}' under the package '${packageName}' already exists.`),
   isZeroPackages: `The command you just ran requires at least 1 custom package to be present in your app. \nTo create a package, run ${chalk.green('vulcanjs:package')}`,
-  hasZeroModules: (packageName) => `The package '${packageName} has no models.)}`,
+  hasZeroModels: (packageName) => `The package '${packageName} has no models.)}`,
   isEmpty: 'This cannot be empty.',
 };
 

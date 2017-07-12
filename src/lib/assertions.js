@@ -60,11 +60,11 @@ function assert (assertion, ...args) {
     }
   }
 
-  function packageHasNonZeroModules (packageName) {
+  function packageHasNonZeroModels (packageName) {
     this._assertIsPackageExists(packageName);
-    if (!this._packageHasNonZeroModules(packageName)) {
-      errors.hasZeroModules = {
-        message: uiText.errors.hasZeroModules(packageName),
+    if (!this._packageHasNonZeroModels(packageName)) {
+      errors.hasZeroModels = {
+        message: uiText.errors.hasZeroModels(packageName),
       };
     }
   }
@@ -77,7 +77,7 @@ function assert (assertion, ...args) {
     case 'isModuleExists' : return isModuleExists(...args);
     case 'notModuleExists' : return notModuleExists(...args);
     case 'hasNonZeroPackages' : return hasNonZeroPackages(...args);
-    case 'packageHasNonZeroModules' : return packageHasNonZeroModules(...args);
+    case 'packageHasNonZeroModels' : return packageHasNonZeroModels(...args);
     default : return undefined;
   }
 }

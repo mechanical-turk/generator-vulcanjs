@@ -24,7 +24,7 @@ module.exports = class extends VulcanGenerator {
         packageName: this._finalize('packageName', answers),
         modelName: this._finalize('modelName', answers),
         collectionName: this._finalize('collectionName', answers),
-        typeName: this._finalize('pascalModuleName', answers)
+        typeName: this._finalize('pascalModelName', answers)
       };
       this._composeGenerators();
     });
@@ -64,7 +64,7 @@ module.exports = class extends VulcanGenerator {
     this.fs.copyTpl(this.templatePath('tests/collection.js'), this._getPath({ isAbsolute: true }, 'modelTest', 'collection.js'), testProps);
   }
 
-  _updateModulesIndex() {
+  _updateModelsIndex() {
     const modelPath = this._getPath({ isAbsolute: true }, 'models', 'index.js');
     const fileText = this.fs.read(modelPath);
     const fileWithImportText = ast.addImportStatement(fileText, `import './${this.props.modelName}/collection.js';`);
@@ -76,7 +76,7 @@ module.exports = class extends VulcanGenerator {
       return;
     }
     this._writeCollection();
-    this._updateModulesIndex();
+    this._updateModelsIndex();
     this._writeTestCollection();
   }
 

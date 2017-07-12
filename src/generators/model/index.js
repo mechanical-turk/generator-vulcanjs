@@ -27,7 +27,7 @@ module.exports = class extends VulcanGenerator {
         packageName: this._finalize('packageName', answers),
         modelName: this._finalize('modelName', answers),
         collectionName: this._finalize('collectionName', answers),
-        typeName: this._finalize('pascalModuleName', answers),
+        typeName: this._finalize('pascalModelName', answers),
       };
       this._composeGenerators();
     });
@@ -84,7 +84,7 @@ module.exports = class extends VulcanGenerator {
     );
   }
 
-  _updateModulesIndex () {
+  _updateModelsIndex () {
     const modelPath = this._getPath(
       { isAbsolute: true },
       'models',
@@ -104,7 +104,7 @@ module.exports = class extends VulcanGenerator {
   writing () {
     if (!this._canWrite()) { return; }
     this._writeCollection();
-    this._updateModulesIndex();
+    this._updateModelsIndex();
     this._writeTestCollection();
   }
 

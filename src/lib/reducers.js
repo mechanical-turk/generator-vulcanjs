@@ -59,18 +59,18 @@ const packageReducer = (state = { models: {}, routes: {} }, action) => {
     }
 
     case 'ADD_MODULE': {
-      const prevModules = state.models;
+      const prevModels = state.models;
       return {
         ...state,
-        models: modelsReducer(prevModules, action),
+        models: modelsReducer(prevModels, action),
       };
     }
 
     case 'REMOVE_MODULE': {
-      const prevModules = state.models;
+      const prevModels = state.models;
       return {
         ...state,
-        models: modelsReducer(prevModules, action),
+        models: modelsReducer(prevModels, action),
       };
     }
     default: return state;

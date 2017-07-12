@@ -116,17 +116,17 @@ function get (...questionNames) {
     };
   }
 
-  function packageNameWithNumModulesList () {
+  function packageNameWithNumModelsList () {
     return {
       type: 'list',
       name: 'packageName',
       message: uiText.messages.packageName,
       when: () => when('packageName'),
       choices: () => (
-        store.get('packageNamesWithNumModules')
-        .sort(common.numModulesSort)
-        .map(({ name, numModules }) => {
-          if (numModules > 0) return name;
+        store.get('packageNamesWithNumModels')
+        .sort(common.numModelsSort)
+        .map(({ name, numModels }) => {
+          if (numModels > 0) return name;
           return { name, value: name, disabled: true };
         })
       ),
@@ -424,7 +424,7 @@ function get (...questionNames) {
       case 'componentType': return componentType();
       case 'isRegisterComponent': return isRegisterComponent();
       case 'defaultResolvers': return defaultResolvers();
-      case 'packageNameWithNumModulesList': return packageNameWithNumModulesList();
+      case 'packageNameWithNumModelsList': return packageNameWithNumModelsList();
       case 'routeName': return routeName();
       case 'routePath': return routePath();
       case 'layoutName': return layoutName();
