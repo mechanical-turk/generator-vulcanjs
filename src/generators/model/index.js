@@ -86,18 +86,17 @@ module.exports = class extends VulcanGenerator {
   }
 
   _updateModelsIndex () {
-    const modelPath = this._getPath(
+    const modelsIndexPath = this._getPath(
       { isAbsolute: true },
-      'models',
-      'index.js'
+      'modelsIndex'
     );
-    const fileText = this.fs.read(modelPath);
+    const fileText = this.fs.read(modelsIndexPath);
     const fileWithImportText = ast.addImportStatement(
       fileText,
-      `import './${this.props.modelName}/collection.js';`
+      `./${this.props.modelName}/collection.js`
     );
     this.fs.write(
-      modelPath,
+      modelsIndexPath,
       fileWithImportText
     );
   }

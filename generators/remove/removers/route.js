@@ -24,15 +24,19 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  writing() {
-    if (!this._canWrite()) {
-      return false;
-    }
+  _updateRoutes() {
     const routesPath = this._getPath({ isAbsolute: true }, 'routes');
     const oldRoutes = this.fs.read(routesPath);
     const newRoutes = ast.removeRoute(oldRoutes, this.props.routeName);
     this.fs.write(routesPath, newRoutes);
     return true;
+  }
+
+  writing() {
+    if (!this._canWrite()) {
+      return false;
+    }
+    this._updateRoutes();
   }
 
   end() {

@@ -47,6 +47,13 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     );
   }
 
+  function modelsIndexPath (options) {
+    return modelsPath(
+      options,
+      'index.js'
+    );
+  }
+
   function routesPath (options) {
     return modelsPath(
       options,
@@ -122,6 +129,7 @@ function get (wrappedOptions, pathType, ...wrappedArgs) {
     case 'package': return packagePath(wrappedOptions, ...wrappedArgs);
     case 'lib': return libPath(wrappedOptions, ...wrappedArgs);
     case 'models': return modelsPath(wrappedOptions, ...wrappedArgs);
+    case 'modelsIndex': return modelsIndexPath(wrappedOptions, ...wrappedArgs);
     case 'model': return modelPath(wrappedOptions, ...wrappedArgs);
     case 'components': return componentsPath(wrappedOptions, ...wrappedArgs);
     case 'modelTest': return modelTestPath(wrappedOptions, ...wrappedArgs);

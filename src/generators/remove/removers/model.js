@@ -1,4 +1,5 @@
 const VulcanGenerator = require('../../../lib/VulcanGenerator');
+const ast = require('../../../lib/ast');
 
 module.exports = class extends VulcanGenerator {
   initializing () {
@@ -25,18 +26,39 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  writing () {
-    if (!this._canWrite()) { return false; }
+  _updateModelsIndex () {
+    const modelsIndexPath = this._getPath(
+      { isAbsolute: true },
+      'modelsIndex'
+    );
+    const fileText = this.fs.read(modelsIndexPath);
+    const fileWithImportText = ast.removeImportStatement(
+      fileText,
+      `./${this.props.modelName}/collection.js`
+    );
+    this.fs.write(
+      modelsIndexPath,
+      fileWithImportText
+    );
+  }
+
+  _removeModelDir () {
     const sourceDir = this._getPath(
       { isAbsolute: true },
       'model'
     );
     this.fs.delete(sourceDir);
+  }
+
+  writing () {
+    if (!this._canWrite()) { return false; }
     this._dispatch({
       type: 'REMOVE_MODULE',
       packageName: this.props.packageName,
       modelName: this.props.modelName,
     });
+    this._removeModelDir();
+    this._updateModelsIndex();
     return this._commitStore();
   }
 

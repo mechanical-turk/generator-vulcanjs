@@ -26,8 +26,7 @@ module.exports = class extends VulcanGenerator {
     });
   }
 
-  writing () {
-    if (!this._canWrite()) { return false; }
+  _updateRoutes () {
     const routesPath = this._getPath(
       { isAbsolute: true },
       'routes'
@@ -39,6 +38,11 @@ module.exports = class extends VulcanGenerator {
       newRoutes
     );
     return true;
+  }
+
+  writing () {
+    if (!this._canWrite()) { return false; }
+    this._updateRoutes();
   }
 
   end () {

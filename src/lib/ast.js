@@ -42,9 +42,12 @@ const parseModifyGenerate = (modifier) => (text, ...args) => {
   return generated;
 };
 
-const addImportStatement = (tree, statement) => {
+const getImportStatement = (importPath) => `import '${importPath}';`;
+
+const addImportStatement = (tree, importPath) => {
   const newTree = { ...tree };
   const nextImportIndex = getLastImportIndex(tree) + 1;
+  const statement = getImportStatement(importPath);
   const importNode = esprima.parseModule(statement);
   newTree.body = [
     ...[...tree.body].slice(0, nextImportIndex),
@@ -54,9 +57,9 @@ const addImportStatement = (tree, statement) => {
   return newTree;
 };
 
-const appendCode = (tree, statement) => {
+const appendCode = (tree, code) => {
   const newTree = { ...tree };
-  const newCodeAst = parseAst(statement);
+  const newCodeAst = parseAst(code);
   const codeToPush = newCodeAst.body[0];
   newTree.body.push(codeToPush);
   return newTree;
@@ -89,9 +92,23 @@ const removeRoute = (tree, routeToRemove) => {
   return newTree;
 };
 
+const removeImportStatement = (tree, importPath) => {
+  const newTree = { ...tree };
+  newTree.body = tree.body.filter((node) => {
+    if (node.type !== 'ImportDeclaration') return true;
+    const source = node.source;
+    if (!source) return true;
+    if (source.type !== 'Literal') return true;
+    return source.value !== importPath;
+  });
+  return newTree;
+};
+
+
 module.exports = {
   getLastImportIndex,
   addImportStatement: parseModifyGenerate(addImportStatement),
   appendCode: parseModifyGenerate(appendCode),
   removeRoute: parseModifyGenerate(removeRoute),
+  removeImportStatement: parseModifyGenerate(removeImportStatement),
 };
