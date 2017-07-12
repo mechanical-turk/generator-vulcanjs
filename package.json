@@ -1,7 +1,7 @@
 {
   "name": "generator-vulcanjs",
-  "version": "2.1.1",
-  "description": "The cli scaffolding tool for Vulcan.js",
+  "version": "2.1.2",
+  "description": "The yeoman generator for VulcanJS projects.",
   "files": [
     "generators",
     "lib"
